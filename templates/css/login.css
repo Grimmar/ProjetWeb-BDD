@@ -1,0 +1,30 @@
+
+h1 {
+    text-align: center;
+}
+
+section {
+    width: 25%;
+    height:50%;
+    margin: auto;
+    vertical-align: middle;
+}
+
+input {
+    margin : 5px 5%;
+    
+}
+
+input#login {
+    width: 77%;
+    background:url(../img/login-sprite.png) no-repeat;    
+    background-position-x: 7px;
+    background-position-y: -2px;
+}
+
+input#password {
+    width: 77%;
+    background:url(../img/login-sprite.png) no-repeat;    
+    background-position-x: 7px;
+    background-position-y: -52px;
+}

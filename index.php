@@ -7,7 +7,7 @@ $twig = new Twig_Environment($loader, array(
     'cache' => false
 ));
 
-$template = $twig->loadTemplate('login.html');
+$template = $twig->loadTemplate('ajoutPatient.html');
 echo $template->render(array(
     'moteur_name' => 'Twig'
 ));

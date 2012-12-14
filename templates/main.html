@@ -4,25 +4,22 @@
         <title> {% block title %}Titre{% endblock %}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="templates/css/form.css"/>
 	{% endblock %}
     </head>
     <body>
         <header>
         {% block header %}
+        Nom du projet
         {% endblock %}
         </header>
-        <aside>
-        <nav>
-        {% block menu %}
-        {% endblock %}
-        </nav>
-        </aside>
         <section>
         {% block body %}
         {% endblock %}
         </section>
         <footer>
         {% block footer %}
+        Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
         {% endblock %}
         </footer>
     </body>

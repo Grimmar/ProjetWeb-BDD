@@ -8,10 +8,10 @@ public class Param{
 	private	$userPassword;
 	
 	public function __construct($local, $dbn, $un, $p){
-			$this->dbLocalisation = $local;
-			$this->dbName = $dbn;
-			$this->userName = $un;
-			$this->userPassword = $p;
+		$this->dbLocalisation = $local;
+		$this->dbName = $dbn;
+		$this->userName = $un;
+		$this->userPassword = $p;
 	}
 	
 	public function getDbname(){

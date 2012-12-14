@@ -1,0 +1,45 @@
+{% extends "admin.html" %}
+{% block title %}
+    Ajouter un patient
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="templates/css/patient.css"/>
+{% endblock %}
+
+{% block header %}
+    Formulaire d'ajout d'un patient
+{% endblock %}
+
+{% block body %}
+    <form action="controler/ajouterPatient.php" method="post">
+        <label for="nom">Nom du patient : </label>
+        <input type="text" name="nom" id="nom" required/>
+        <br/>
+        <label for="prenom">Prénom du patient : </label>
+        <input type="text" name="prenom" id="prenom" required/>
+        <br/>
+        <label for="telephone">Numéro de téléphone : </label>
+        <input type="tel" name="telephone" id="telephone" required/>
+        <br/>
+        <label for="numeroSecu">Numéro de sécurité sociale : </label>
+        <input type="text" name="numeroSecu" id="numeroSecu" required/>
+        <br/>
+        <label for="dateNaissance">Numéro de sécurité sociale : </label>
+        <input type="text" name="dateNaissance" id="dateNaissance" placeholder="Date de naissance" required/>
+        <br/>
+        <label for="numeroRue">Numéro de rue : </label>
+        <input type="text" name="numeroRue" id="numeroRue" required/>
+        <br/>
+        <label for="adresse">Adresse : </label>
+        <input type="text" name="adresse" id="adresse" required/>
+        <br/>
+        <label for="ville">Ville : </label>
+        <input type="text" name="ville" id="ville" required/>
+        <br/>
+        <label for="codePostal">Code postal : </label>
+        <input type="text" name="codePostal" id="codePostal" required/>
+        <br/>
+        <input type="submit" value="Ajouter un patient"/>
+    </form>
+{% endblock %}
