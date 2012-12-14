@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> {% block title %}Titre{% endblock %}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        {% block stylesheets %}
+	{% endblock %}
+    </head>
+    <body>
+        <header>
+        {% block header %}
+        {% endblock %}
+        </header>
+        <aside>
+        <nav>
+        {% block menu %}
+        {% endblock %}
+        </nav>
+        </aside>
+        <section>
+        {% block body %}
+        {% endblock %}
+        </section>
+        <footer>
+        {% block footer %}
+        {% endblock %}
+        </footer>
+    </body>
+</html>
