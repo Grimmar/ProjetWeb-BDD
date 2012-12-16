@@ -1,6 +1,6 @@
 <?php
 
-public class Param{
+class Param{
 	
 	private $dbName;
 	private $dbLocalisation;

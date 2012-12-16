@@ -13,7 +13,12 @@ class login extends Controller {
         if (isset ($this->data)) {
             $this->set($this->data);
         }
-        $this->render('index');
+        //TODO isConnected
+        if (true) {
+            $this->render('index');
+        } else {
+            $this->forward('accueil');
+        }
     }
     
 }

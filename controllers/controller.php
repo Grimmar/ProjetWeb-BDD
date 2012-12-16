@@ -50,6 +50,11 @@ class Controller {
         $template = $this->twig->loadTemplate('error/error.html');
         echo $template->render($this->vars);
     }
+    
+     //TODO forward
+    function forward($url) {
+        header('Location: '.WEBROOT.$url);
+    }
 }
 
 ?>
