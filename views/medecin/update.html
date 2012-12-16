@@ -1,0 +1,27 @@
+{% extends "admin.html" %}
+
+{% block title %}
+    {{ parent() }} - Médecins
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+
+
+{% block header %}
+{% if matricule is not null %}
+Modifier un médecin
+{% else %}
+Ajouter un médecin
+{% endif %}
+{% endblock %}
+
+{% block body %}
+
+{% block menu %}
+{{ parent() }}
+{% endblock %}
+
+{% endblock %}

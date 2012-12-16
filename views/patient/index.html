@@ -1,0 +1,27 @@
+{% extends "listing.html" %}
+
+{% block title %}
+    {{ parent() }} - Patients
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+{% block header %}
+Liste des patients
+{% endblock %}
+
+{% block table %}
+    <thead>
+        <tr>
+            <td>Matricule</td>
+            <td>Nom</td>
+            <td>Prénom</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+{% endblock %}

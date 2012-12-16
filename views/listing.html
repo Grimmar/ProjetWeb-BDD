@@ -1,0 +1,17 @@
+{% extends "admin.html" %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+{% block menu %}
+{{ parent() }}
+{% endblock %}
+
+<table>
+{% block table %}
+{% endblock %}
+</table>
+
+{% endblock %}

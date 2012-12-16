@@ -1,0 +1,23 @@
+{% extends "admin.html" %}
+
+{% block title %}
+    {{ parent() }} - Médecins
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+
+
+{% block header %}
+Liste des médecins
+{% endblock %}
+
+{% block body %}
+index
+{% block menu %}
+{{ parent() }}
+{% endblock %}
+
+{% endblock %}

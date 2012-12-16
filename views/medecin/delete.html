@@ -1,21 +1,23 @@
-{% extends "main.html" %}
+{% extends "admin.html" %}
 
 {% block title %}
-    Admin - {{ parent() }}
+    {{ parent() }} - Médecins
 {% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
 {% endblock %}
 
-{% block header %}
-{% endblock %}
 
-{% block menu %}
+
+{% block header %}
+Suppression d'un médecin
 {% endblock %}
 
 {% block body %}
+
+{% block menu %}
+{{ parent() }}
 {% endblock %}
 
-{% block footer %}
 {% endblock %}

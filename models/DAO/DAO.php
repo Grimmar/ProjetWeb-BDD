@@ -2,7 +2,7 @@
 
 interface DAO{
 	
-	//Initialise une connexion a la base de données
+	//Initialise une connexion a la base de donnÃ©es
 	public function getConnexion();
 	
 	//authentification

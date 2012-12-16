@@ -1,45 +1,82 @@
 {% extends "admin.html" %}
+
 {% block title %}
-    Ajouter un patient
-{% endblock %}
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" type="text/css" href="templates/css/patient.css"/>
+    {{ parent() }} - Patient
 {% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+
+
 {% block header %}
-    Formulaire d'ajout d'un patient
+{% if matricule is not null %}
+Modifier un patient
+{% else %}
+Ajouter un patient
+{% endif %}
 {% endblock %}
 
 {% block body %}
-    <form action="controler/ajouterPatient.php" method="post">
+
+{% block menu %}
+{{ parent() }}
+{% endblock %}
+
+<form action="patient/ajouterPatient.php" method="post">
+    <fieldset>
+        <legend>Informations générales</legend>
+        <span>
         <label for="nom">Nom du patient : </label>
         <input type="text" name="nom" id="nom" required/>
+        </span>
         <br/>
+        <span>
         <label for="prenom">Prénom du patient : </label>
         <input type="text" name="prenom" id="prenom" required/>
+        </span>
         <br/>
+        <span>
         <label for="telephone">Numéro de téléphone : </label>
         <input type="tel" name="telephone" id="telephone" required/>
+        </span>
         <br/>
+        <span>
         <label for="numeroSecu">Numéro de sécurité sociale : </label>
         <input type="text" name="numeroSecu" id="numeroSecu" required/>
+        </span>
         <br/>
-        <label for="dateNaissance">Numéro de sécurité sociale : </label>
-        <input type="text" name="dateNaissance" id="dateNaissance" placeholder="Date de naissance" required/>
-        <br/>
+        <span>
+        <label for="dateNaissance">Date de naissance : </label>
+        <input type="text" name="dateNaissance" id="dateNaissance" required/>
+        </span>
+    </fieldset>
+    <br/>
+    
+    <fieldset>
+        <legend>Adresse</legend>    
+        <span>
         <label for="numeroRue">Numéro de rue : </label>
         <input type="text" name="numeroRue" id="numeroRue" required/>
+        </span>
         <br/>
+        <span>
         <label for="adresse">Adresse : </label>
         <input type="text" name="adresse" id="adresse" required/>
+        </span>
         <br/>
+        <span>
         <label for="ville">Ville : </label>
         <input type="text" name="ville" id="ville" required/>
+        </span>
         <br/>
+        <span>
         <label for="codePostal">Code postal : </label>
         <input type="text" name="codePostal" id="codePostal" required/>
-        <br/>
-        <input type="submit" value="Ajouter un patient"/>
-    </form>
+        </span>
+    </fieldset>
+    <br/>
+    <input type="submit" value="Ajouter un patient"/>
+</form>
 {% endblock %}

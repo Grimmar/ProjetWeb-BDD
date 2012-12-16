@@ -1,8 +1,8 @@
 <?php
 include_once("DAO.php");
-include_once("Entite/Medecin.php");
+include_once(ROOT."models/Entite/Medecin.php");
 
-class DAOManager implements DAO{
+class DAOManager implements DAO {
 
 	private static $dao;
 	private $connexion;
@@ -30,7 +30,7 @@ class DAOManager implements DAO{
 			getConnexion();
 		}
 		$pass= ICI METTRE L'ALGO DE CRYPTAGE!
-		$rp=$this->connexion->prepare("SELECT * from Medecins WHERE Login = :login and mdp = :pass"); // on prépare notre requête
+		$rp=$this->connexion->prepare("SELECT * from Medecins WHERE Login = :login and mdp = :pass"); // on prÃ©pare notre requÃªte
 		$rp->execute(array( 'login' => $user, 'pass' =$mdp ));*/
 		$user = new Medecin("admin", "admin");
 		

@@ -12,19 +12,28 @@ section {
 
 input {
     margin : 5px 5%;
-    
+    padding: 15px 15px 15px 30px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 1px 1px #ccc inset, 0 1px 0 #fff;
+    -webkit-box-shadow: 0 1px 1px #CCC inset, 0 1px 0 white;
+    box-shadow: 0 1px 1px #CCC inset, 0 1px 0 white;
+}
+
+input[type="submit"] {
+    padding: 10px 30px 10px 30px;
+    text-align: center;
 }
 
 input#login {
     width: 77%;
     background:url(../img/login-sprite.png) no-repeat;    
-    background-position-x: 7px;
-    background-position-y: -2px;
+    background-position: 7px 0px;
 }
 
 input#password {
     width: 77%;
     background:url(../img/login-sprite.png) no-repeat;    
-    background-position-x: 7px;
-    background-position-y: -52px;
+    background-position: 7px -50px;
 }
