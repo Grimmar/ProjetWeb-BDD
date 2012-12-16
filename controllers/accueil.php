@@ -4,6 +4,7 @@
  *
  * @author bissoqu1
  */
+session_start();
 class accueil extends Controller {
     
     function index() {

@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block body %}
-    <form action="" method="post">
+    <form action="{{WEBROOT}}login/loginOnSubmit" method="post">
        
         <input type="text" name="login" id="login" placeholder="Login" autofocus 
                required value="{% if login is not null %} {{login}} {%endif %}"/>

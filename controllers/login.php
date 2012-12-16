@@ -10,15 +10,16 @@ class login extends Controller {
     //private $models = array(nom du dao);
     
     function index() {
-        if (isset ($this->data)) {
-            $this->set($this->data);
-        }
         //TODO isConnected
         if (true) {
             $this->render('index');
         } else {
             $this->forward('accueil');
         }
+    }
+    
+    function loginOnSubmit() {
+   
     }
     
 }

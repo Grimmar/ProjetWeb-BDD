@@ -51,7 +51,6 @@ class Controller {
         echo $template->render($this->vars);
     }
     
-     //TODO forward
     function forward($url) {
         header('Location: '.WEBROOT.$url);
     }
