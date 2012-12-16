@@ -18,7 +18,7 @@ class login extends Controller {
         }
     }
     
-    function loginOnSubmit() {
+    function process() {
    
     }
     

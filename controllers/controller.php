@@ -10,10 +10,13 @@ class Controller {
 
     private $twig;
     private $vars;
+    private $processErrors;
     
     public function __construct() {
         $this->vars = array();
         $this->vars['WEBROOT'] = WEBROOT;
+        $this->processErrors = array();
+                
         $loader = new Twig_Loader_Filesystem(ROOT.'views/');
         $this->twig = new Twig_Environment($loader, array(
             'cache' => false
@@ -28,6 +31,14 @@ class Controller {
                 $this->loadModel($m);
             }
         }
+    }
+    
+    function addProcessError($message) {
+        array_push($this->processErrors, $message);
+    }
+    
+    function getProcessErrors() {
+        return $this->processErrors;
     }
     
     protected function set($d) {
