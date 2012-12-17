@@ -28,6 +28,10 @@ class DAOManager {
         }
     }
 
+    public function getConnexion(){
+        return $this->connexion;
+    }
+
     private function getAuthentification($login, $pass) {
         /* if($this->connexion == null){
           getConnexion();
