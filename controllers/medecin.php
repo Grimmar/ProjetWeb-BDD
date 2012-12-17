@@ -5,7 +5,7 @@
  *
  * @author bissoqu1
  */
-class medecin extends PersonneController {
+class medecin extends Controller {
 
     function index() {
         $this->render('index');

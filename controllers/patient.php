@@ -1,6 +1,6 @@
 <?php
 
-class patient extends PersonneController {
+class patient extends Controller {
 
     function index() {
         $this->render('index');
