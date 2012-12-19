@@ -5,14 +5,17 @@ require_once("Personne.php");
 class Medecin extends Personne{
 	
 	private $login;
+        private $motDePasse;
 	private $role;
 	
-	public function __construct($l, $r, $opt){
-		parent::__construct($opt);
-		$this->login = $l;
-		$this->role = $r;
-	}
-	
+	function __construct($login, $motDePasse, $role, $matricule, $nom, $prenom, $telephone, $numeroSecu, $dateNaissance, $adresse) {
+            parent::__construct($matricule, $nom, $prenom, $telephone, $numeroSecu, $dateNaissance, $adresse);
+            $this->login = $login;
+            $this->motDePasse = $motDePasse;
+            $this->role = $role;
+        }
+
+                
 	public function getLogin(){
 		return $this->login;
 	}
@@ -21,9 +24,4 @@ class Medecin extends Personne{
 		return $this->role;
 	}
 }
-
-$arr = array('adresse'=>'ouhouhouhouh');
-$medecin = new Medecin("tutu","tutu", $arr);
-
-echo $medecin->getAdresse();
 ?>

@@ -10,16 +10,17 @@ abstract class Personne {
     private $dateNaissance;
     private $adresse;
 
-    //opt represente la liste des attributs dans un tableau
-    public function __construct($opt) {
-        if (is_array($opt)) {
-            foreach ($opt as $k => $v) {
-                $this->$k = $v;
-            }
-        }
+    function __construct($matricule, $nom, $prenom, $telephone, $numeroSecu, $dateNaissance, $adresse) {
+        $this->matricule = $matricule;
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->telephone = $telephone;
+        $this->numeroSecu = $numeroSecu;
+        $this->dateNaissance = $dateNaissance;
+        $this->adresse = $adresse;
     }
 
-    /* public function __call($name, $argument){
+        /* public function __call($name, $argument){
       $get = strtolower(substr($name,3,strlen($name)));
       return $this->$get;
       } */
