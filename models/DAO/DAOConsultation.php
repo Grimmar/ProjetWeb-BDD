@@ -12,7 +12,7 @@
  */
 require_once("DAO.php");
 require_once("DAOManager.php");
-require_once("../Entite/Consultaion.php");
+require_once("../Entite/Consultation.php");
 
 class DAOConsultation extends AbstractDAO {
 
