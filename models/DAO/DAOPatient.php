@@ -12,9 +12,10 @@
  */
 require_once("DAO.php");
 require_once("DAOManager.php");
-require_once("../Entite/Patient.php");
+require_once ("AbstractDAO.php");
+require_once(ROOT."models/Entite/Patient.php");
 
-class DAOPatient extends DAO {
+class DAOPatient extends AbstractDAO {
 
     //put your code here
     public function count($entity) {
@@ -77,7 +78,7 @@ class DAOPatient extends DAO {
             telephone = :telephone, numeroSecu = :numeroSecu, dateNaissance = :dateNaissance, 
             p.Adresse_type.numero = :numero, p.Adresse_type.adresse = :adresse, p.Adresse_type.ville = :ville,
             p.Adresse_type.codePostal = :codePostal
-        and  WHERE matricule = :matricule');
+        WHERE matricule = :matricule');
 
         $count = $req->execute(array(
             'matricule' => $entity->getMatricule(),

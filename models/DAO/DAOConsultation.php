@@ -12,7 +12,8 @@
  */
 require_once("DAO.php");
 require_once("DAOManager.php");
-require_once("../Entite/Consultation.php");
+require_once ("AbstractDAO.php");
+require_once(ROOT."models/Entite/Consultation.php");
 
 class DAOConsultation extends AbstractDAO {
 
@@ -52,7 +53,7 @@ class DAOConsultation extends AbstractDAO {
     }
 
     public function insert($entity) {
-        $req = $this->bdd->prepare('INSERT INTO Consultations (identifiant, matriculeMedecin, matriculePatient, idMaladie, dateConsultation) 
+        $req = $this->bdd->prepare('INSERT INTO Consultations (identifiant, matriculeMedecin, matriculePatient, idMaladie, dateConsultation) VALUES
 			:identifiant, :matriculeMedecin, :matriculePatient, :idMaladie, :dateConsultation');
 
         $req->execute(array(

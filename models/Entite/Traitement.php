@@ -3,37 +3,25 @@
 class Traitement {
 
     private $identifiant;
-    private $idMaladie;
-    private $matriculeMedecin;
-    private $matriculePatient;
-    private $recommendations;
+    private $idConsultation;
+    private $duree;
 
-    function __construct($identifiant, $idMaladie, $matriculeMedecin, $matriculePatient, $recommendations) {
+    function __construct($identifiant, $idConsultation, $duree) {
         $this->identifiant = $identifiant;
-        $this->idMaladie = $idMaladie;
-        $this->matriculeMedecin = $matriculeMedecin;
-        $this->matriculePatient = $matriculePatient;
-        $this->recommendations = $recommendations;
+        $this->idConsultation = $idConsultation;
+        $this->duree = $duree;
     }
 
     public function getIdentifiant() {
         return $this->identifiant;
     }
 
-    public function getIdMaladie() {
-        return $this->idMaladie;
+    public function getIdConsultation() {
+        return $this->idConsultation;
     }
 
-    public function getMatriculeMedecin() {
-        return $this->matriculeMedecin;
-    }
-
-    public function getMatriculePatient() {
-        return $this->matriculePatient;
-    }
-
-    public function getRecommendations() {
-        return $this->recommendations;
+    public function getDuree() {
+        return $this->duree;
     }
 
 }

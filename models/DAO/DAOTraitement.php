@@ -12,7 +12,9 @@
  */
 require_once("DAO.php");
 require_once("DAOManager.php");
-require_once("../Entite/Traitement.php");
+require_once ("AbstractDAO.php");
+require_once(ROOT."models/Entite/Traitement.php");
+require_once("DAOConsultation.php");
 
 class DAOTraitement extends AbstractDAO {
 
@@ -32,10 +34,18 @@ class DAOTraitement extends AbstractDAO {
         }
         $req = $this->bdd->prepare('SELECT * FROM Traitements WHERE :where');
         $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Traitement", array('identifiant', 'idMaladie', 'matriculeMedecin', 'matriculePatient'
-            , 'recommendations'));
         $donnee = $req->execute(array("where" => $where));
-        return $donnee;
+        $daoConsult = new DAOConsultation();
+        $result = array();
+        while ($ligne = $donnee->fetch(PDO::FETCH_OBJ)) {
+            $traitement = new Traitement($ligne->identifiant, $daoConsult->get($ligne->idConsultation), $ligne->duree);
+            array_push($result, $traitement);
+        }
+
+
+        /* $daoConsult = new DAOConsultation();       
+          $consult =  $daoConsult->get($donnee); */
+        return $result;
     }
 
     public function get($id) {
@@ -46,14 +56,14 @@ class DAOTraitement extends AbstractDAO {
             return null;
         } else {
             $donnee = $req->fetch();
-            $traitement = new Consultation($donnee['identifiant'], $donnee['idMaladie'], $donnee['matriculeMedecin'], $donnee['matriculePatient'],
-                            $donnee['recommendations']);
+            $daoConsult = new DAOConsultation();
+            $traitement = new Traitement($donnee['identifiant'], $daoConsult->get($donnee['idConsultation']), $donnee['duree']);
             return $traitement;
         }
     }
 
     public function insert($entity) {
-        $req = $this->bdd->prepare('INSERT INTO Traitements (identifiant, idMaladie, matriculeMedecin, matriculePatient, recommendations) 
+        $req = $this->bdd->prepare('INSERT INTO Traitements (identifiant, idMaladie, matriculeMedecin, matriculePatient, recommendations) VALUES
 			:identifiant, :idMaladie, :matriculeMedecin, :matriculePatient, recommendations(:code, :libelle) ');
 
         $req->execute(array(
@@ -61,24 +71,22 @@ class DAOTraitement extends AbstractDAO {
             'matriculeMedecin' => $entity->getMatriculeMedecin(),
             'matriculePatient' => $entity->getMatriculePatient(),
             'idMaladie' => $entity->getIdMaladie(),
-            'code' => $entity->getRecommendations().getCode(),
-            'libelle' => $entity->getRecommendations().getLibelle()
+            'code' => $entity->getRecommendations() . getCode(),
+            'libelle' => $entity->getRecommendations() . getLibelle()
         ));
-        
     }
 
     public function update($entity) {
         $req = $this->bdd->prepare('UPDATE Traitements t SET idMalade = :idMaladie, matriculeMedecin = :matriculeMedecin, matriculePatient = :matriculePatient,
-             t.recommendations.code = :code, t.recommandations.libelle = :libelle
-        and WHERE identifiant = :identifiant');
+             t.recommendations.code = :code, t.recommandations.libelle = :libelle WHERE identifiant = :identifiant');
         $count = $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
             'matriculeMedecin' => $entity->getMatriculeMedecin(),
             'matriculePatient' => $entity->getMatriculePatient(),
             'idMaladie' => $entity->getIdMaladie(),
-            'code' => $entity->getRecommendations().getCode(),
-            'libelle' => $entity->getRecommendations().getLibelle()
-        ));
+            'code' => $entity->getRecommendations() . getCode(),
+            'libelle' => $entity->getRecommendations() . getLibelle()
+                ));
         return $count;
     }
 

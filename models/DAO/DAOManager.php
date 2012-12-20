@@ -1,7 +1,8 @@
 <?php
-
+define('ROOT', str_replace('testDAO.php', '', $_SERVER['SCRIPT_FILENAME']));
 include_once("DAO.php");
 include_once(ROOT . "models/Entite/Medecin.php");
+require_once(ROOT . "models/Param.php");
 
 class DAOManager {
 
@@ -9,7 +10,7 @@ class DAOManager {
     private $connexion;
 
     private function __construct() {
-        createConnexion();
+        $this->createConnexion();
     }
 
     public static function getInstance() {
@@ -22,9 +23,9 @@ class DAOManager {
     private function createConnexion() {
         $param = new param();
         try {
-            $this->connexion = new PDO("oci:dbname=//" . $param->getDbLocalisaion() . "/" . $param->getDbName, $param->getLogin(), $param->getMdp());
+            $this->connexion = new PDO("oci:dbname=//" . $param->getDbLocalisation() . "/" . $param->getDbName(), $param->getUserName(), $param->getUserPassword());
         } catch (PDOException $e) {
-            echo "Erreur !: " . $e->getMessage() . "<br/>";
+            throw $e;
         }
     }
 

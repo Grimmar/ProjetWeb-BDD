@@ -2,7 +2,8 @@
 
 require_once("DAO.php");
 require_once("DAOManager.php");
-require_once("../Entite/Medecin.php");
+require_once ("AbstractDAO.php");
+require_once(ROOT."models/Entite/Medecin.php");
 
 class DAOMedecin extends AbstractDAO {
 
@@ -67,8 +68,7 @@ class DAOMedecin extends AbstractDAO {
         $req = $this->bdd->prepare('UPDATE Medecins m SET login = :login, motDePasse = :motDePasse, nom = :nom, prenom = :prenom,
             telephone = :telephone, numeroSecu = :numeroSecu, dateNaissance = :dateNaissance, 
             m.Adresse_type.numero = :numero, m.Adresse_type.adresse = :adresse,m.Adresse_type.ville = :ville,
-            m.Adresse_type.codePostal = :codePostal
-        and WHERE matricule = :matricule');
+            m.Adresse_type.codePostal = :codePostal WHERE matricule = :matricule');
         $count = $req->execute(array(
             'login' => $entity->getLogin(),
             'motDePasse' => $entity->getMotDePasse(),

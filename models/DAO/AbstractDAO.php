@@ -10,6 +10,7 @@
  *
  * @author david
  */
+
 abstract class AbstractDAO implements DAO {
 
     protected $dao;
@@ -27,7 +28,7 @@ abstract class AbstractDAO implements DAO {
             if (strpos($key, "order") !== FALSE || strpos($key, "LIMIT") !== FALSE) {
                 $finReq .= $key . " " . $value . " ";
             } else {
-                $where .= $key . " " . $value . " ";
+                $where .= $key . " " . $value . " and";
             }
         }
         $where .= $finReq;
