@@ -57,7 +57,8 @@ class Controller {
     }
     
     function error($code, $message) {
-        $this->set(array('code' => $code, 'message' => $message));
+        $this->set(array('message' => $message));
+        header("HTTP/1.0 ", $code);
         $template = $this->twig->loadTemplate('error/error.html');
         echo $template->render($this->vars);
     }
