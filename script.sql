@@ -2,15 +2,18 @@ DROP SEQUENCE SEQUENCE_CONSULTATION;
 DROP SEQUENCE SEQUENCE_TRAITEMENT;
 DROP SEQUENCE SEQUENCE_TRAITEMENT_MEDICAMENT;
 DROP SEQUENCE SEQUENCE_RECOMMENDATION;
+DROP SEQUENCE SEQUENCE_LABORATOIRE_MEDICAMENT;
+DROP SEQUENCE SEQUENCE_MEDECIN_MEDICAMENT;
+DROP SEQUENCE SEQUENCE_LABORATOIRE_MEDECIN;
 
+DROP TABLE Laboratoires_Medicaments;
+DROP TABLE Medecins_Medicaments;
+DROP TABLE Traitement_Recommendations;
 DROP TABLE Traitement_Medicaments;
 DROP TABLE Maladie_Medicament;
 DROP TABLE Medicaments_Substances_OMS; 
 DROP TABLE Consultation_Maladie;
 DROP TABLE Symptomes_Consultation;
-DROP TABLE Traitement_Recommendations;
-DROP TABLE Traitements;
-DROP TABLE Consultations;
 DROP TABLE Symptomes_Maladies;
 DROP TABLE Correspondance_Substances;
 DROP TABLE Interactions_Substances;
@@ -21,6 +24,8 @@ DROP TABLE Patients_Caracteristiques;
 DROP TABLE Patients_MaladieChronique;
 DROP TABLE Caracteristiques;
 DROP TABLE Maladies_Chroniques;
+DROP TABLE Traitements;
+DROP TABLE Consultations;
 DROP TABLE Symptomes;
 DROP TABLE Patients;
 DROP TABLE Medecins;
@@ -56,11 +61,25 @@ CREATE SEQUENCE SEQUENCE_TRAITEMENT_MEDICAMENT
 	INCREMENT BY 1
 	MAXVALUE 99999;
   
-  CREATE SEQUENCE SEQUENCE_RECOMMENDATION
+CREATE SEQUENCE SEQUENCE_RECOMMENDATION
 	START WITH 1
 	INCREMENT BY 1
 	MAXVALUE 99999;	
 
+CREATE SEQUENCE SEQUENCE_LABORATOIRE_MEDICAMENT
+	START WITH 1
+	INCREMENT BY 1
+	MAXVALUE 99999;
+
+CREATE SEQUENCE SEQUENCE_MEDECIN_MEDICAMENT
+	START WITH 1
+	INCREMENT BY 1
+	MAXVALUE 99999;
+
+CREATE SEQUENCE SEQUENCE_LABORATOIRE_MEDECIN
+	START WITH 1
+	INCREMENT BY 1
+	MAXVALUE 99999;
 
 CREATE TABLE Maladies (
     idMaladie        VARCHAR2(50),	
@@ -196,12 +215,12 @@ CREATE TYPE Adresse_Type AS OBJECT (
 
 CREATE TYPE Personne AS OBJECT (
     matricule     NUMBER(9),
-	nom           VARCHAR2(40),
-	prenom        VARCHAR2(40),
-	telephone     NUMBER(10),
-	numeroSecu    NUMBER(15),
-	dateNaissance DATE,
-	adresse       Adresse_Type
+    nom           VARCHAR2(40),
+    prenom        VARCHAR2(40),
+    telephone     NUMBER(10),
+    numeroSecu    NUMBER(15),
+    dateNaissance DATE,
+    adresse       Adresse_Type
 )NOT FINAL;
 /
 
@@ -241,18 +260,6 @@ CREATE TABLE Laboratoires (
     CONSTRAINT PKLaboratoires PRIMARY KEY(identifiant)
 );
 
-CREATE TABLE Medecins_Laboratoires (
-    identifiant   NUMBER(9),
-    matricule     NUMBER(9),
-    idLab         NUMBER(9),
-    dateEntree    DATE,
-    dateSortie    DATE,
-    CONSTRAINT PKMedecins_Laboratoires PRIMARY KEY(identifiant),
-    FOREIGN KEY (matricule) REFERENCES Medecins(matricule),
-    FOREIGN KEY (idLab) REFERENCES Laboratoires(identifiant)
-);
-
---DAVID
 CREATE TABLE Consultations (
     identifiant         NUMBER(9),
     matriculeMedecin    NUMBER(9),
@@ -263,7 +270,6 @@ CREATE TABLE Consultations (
     FOREIGN KEY (matriculePatient) REFERENCES Patients(matricule)
 );
 
---DAVID
 CREATE TABLE Consultation_Maladie (
     idConsultation      NUMBER(9),
     idMaladie           VARCHAR2(50),
@@ -290,7 +296,6 @@ CREATE TABLE Symptomes_Maladies (
     FOREIGN KEY (codeSymptome) REFERENCES Symptomes(code)
 );
 
---DAVID
 CREATE TABLE Traitements (
     identifiant       NUMBER(9),
     idConsultation    NUMBER(9),
@@ -299,7 +304,6 @@ CREATE TABLE Traitements (
     FOREIGN KEY (idConsultation) REFERENCES Consultations(identifiant)
 );
 
---DAVID
 CREATE TABLE Traitement_Recommendations (
     identifiant       NUMBER(9),
     idTraitement      NUMBER(9),
@@ -308,12 +312,40 @@ CREATE TABLE Traitement_Recommendations (
     FOREIGN KEY (idTraitement) REFERENCES Traitements(identifiant)
 );
 
---DAVID
 CREATE TABLE Traitement_Medicaments (
-	identifiant  NUMBER(9),
-	idTraitement NUMBER(9),
-	codeCIS VARCHAR2(10),
-	CONSTRAINT PKTraitement_Medicaments PRIMARY KEY(identifiant),
+    identifiant  NUMBER(9),
+    idTraitement NUMBER(9),
+    codeCIS VARCHAR2(10),
+    CONSTRAINT PKTraitement_Medicaments PRIMARY KEY(identifiant),
     FOREIGN KEY (idTraitement) REFERENCES Traitements(identifiant),
+    FOREIGN KEY (codeCIS) REFERENCES Medicaments(codeCIS)
+);
+
+CREATE TABLE Medecins_Laboratoires (
+    identifiant   NUMBER(9),
+    matricule     NUMBER(9),
+    idLab         NUMBER(9),
+    dateEntree    DATE,
+    dateSortie    DATE,
+    CONSTRAINT PKMedecins_Laboratoires PRIMARY KEY(identifiant),
+    FOREIGN KEY (matricule) REFERENCES Medecins(matricule),
+    FOREIGN KEY (idLab) REFERENCES Laboratoires(identifiant)
+);
+
+CREATE TABLE Laboratoires_Medicaments (
+    identifiant  NUMBER(9),
+    codeCIS VARCHAR2(10),
+    idLab         NUMBER(9),
+    CONSTRAINT PKLaboratoires_Medicaments PRIMARY KEY(identifiant),
+    FOREIGN KEY (codeCIS) REFERENCES Medicaments(codeCIS),
+    FOREIGN KEY (idLab) REFERENCES Laboratoires(identifiant)
+);
+
+CREATE TABLE Medecins_Medicaments (
+    identifiant  NUMBER(9),
+    codeCIS VARCHAR2(10),
+    matricule     NUMBER(9)
+    CONSTRAINT PKMedecins_Medicaments PRIMARY KEY(identifiant),
+    FOREIGN KEY (matricule) REFERENCES Medecins(matricule),
     FOREIGN KEY (codeCIS) REFERENCES Medicaments(codeCIS)
 );
