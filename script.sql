@@ -8,7 +8,7 @@ DROP TABLE Maladie_Medicament;
 DROP TABLE Medicaments_Substances_OMS; 
 DROP TABLE Consultation_Maladie;
 DROP TABLE Symptomes_Consultation;
-DROP TABLE Recommendations;
+DROP TABLE Traitement_Recommendations;
 DROP TABLE Traitements;
 DROP TABLE Consultations;
 DROP TABLE Symptomes_Maladies;
@@ -300,7 +300,7 @@ CREATE TABLE Traitements (
 );
 
 --DAVID
-CREATE TABLE TraitementRecommendations (
+CREATE TABLE Traitement_Recommendations (
     identifiant       NUMBER(9),
     idTraitement      NUMBER(9),
     recommendation    VARCHAR2(150),
