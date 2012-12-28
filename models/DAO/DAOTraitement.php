@@ -63,30 +63,23 @@ class DAOTraitement extends AbstractDAO {
     }
 
     public function insert($entity) {
-        $req = $this->bdd->prepare('INSERT INTO Traitements (identifiant, idMaladie, matriculeMedecin, matriculePatient, recommendations) VALUES
-			:identifiant, :idMaladie, :matriculeMedecin, :matriculePatient, recommendations(:code, :libelle) ');
+        $req = $this->bdd->prepare('INSERT INTO Traitements (identifiant, idConsultation, duree) VALUES
+			(:identifiant, :idConsultation, :duree');
 
         $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
-            'matriculeMedecin' => $entity->getMatriculeMedecin(),
-            'matriculePatient' => $entity->getMatriculePatient(),
-            'idMaladie' => $entity->getIdMaladie(),
-            'code' => $entity->getRecommendations() . getCode(),
-            'libelle' => $entity->getRecommendations() . getLibelle()
+            'idConsultation' => $entity->getIdConsultation(),
+            'duree' => $entity->getDuree()
         ));
     }
 
     public function update($entity) {
-        $req = $this->bdd->prepare('UPDATE Traitements t SET idMalade = :idMaladie, matriculeMedecin = :matriculeMedecin, matriculePatient = :matriculePatient,
-             t.recommendations.code = :code, t.recommandations.libelle = :libelle WHERE identifiant = :identifiant');
-        $count = $req->execute(array(
+        $req = $this->bdd->prepare('UPDATE Traitements t SET idConsultation = :idConsultation, duree = :duree WHERE identifiant = :identifiant');
+        $count =  $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
-            'matriculeMedecin' => $entity->getMatriculeMedecin(),
-            'matriculePatient' => $entity->getMatriculePatient(),
-            'idMaladie' => $entity->getIdMaladie(),
-            'code' => $entity->getRecommendations() . getCode(),
-            'libelle' => $entity->getRecommendations() . getLibelle()
-                ));
+            'idConsultation' => $entity->getIdConsultation(),
+            'duree' => $entity->getDuree()
+        ));
         return $count;
     }
 
