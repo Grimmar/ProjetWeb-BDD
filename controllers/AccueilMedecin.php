@@ -1,5 +1,5 @@
 <?php
-	include_once("../Model/Entite/Medecin.php");
+	include_once(ROOT ."/models/Entite/Medecin.php");
 	session_start();
 	echo "Medecin";
 	$m = unserialize($_SESSION['user']);

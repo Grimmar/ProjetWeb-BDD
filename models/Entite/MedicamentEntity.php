@@ -1,6 +1,6 @@
 <?php
 
-class Medicament {
+class MedicamentEntity {
 
     private $codeCIS;
     private $libelleMedicament;

@@ -14,7 +14,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT."models/Entite/Effet_Indesirable_OMS.php");
+require_once(ROOT."models/Entite/Effet_Indesirable_OMSEntity.php");
 
 class DAOEffet_Indesirable_OMS extends AbstractDAO {
 
@@ -34,7 +34,7 @@ class DAOEffet_Indesirable_OMS extends AbstractDAO {
         }
         $req = $this->bdd->prepare('SELECT * FROM Effets_Indesirables_OMS WHERE :where');
         $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Effet_Indesirable_OMS", array('identifiant', 'libelle', 'idPere'));
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Effet_Indesirable_OMSEntity", array('identifiant', 'libelle', 'idPere'));
         $donnee = $req->execute(array("where" => $where));
         return $donnee;
     }

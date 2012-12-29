@@ -1,6 +1,6 @@
 <?php
 
-class Symptome {
+class SymptomeEntity {
 
     private $code;
     private $libelle;

@@ -52,8 +52,9 @@ class Controller {
     }
     
     protected function loadModel($name) {
-        require_once (ROOT.'models/DAO/'. ucfirst(strtolower($name)).'DAO.php');
-        $this->$name = $name();
+        $cons = 'DAO'. ucfirst(strtolower($name));
+        require_once(ROOT.'models/DAO/'. $cons.'.php');
+        $this->$name = new $cons();
     }
     
     function error($code, $message) {

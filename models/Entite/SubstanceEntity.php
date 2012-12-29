@@ -1,7 +1,7 @@
 <?php
 
 
-abstract class Substance{
+abstract class SubstanceEntity{
 	private $identifiant;
 	private $libelle;
 	private $classes;

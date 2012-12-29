@@ -1,6 +1,6 @@
 <?php
 
-class Maladie{
+class MaladieEntity{
 	
 	private $idMaladie;
 	private $codeArborescence;

@@ -1,6 +1,6 @@
 <?php
 
-class Traitement {
+class TraitementEntity {
 
     private $identifiant;
     private $idConsultation;

@@ -1,6 +1,6 @@
 <?php
 
-class Addresse_Type{
+class Addresse_TypeEntity{
 	
 	private $numero;
 	private $adresse;

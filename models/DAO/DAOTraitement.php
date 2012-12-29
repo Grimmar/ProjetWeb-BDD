@@ -13,7 +13,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT."models/Entite/Traitement.php");
+require_once(ROOT."models/Entite/TraitementEntity.php");
 require_once("DAOConsultation.php");
 
 class DAOTraitement extends AbstractDAO {
@@ -38,7 +38,7 @@ class DAOTraitement extends AbstractDAO {
         $daoConsult = new DAOConsultation();
         $result = array();
         while ($ligne = $donnee->fetch(PDO::FETCH_OBJ)) {
-            $traitement = new Traitement($ligne->identifiant, $daoConsult->get($ligne->idConsultation), $ligne->duree);
+            $traitement = new TraitementEntity($ligne->identifiant, $daoConsult->get($ligne->idConsultation), $ligne->duree);
             array_push($result, $traitement);
         }
 
@@ -57,7 +57,7 @@ class DAOTraitement extends AbstractDAO {
         } else {
             $donnee = $req->fetch();
             $daoConsult = new DAOConsultation();
-            $traitement = new Traitement($donnee['identifiant'], $daoConsult->get($donnee['idConsultation']), $donnee['duree']);
+            $traitement = new TraitementEntity($donnee['identifiant'], $daoConsult->get($donnee['idConsultation']), $donnee['duree']);
             return $traitement;
         }
     }

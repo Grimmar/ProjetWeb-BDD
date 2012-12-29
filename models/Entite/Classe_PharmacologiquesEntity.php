@@ -1,8 +1,8 @@
 <?php
 
-require_once("Classe.php");
+require_once("ClasseEntity.php");
 
-class Classe_Chimiques extends Classe{
+class Classe_PharmacologiquesEntity extends Classe{
 	
 	public function __construct($id, $lib, $idP){
 		parent::__construct($id, $lib, $idP);

@@ -1,6 +1,6 @@
 <?php
 
-class Consultation {
+class ConsultationEntity {
 
     private $identifiant;
     private $matriculeMedecin;

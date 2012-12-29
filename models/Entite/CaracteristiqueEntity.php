@@ -1,6 +1,6 @@
 <?php
 
-class Maladie_Chronique {
+class CaracteristiqueEntity {
 
     private $code;
     private $libelle;

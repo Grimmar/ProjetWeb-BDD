@@ -13,7 +13,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT."models/Entite/Consultation.php");
+require_once(ROOT."models/Entite/ConsultationEntity.php");
 
 class DAOConsultation extends AbstractDAO {
 
@@ -33,7 +33,7 @@ class DAOConsultation extends AbstractDAO {
         }
         $req = $this->bdd->prepare('SELECT * FROM Consultations WHERE :where');
         $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Consultation", array('identifiant', 'matriculeMedecin', 'matriculePatient', 'idMaladie', 'dateConsultation'));
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "ConsultationEntity", array('identifiant', 'matriculeMedecin', 'matriculePatient', 'idMaladie', 'dateConsultation'));
         $donnee = $req->execute(array("where" => $where));
         return $donnee;
     }

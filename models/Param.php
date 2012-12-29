@@ -8,14 +8,19 @@ class Param {
     private $userPassword;
 
     public function __construct($local, $dbn, $un, $p) {
-        $this->dbLocalisation = $local;
-        $this->dbName = $dbn;
-        $this->userName = $un;
-        $this->userPassword = $p;
+        $this->dbLocalisation = "127.0.0.1:1521";
+        $this->dbName = "appweb";
+        $this->userName = "appweb";
+        $this->userPassword = "appweb";
     }
 
-    public function getDbname() {
-        return $this->dbname;
+  
+    public function getDbName() {
+        return $this->dbName;
+    }
+
+    public function getDbLocalisation() {
+        return $this->dbLocalisation;
     }
 
     public function getUserName() {
@@ -25,10 +30,7 @@ class Param {
     public function getUserPassword() {
         return $this->userPassword;
     }
-    
-    public function getDbLocalisation() {
-        return $this->dbLocalisation;
-    }
+
 
 
 }

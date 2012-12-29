@@ -14,7 +14,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT ."models/Entite/Caracteristique.php");
+require_once(ROOT ."models/Entite/CaracteristiqueEntity.php");
 
 class DAOCaracteristique extends AbstractDAO {
 
@@ -34,7 +34,7 @@ class DAOCaracteristique extends AbstractDAO {
         }
         $req = $this->bdd->prepare('SELECT * FROM Caracteristiques WHERE :where');
         $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Caracteristique", array('code', 'libelle'));
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "CaracteristiqueEntity", array('code', 'libelle'));
         $donnee = $req->execute(array("where" => $where));
         return $donnee;
     }
@@ -44,9 +44,11 @@ class DAOCaracteristique extends AbstractDAO {
         $req->execute(array("id" => $id));
         if ($req->rowCount() != 1) {
             //TODO: A TEST !
+			echo $req->rowCount();
             return null;
         } else {
             $donnee = $req->fetch();
+			//echo var_dump($donnee)
             $carac = new Caracteristique($donnee['code'], $donnee['libelle']);
             return $carac;
         }
@@ -59,6 +61,7 @@ class DAOCaracteristique extends AbstractDAO {
             'code' => $entity->getCode(),
             'libelle' => $entity->getLibelle()
         ));
+		
     }
 
     public function update($entity) {

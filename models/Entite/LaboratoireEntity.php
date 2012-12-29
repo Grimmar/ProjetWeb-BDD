@@ -1,6 +1,6 @@
 <?php
 
-class Laboratoire {
+class LaboratoireEntity {
 
     private $identifiant;
     private $nom;

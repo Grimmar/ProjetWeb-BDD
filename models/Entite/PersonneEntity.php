@@ -1,6 +1,6 @@
 <?php
 
-abstract class Personne {
+abstract class PersonneEntity {
 
     private $matricule;
     private $nom;

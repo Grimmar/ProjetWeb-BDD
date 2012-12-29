@@ -1,15 +1,15 @@
 <?php
 
-abstract class Effet_Indesirable{
+abstract class ClasseEntity{
 	
 	private $identifiant;
 	private $libelle;
 	private $idPere;
 	
-	public function __construct($identifiant, $libelle, $idPere){
-		$this->identifiant = $identifiant;
-		$this->libelle = $libelle;
-		$this->idPere = $idPere;
+	public function __construct($id, $lib, $idP){
+		$this->identifiant = $id;
+		$this->libelle = $lib;
+		$this->idPere = $idP;
 	}
 	
 	public function getIdentifiant(){
@@ -24,4 +24,5 @@ abstract class Effet_Indesirable{
 		return $this->idPere;
 	}
 }
+
 ?>

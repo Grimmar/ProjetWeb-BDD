@@ -1,7 +1,7 @@
 <?php
-define('ROOT', str_replace('testDAO.php', '', $_SERVER['SCRIPT_FILENAME']));
+//define('ROOT', str_replace('testDAO.php', '', $_SERVER['SCRIPT_FILENAME']));
 include_once("DAO.php");
-include_once(ROOT . "models/Entite/Medecin.php");
+include_once(ROOT . "models/Entite/MedecinEntity.php");
 require_once(ROOT . "models/Param.php");
 
 class DAOManager {
@@ -21,9 +21,9 @@ class DAOManager {
     }
 
     private function createConnexion() {
-        $param = new param();
+        $param = new param("","","","");
         try {
-            $this->connexion = new PDO("oci:dbname=//" . $param->getDbLocalisation() . "/" . $param->getDbName(), $param->getUserName(), $param->getUserPassword());
+            $this->connexion = new PDO("oci:dbname=//" . $param->getDbLocalisation(), $param->getUserName(), $param->getUserPassword());
         } catch (PDOException $e) {
             throw $e;
         }
@@ -40,7 +40,7 @@ class DAOManager {
           $pass= ICI METTRE L'ALGO DE CRYPTAGE!
           $rp=$this->connexion->prepare("SELECT * from Medecins WHERE Login = :login and mdp = :pass"); // on prépare notre requête
           $rp->execute(array( 'login' => $user, 'pass' =$mdp )); */
-        $user = new Medecin("admin", "admin");
+        $user = new MedecinEntity("admin", "admin");
 
 
         return $user;

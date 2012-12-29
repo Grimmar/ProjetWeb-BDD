@@ -13,7 +13,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT . "models/Entite/Substance_Actives_OMS.php");
+require_once(ROOT . "models/Entite/Substance_Actives_OMSEntity.php");
 
 class DAOSubstance_Actives_OMS extends AbstractDAO {
 
@@ -33,7 +33,7 @@ class DAOSubstance_Actives_OMS extends AbstractDAO {
         }
         $req = $this->bdd->prepare('SELECT * FROM Substances_Actives_OMS WHERE :where');
         $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Substance_Actives_OMS", array('identifiant', 'libelle', 'classes'));
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Substance_Actives_OMSEntity", array('identifiant', 'libelle', 'classes'));
         $donnee = $req->execute(array("where" => $where));
         return $donnee;
     }

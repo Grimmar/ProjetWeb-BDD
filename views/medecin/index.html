@@ -1,14 +1,12 @@
 {% extends "admin.html" %}
 
 {% block title %}
-    {{ parent() }} - Médecins
+{{ parent() }} - Médecins
 {% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
 {% endblock %}
-
-
 
 {% block header %}
 Liste des médecins
@@ -19,5 +17,16 @@ index
 {% block menu %}
 {{ parent() }}
 {% endblock %}
-
+{%if medecins != NULL %}
+<table>
+    <tr><th>Identifiant</th><th>Nom</th><th>Prenom</th><th>Actions</th></tr>
+    {% for m in medecins %}
+    <tr><td>{{m.login}}</td><td>{{m.nom}}</td><td>{{m.prenom}}</td><td>
+                    <a href="{{WEBROOT}}medecin/view/{{m.matricule}}">Details</a>
+                    <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">Modifier</a></td></tr>
+    {% endfor %}
+</table>
+{% else %}
+    Il n'y a aucun medecins enregistr&eacute;
+{% endif %}
 {% endblock %}

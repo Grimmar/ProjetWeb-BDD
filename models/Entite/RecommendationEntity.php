@@ -1,6 +1,6 @@
 <?php
 
-class Recommandation {
+class RecommandationEntity {
 
     private $code;
     private $libelle;
