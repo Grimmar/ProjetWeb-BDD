@@ -29,7 +29,7 @@ class login extends Controller {
             /*$user = $this->dao->find(array("login=" => $_POST['login'],
                 "motDePass=" => $_POST['password']
                     ));*/
-            $user = new MedecinEntity("toto", "toto", "medecin", "0", "toto", "toto", "toto", "toto", "toto",null);
+            $user = new MedecinEntity("toto", "toto", "admin", "0", "toto", "toto", "toto", "toto", "toto",null);
             if ($user == NULL) {
                 $this->render('index');
             } else {
@@ -41,11 +41,12 @@ class login extends Controller {
     }
 
     private function redirect($user) {
-        if ($user->getRole() == "medecin") {
+        $this->set(array('user' => $user));
+        if ($user->getRole() == "admin") {
             $_SESSION['user'] = serialize($user);
             $this->forward("medecin");
         }
-        if ($user->getRole() == "admin") {
+        if ($user->getRole() == "medecin") {
             $_SESSION['user'] = serialize($user);
             $this->render("admin");
         }

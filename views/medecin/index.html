@@ -9,24 +9,31 @@
 {% endblock %}
 
 {% block header %}
-Liste des médecins
+{{parent()}}
 {% endblock %}
 
 {% block body %}
-index
 {% block menu %}
 {{ parent() }}
 {% endblock %}
-{%if medecins != NULL %}
-<table>
-    <tr><th>Identifiant</th><th>Nom</th><th>Prenom</th><th>Actions</th></tr>
-    {% for m in medecins %}
-    <tr><td>{{m.login}}</td><td>{{m.nom}}</td><td>{{m.prenom}}</td><td>
-                    <a href="{{WEBROOT}}medecin/view/{{m.matricule}}">Details</a>
-                    <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">Modifier</a></td></tr>
-    {% endfor %}
-</table>
-{% else %}
+<div class="content">
+    <h2>Liste des médecins</h2>
+    {%if medecins != NULL %}
+    <table>
+        <tr><th>Identifiant</th><th>Nom</th><th>Prenom</th><th>Actions</th></tr>
+        {% for m in medecins %}
+        <tr><td>{{m.login}}</td><td>{{m.nom}}</td><td>{{m.prenom}}</td><td>
+                <a href="{{WEBROOT}}medecin/view/{{m.matricule}}">D&eacute;tails</a>
+                <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">Modifier</a>
+                <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer se medecin?');">Supprimer</a></td></tr>
+        {% endfor %}
+    </table>
+    {% else %}
     Il n'y a aucun medecins enregistr&eacute;
-{% endif %}
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block footer %}
+{{parent()}}
 {% endblock %}

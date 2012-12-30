@@ -4,23 +4,23 @@
         <title> {% block title %}Titre{% endblock %}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         {% block stylesheets %}
-            <link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/form.css"/>
-	{% endblock %}
+        <link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/form.css"/>
+        {% endblock %}
     </head>
     <body>
         <header>
             {% block header %}
             Nom du projet
-            
-           //Faire le header
+
+            //Faire le header
             {% endblock %}
         </header>
         <section>
-            <header>
+           <!--<header>
                 {% block sectionHeader%}
                 Main
                 {% endblock %}
-            </header>
+            </header>-->
             <section class="{% block classNotifs %}error{% endblock %}">
                 {% block notifications %}
                 {% endblock %}

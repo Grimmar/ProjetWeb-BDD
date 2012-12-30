@@ -2,17 +2,23 @@
 
 class patient extends Controller {
 
-   
     public function __construct() {
         parent::__construct();
         $this->loadModel("patient");
+        session_start();
+        if (isset($_SESSION['user'])) {
+            $user = unserialize($_SESSION['user']);
+            $this->set(array("user" => $user));
+        } else {
+            $this->forward("login");
+        }
     }
 
     function index() {
         $patients = $this->patient->find("");
-        /*$user = new PatientEntity("0", "toto", "toto", "toto", "toto", "toto", null);
+        $user = new PatientEntity("0", "toto", "toto", "toto", "toto", "toto", null);
         $user2 = new PatientEntity("5", "titi", "titi", "toto", "toto", "toto", null);
-        $patients = array($user, $user2);*/
+        $patients = array($user, $user2);
         $this->set(array("patients" => $patients));
         $this->render('index');
     }
@@ -64,8 +70,9 @@ class patient extends Controller {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
         } else {
-            $d = array('matricule' => $matricule);
-            $this->set($d);
+            $this->patient->delete($matricule);
+            /* $d = array('matricule' => $matricule);
+              $this->set($d); */
             $this->render('delete');
         }
     }

@@ -1,18 +1,23 @@
 {% extends "main.html" %}
 
 {% block title %}
-    Administration
+Administration
 {% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/admin.css"/>
+<link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/content.css"/>
 {% endblock %}
 
 {% block header %}
+<h1>Administration</h1>
+<div class="deconnexion">
+    Vous êtes connect&eacute; en tant que : {{user.login}}.<br/>
+    <a href="{{WEBROOT}}deconnexion">D&eacute;connexion</a>
+</div>
 {% endblock %}
 
-{% block sectionHeader%}
-{% endblock %}
 
 {% block classNotifs %}
 {% endblock %}
@@ -22,34 +27,37 @@
 
 {% block body %}
 {% block menu %}
-<a href="{{WEBROOT}}deconnexion">D&eacute;connexion</a>
-<aside>
-    <nav>
-        <ul>
-            <li>
-                <a href="{{WEBROOT}}patient">Patients</a>
-                <ul>
-                    <li>
-                        <a href="{{WEBROOT}}patient/add">Ajouter un patient</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-               <a href="{{WEBROOT}}medecin">Médecins</a>
-                <ul>
-                    <li>
-                        <a href="{{WEBROOT}}medecin/add">Ajouter un médecin</a>
-                    </li>
-                </ul>
-            </li>
-             <li>
-                <a href="{{WEBROOT}}admin">Administration générale</a>
-            </li>
-        </ul>
-    </nav>
-</aside>
+<div class="menu">
+    <h2>Menu</h2>
+    <aside>
+        <nav>
+            <ul>
+                <li>
+                    <a href="{{WEBROOT}}patient">Patients</a>
+                    <ul>
+                        <li>
+                            <a href="{{WEBROOT}}patient/add">Ajouter un patient</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{WEBROOT}}medecin">Médecins</a>
+                    <ul>
+                        <li>
+                            <a href="{{WEBROOT}}medecin/add">Ajouter un médecin</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{WEBROOT}}admin">Administration générale</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+</div>
 {% endblock %}
 {% endblock %}
 
 {% block footer %}
+Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
 {% endblock %}

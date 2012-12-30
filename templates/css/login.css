@@ -37,3 +37,11 @@ input#password {
     background:url(../img/login-sprite.png) no-repeat;    
     background-position: 7px -50px;
 }
+footer{
+    width:100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    padding-bottom: 20px;
+    background-color: #ABC8E2;
+}

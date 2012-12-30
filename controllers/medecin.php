@@ -5,21 +5,28 @@
  *
  * @author bissoqu1
  */
+require_once(ROOT . "models/Entite/Adresse_TypeEntity.php");
 
 class medecin extends Controller {
-
 
     public function __construct() {
         parent::__construct();
         $this->loadModel("medecin");
         //$this->medecin = new DAOMedecin();
+        session_start();
+        if (isset($_SESSION['user'])) {
+            $user = unserialize($_SESSION['user']);
+            $this->set(array("user" => $user));
+        } else {
+            $this->forward("login");
+        }
     }
 
     function index() {
         $medecins = $this->medecin->find("");
-        /*$user = new MedecinEntity("toto", "toto", "medecin", "0", "toto", "toto", "toto", "toto", "toto", null);
+        $user = new MedecinEntity("toto", "toto", "medecin", "0", "toto", "toto", "toto", "toto", "toto", null);
         $user2 = new MedecinEntity("toto", "toto", "medecin", "5", "titi", "titi", "toto", "toto", "toto", null);
-        $medecins = array($user, $user2);*/
+        $medecins = array($user, $user2);
         $this->set(array("medecins" => $medecins));
         $this->render('index');
     }
@@ -29,7 +36,7 @@ class medecin extends Controller {
             $this->index();
         } else {
             $userDetail = $this->medecin->get($matricule);
-           // $userDetail = new MedecinEntity("toto", "toto", "medecin", "5", "titi", "titi", "toto", "toto", "toto", null);
+            // $userDetail = new MedecinEntity("toto", "toto", "medecin", "5", "titi", "titi", "toto", "toto", "toto", null);
             $d = array("medecin" => $userDetail);
             $this->set($d);
             $this->render('view');
@@ -71,8 +78,9 @@ class medecin extends Controller {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
         } else {
-            $d = array('matricule' => $matricule);
-            $this->set($d);
+            $this->medecin->delete($matricule);
+            /* $d = array('matricule' => $matricule);
+              $this->set($d); */
             $this->render('delete');
         }
     }

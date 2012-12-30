@@ -9,13 +9,8 @@
 {% endblock %}
 
 
-
 {% block header %}
-{% if userModif is not null %}
-<h1>Modifier un patient</h1>
-{% else %}
-<h1>Ajouter un patient</h1>
-{% endif %}
+{{parent()}}
 {% endblock %}
 
 {% block body %}
@@ -24,45 +19,55 @@
 {% block menu %}
 {{ parent() }}
 {% endblock %}
-{% if userModif is not null %}
-<form action="{{WEBROOT}}patient/updateProccess/{{matricule}}" method="post">
+<div class="content">
+    {% if userModif is not null %}
+    <h1>Modifier un patient</h1>
     {% else %}
-    <form action="{{WEBROOT}}patient/addProccess" method="post">
-        {% endif %}
-        <fieldset>
-            <legend><b>Informations</b></legend>
-            <label>Nom</label><input type="text" name="nom" id="login" placeholder="Nom"
-                                     required value="{% if userModif is not null %}{{userModif.nom}} {%endif %}"/>
-            <br/>
-            <label>Pr&eacute;nom</label> <input type="text" name="prenom" placeholder="prenom" required
-                                                value="{% if userModif is not null %}{{userModif.prenom}} {%endif %}"/>
-            <br/>
-            <label>T&eacute;l&eacute;phone</label><input type="text" name="telephone" id="telephone" placeholder="telephone" 
-                                                         value="{% if userModif is not null %}{{userModif.telephone}} {%endif %}"/>
-            <br/>
-            <label>Date de naissance</label><input type="text" name="dtns" id="dtns" placeholder="Date de naissance" 
-                                                   value="{% if userModif is not null %}{{userModif.dateNaissance}} {%endif %}"/>
-            <br/> 
-            <label>Numero de s&eacute;curit&eacute; sociale</label><input type="text" name="secu" id="secu" placeholder="Numero de securité sociale"
-                                                                          value="{% if userModif is not null %}{{userModif.numeroSecu}} {%endif %}"/>
-            <br/>
-        </fieldset>
-        <fieldset>
-            <legend><b>Adresse</b></legend>
-            <label>Num&eacute;ro</label><input type="text" name="numero" id="numero" placeholder="Numero"
-                                               value="{% if userModif is not null %}{{userModif.adresse.numero}} {%endif %}"/>
-            <br/>
-            <label>Adresse</label><input type="text" name="adresse" id="adresse" placeholder="Adresse"
-                                         value="{% if userModif is not null %}{{userModif.adresse.adresse}} {%endif %}"/>
-            <br/>
-            <label>Ville</label><input type="text" name="ville" id="ville" placeholder="Ville" 
-                                       value="{% if userModif is not null %}{{userModif.adresse.ville}} {%endif %}"/>
-            <br/>
-            <label>codePostal</label><input type="text" name="codePostal" id="codePostal" placeholder="codePostal"
-                                            value="{% if userModif is not null %}{{userModif.adresse.codePostal}} {%endif %}"/>
-            <br/>
+    <h1>Ajouter un patient</h1>
+    {% endif %}
+    {% if userModif is not null %}
+    <form action="{{WEBROOT}}patient/updateProccess/{{matricule}}" method="post">
+        {% else %}
+        <form action="{{WEBROOT}}patient/addProccess" method="post">
+            {% endif %}
+            <fieldset>
+                <legend><b>Informations</b></legend>
+                <label>Nom</label><input type="text" name="nom" id="login" placeholder="Nom"
+                                         required value="{% if userModif is not null %}{{userModif.nom}} {%endif %}"/>
+                <br/>
+                <label>Pr&eacute;nom</label> <input type="text" name="prenom" placeholder="prenom" required
+                                                    value="{% if userModif is not null %}{{userModif.prenom}} {%endif %}"/>
+                <br/>
+                <label>T&eacute;l&eacute;phone</label><input type="text" name="telephone" id="telephone" placeholder="telephone" 
+                                                             value="{% if userModif is not null %}{{userModif.telephone}} {%endif %}"/>
+                <br/>
+                <label>Date de naissance</label><input type="text" name="dtns" id="dtns" placeholder="Date de naissance" 
+                                                       value="{% if userModif is not null %}{{userModif.dateNaissance}} {%endif %}"/>
+                <br/> 
+                <label>Numero de s&eacute;curit&eacute; sociale</label><input type="text" name="secu" id="secu" placeholder="Numero de securité sociale"
+                                                                              value="{% if userModif is not null %}{{userModif.numeroSecu}} {%endif %}"/>
+                <br/>
+            </fieldset>
+            <fieldset>
+                <legend><b>Adresse</b></legend>
+                <label>Num&eacute;ro</label><input type="text" name="numero" id="numero" placeholder="Numero"
+                                                   value="{% if userModif is not null %}{{userModif.adresse.numero}} {%endif %}"/>
+                <br/>
+                <label>Adresse</label><input type="text" name="adresse" id="adresse" placeholder="Adresse"
+                                             value="{% if userModif is not null %}{{userModif.adresse.adresse}} {%endif %}"/>
+                <br/>
+                <label>Ville</label><input type="text" name="ville" id="ville" placeholder="Ville" 
+                                           value="{% if userModif is not null %}{{userModif.adresse.ville}} {%endif %}"/>
+                <br/>
+                <label>codePostal</label><input type="text" name="codePostal" id="codePostal" placeholder="codePostal"
+                                                value="{% if userModif is not null %}{{userModif.adresse.codePostal}} {%endif %}"/>
+                <br/>
 
-            <input type="submit" value="Valider"/>
-        </fieldset>
-    </form>
-    {% endblock %}
+                <input type="submit" value="Valider"/>
+            </fieldset>
+        </form>
+</div>
+{% endblock %}
+{% block footer %}
+{{parent()}}
+{% endblock %}

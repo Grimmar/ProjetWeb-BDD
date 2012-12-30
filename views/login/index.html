@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block sectionHeader%}
-    <h1>Connexion</h1>
 {% endblock %}
 
 {% block classNotifs %}
@@ -20,6 +19,7 @@
 {% endblock %}
 
 {% block body %}
+    <h1>Connexion</h1>
     <form action="{{WEBROOT}}login/process" method="post">
         <input type="text" name="login" id="login" placeholder="Login" autofocus 
                required value="{% if login is not null %} {{login}} {%endif %}"/>

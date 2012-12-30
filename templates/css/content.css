@@ -1,0 +1,27 @@
+/* 
+    Document   : medecin
+    Created on : 30 déc. 2012, 15:00:42
+    Author     : David
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.content{
+    display:block;
+    width:80%;
+    float: left;
+    /*border : solid 1px black;*/
+  
+    margin-left :5px;
+}
+
+header{
+    width : 100%;
+    height: 100px;
+    /*border : solid 1px black;*/
+    background-color: #ABC8E2;
+}
+header h1{
+    margin :0;
+    padding : 5px;
+}
