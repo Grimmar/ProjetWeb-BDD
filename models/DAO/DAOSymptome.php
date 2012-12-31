@@ -23,37 +23,44 @@ class DAOSymptome extends AbstractDAO {
 
     public function delete($id) {
         $req = $this->bdd->prepare("DELETE FROM Symptomes WHERE code = :code");
-        $count = $req->execute(array("id" => $id));
+        $count = $req->execute(array("code" => $id));
         return $count;
     }
 
     public function find($a) {
-        if (!is_array($a)) {
-            return null;
+        $sqlrequest = "SELECT * FROM Symptomes";
+        if ($a != null) {
+            if (is_array($a)) {
+                $sqlrequest .=" where " . $this->getWhereArray($a);
+            } else {
+                return null;
+            }
         }
-        $req = $this->bdd->prepare('SELECT * FROM Symptomes WHERE :where');
-        $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "SymptomeEntity", array('code', 'libelle'));
-        $donnee = $req->execute(array("where" => $where));
-        return $donnee;
+        $req = $this->bdd->prepare($sqlrequest);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_OBJ);
+        $result = array();
+        foreach ($req as $data) {
+            array_push($result, new SymptomeEntity($data->CODE, $data->LIBELLE));
+        }
+        return $result;
     }
 
     public function get($id) {
-        $req = $this->bdd->prepare('SELECT * FROM Symptomes WHERE code = :code');
-        $req->execute(array("id" => $id));
-        if ($req->rowCount() != 1) {
-            //TODO: A TEST !
+        $req = $this->bdd->prepare('SELECT * FROM Symptomes WHERE code = :id');
+        $req->execute(array(":id" => $id));
+        $donnee = $req->FetchAll(PDO::FETCH_OBJ);
+        if (count($donnee) != 1) {
+               echo "ici !";
             return null;
         } else {
-            $donnee = $req->fetch();
-            $carac = new Symptome($donnee['code'], $donnee['libelle']);
-            return $carac;
+            return new SymptomeEntity($donnee[0]->CODE, $donnee[0]->LIBELLE);
         }
     }
 
     public function insert($entity) {
         $req = $this->bdd->prepare('INSERT INTO Symptomes (code, libelle) VALUES 
-			(:code, :libelle');
+			(:code, :libelle)');
         $req->execute(array(
             'code' => $entity->getCode(),
             'libelle' => $entity->getLibelle()

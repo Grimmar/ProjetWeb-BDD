@@ -13,7 +13,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT."models/Entite/Classe_ChimiquesEntity.php");
+require_once(ROOT . "models/Entite/Classe_ChimiquesEntity.php");
 
 class DAOClasse_Chimique extends AbstractDAO {
 
@@ -23,37 +23,43 @@ class DAOClasse_Chimique extends AbstractDAO {
 
     public function delete($id) {
         $req = $this->bdd->prepare("DELETE FROM Classes_Chimiques WHERE identifiant = :identifiant");
-        $count = $req->execute(array("id" => $id));
+        $count = $req->execute(array("identifiant" => $id));
         return $count;
     }
 
     public function find($a) {
-        if (!is_array($a)) {
-            return null;
+        $sqlrequest = "SELECT * FROM Classes_Chimiques";
+       if ($a != null) {
+            if (is_array($a)) {
+                $sqlrequest .=" where " . $this->getWhereArray($a);
+            } else {
+                return null;
+            }
         }
-        $req = $this->bdd->prepare('SELECT * FROM Classes_Chimiques WHERE :where');
-        $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Classe_ChimiquesEntity", array('identifiant', 'libelle', 'idPere'));
-        $donnee = $req->execute(array("where" => $where));
-        return $donnee;
+       $req = $this->bdd->prepare($sqlrequest);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_OBJ);
+        $result = array();
+        foreach ($req as $data){
+            array_push($result, new Classe_ChimiquesEntity($data->IDENTIFIANT,$data->LIBELLE, $data->IDPERE));
+        }
+        return $result;
     }
 
     public function get($id) {
         $req = $this->bdd->prepare('SELECT * FROM Classes_Chimiques WHERE identifiant = :identifiant');
-        $req->execute(array("id" => $id));
-        if ($req->rowCount() != 1) {
-            //TODO: A TEST !
+        $req->execute(array("identifiant" => $id));
+         $donnee = $req->FetchAll(PDO::FETCH_OBJ);
+        if (count($donnee) != 1) {
             return null;
         } else {
-            $donnee = $req->fetch();
-            $cchimique = new Classe_Chimiques($donnee['identifiant'], $donnee['libelle'], $donnee['idPere']);
-            return $cchimique;
+            return new Classe_ChimiquesEntity($donnee[0]->IDENTIFIANT, $donnee[0]->LIBELLE, $donnee[0]->IDPERE);
         }
     }
 
     public function insert($entity) {
         $req = $this->bdd->prepare('INSERT INTO Classes_Chimiques (identifiant, libelle, idPere) VALUES 
-			(:identifiant, :libelle, :idPere');
+			(:identifiant, :libelle, :idPere)');
         $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
             'libelle' => $entity->getLibelle(),

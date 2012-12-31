@@ -13,7 +13,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT."models/Entite/LaboratoireEntity.php");
+require_once(ROOT . "models/Entite/LaboratoireEntity.php");
 
 class DAOLaboratoire extends AbstractDAO {
 
@@ -23,37 +23,43 @@ class DAOLaboratoire extends AbstractDAO {
 
     public function delete($id) {
         $req = $this->bdd->prepare("DELETE FROM Laboratoires WHERE identifiant = :identifiant");
-        $count = $req->execute(array("id" => $id));
+        $count = $req->execute(array("identifiant" => $id));
         return $count;
     }
 
     public function find($a) {
-        if (!is_array($a)) {
-            return null;
+        $sqlrequest = "SELECT * FROM Laboratoires";
+        if ($a != null) {
+            if (is_array($a)) {
+                $sqlrequest .=" where " . $this->getWhereArray($a);
+            } else {
+                return null;
+            }
         }
-        $req = $this->bdd->prepare('SELECT * FROM Laboratoires WHERE :where');
-        $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "LaboratoireEntity", array('identifiant', 'nom'));
-        $donnee = $req->execute(array("where" => $where));
-        return $donnee;
+        $req = $this->bdd->prepare($sqlrequest);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_OBJ);
+        $result = array();
+        foreach ($req as $data) {
+            array_push($result, new LaboratoireEntity($data->IDENTIFIANT, $data->NOM));
+        }
+        return $result;
     }
 
     public function get($id) {
         $req = $this->bdd->prepare('SELECT * FROM Laboratoires WHERE identifiant = :identifiant');
-        $req->execute(array("id" => $id));
-        if ($req->rowCount() != 1) {
-            //TODO: A TEST !
+        $req->execute(array("identifiant" => $id));
+        $donnee = $req->FetchAll(PDO::FETCH_OBJ);
+        if (count($donnee) != 1) {
             return null;
         } else {
-            $donnee = $req->fetch();
-            $lab = new Laboratoire($donnee['identifiant'], $donnee['nom']);
-            return $lab;
+            return new LaboratoireEntity($donnee[0]->IDENTIFIANT, $donnee[0]->NOM);
         }
     }
 
     public function insert($entity) {
         $req = $this->bdd->prepare('INSERT INTO Laboratoires (identifiant, nom) VALUES 
-			(:identifiant, :nom');
+			(:identifiant, :nom)');
         $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
             'nom' => $entity->getNom()

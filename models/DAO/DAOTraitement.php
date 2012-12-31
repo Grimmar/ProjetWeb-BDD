@@ -13,7 +13,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT."models/Entite/TraitementEntity.php");
+require_once(ROOT . "models/Entite/TraitementEntity.php");
 require_once("DAOConsultation.php");
 
 class DAOTraitement extends AbstractDAO {
@@ -23,48 +23,45 @@ class DAOTraitement extends AbstractDAO {
     }
 
     public function delete($id) {
-        $req = $this->bdd->prepare("DELETE FROM Traitement WHERE identifiant = :id");
+        $req = $this->bdd->prepare("DELETE FROM Traitements WHERE identifiant = :id");
         $count = $req->execute(array("id" => $id));
         return $count;
     }
 
     public function find($a) {
-        if (!is_array($a)) {
-            return null;
+        $sqlrequest = "SELECT * FROM Traitements";
+        if ($a != null) {
+            if (is_array($a)) {
+                $sqlrequest .=" where " . $this->getWhereArray($a);
+            } else {
+                return null;
+            }
         }
-        $req = $this->bdd->prepare('SELECT * FROM Traitements WHERE :where');
-        $where = getWhereArray($a);
-        $donnee = $req->execute(array("where" => $where));
-        $daoConsult = new DAOConsultation();
+        $req = $this->bdd->prepare($sqlrequest);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_OBJ);
         $result = array();
-        while ($ligne = $donnee->fetch(PDO::FETCH_OBJ)) {
-            $traitement = new TraitementEntity($ligne->identifiant, $daoConsult->get($ligne->idConsultation), $ligne->duree);
-            array_push($result, $traitement);
+        foreach ($req as $data) {
+            array_push($result, new TraitementEntity($data->IDENTIFIANT, $data->IDCONSULTATION, $data->DUREE));
         }
-
-
-        /* $daoConsult = new DAOConsultation();       
-          $consult =  $daoConsult->get($donnee); */
         return $result;
     }
 
     public function get($id) {
         $req = $this->bdd->prepare('SELECT * FROM Traitements WHERE identifiant = :id');
-        $req->execute(array("id" => $id));
-        if ($req->rowCount() != 1) {
-            //TODO: A TEST !
+        $req->execute(array(":id" => $id));
+        $donnee = $req->FetchAll(PDO::FETCH_OBJ);
+        if (count($donnee) != 1) {
+            echo "ici !";
             return null;
         } else {
-            $donnee = $req->fetch();
-            $daoConsult = new DAOConsultation();
-            $traitement = new TraitementEntity($donnee['identifiant'], $daoConsult->get($donnee['idConsultation']), $donnee['duree']);
-            return $traitement;
+            return new TraitementEntity($donnee[0]->IDENTIFIANT, $donnee[0]->IDCONSULTATION, $donnee[0]->DUREE);
         }
     }
 
     public function insert($entity) {
         $req = $this->bdd->prepare('INSERT INTO Traitements (identifiant, idConsultation, duree) VALUES
-			(:identifiant, :idConsultation, :duree');
+			(:identifiant, :idConsultation, :duree)');
 
         $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
@@ -75,11 +72,11 @@ class DAOTraitement extends AbstractDAO {
 
     public function update($entity) {
         $req = $this->bdd->prepare('UPDATE Traitements t SET idConsultation = :idConsultation, duree = :duree WHERE identifiant = :identifiant');
-        $count =  $req->execute(array(
+        $count = $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
             'idConsultation' => $entity->getIdConsultation(),
             'duree' => $entity->getDuree()
-        ));
+                ));
         return $count;
     }
 

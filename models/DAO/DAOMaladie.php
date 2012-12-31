@@ -13,7 +13,7 @@
 require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
-require_once(ROOT."models/Entite/MaladieEntity.php");
+require_once(ROOT . "models/Entite/MaladieEntity.php");
 
 class DAOMaladie extends AbstractDAO {
 
@@ -28,33 +28,38 @@ class DAOMaladie extends AbstractDAO {
     }
 
     public function find($a) {
-        if (!is_array($a)) {
-            return null;
+        $sqlrequest = "SELECT * FROM Maladies";
+        if ($a != null) {
+            if (is_array($a)) {
+                $sqlrequest .=" where " . $this->getWhereArray($a);
+            } else {
+                return null;
+            }
         }
-        $req = $this->bdd->prepare('SELECT * FROM Maladies WHERE :where');
-        $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "MaladieEntity", array('idMaladie', 'codeArborescence', 'idPere', 'libelle'));
-        $donnee = $req->execute(array("where" => $where));
-        return $donnee;
+        $req = $this->bdd->prepare($sqlrequest);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_OBJ);
+        $result = array();
+        foreach ($req as $data) {
+            array_push($result, new MaladieEntity($data->IDMALADIE, $data->CODEARBORESCENCE, $data->IDPERE, $data->LIBELLE));
+        }
+        return $result;
     }
 
     public function get($id) {
-        $req = $this->bdd->prepare('SELECT * FROM Maladies WHERE idMaladie = :id');
-        $req->execute(array("id" => $id));
-        if ($req->rowCount() != 1) {
-            //TODO: A TEST !
+        $req = $this->bdd->prepare('SELECT * FROM Maladies WHERE idMaladie = :identifiant');
+        $req->execute(array("identifiant" => $id));
+        $donnee = $req->FetchAll(PDO::FETCH_OBJ);
+        if (count($donnee) != 1) {
             return null;
         } else {
-            $donnee = $req->fetch();
-            $maladie = new Maladie($donnee['idMaladie'], $donnee['codeArborescence'], $donnee['idPere'],
-                            $donnee['libelle']);
-            return $maladie;
+            return new MaladieEntity($donnee[0]->IDMALADIE, $donnee[0]->CODEARBORESCENCE, $donnee[0]->IDPERE, $donnee[0]->LIBELLE);
         }
     }
 
     public function insert($entity) {
         $req = $this->bdd->prepare('INSERT INTO Maladies (idMaladie, codeArborescence, idPere, libelle) values
-			:idMaladie, :codeArborescence, :idPere, :libelle');
+			(:idMaladie, :codeArborescence, :idPere, :libelle)');
 
         $req->execute(array(
             'idMaladie' => $entity->getIdMaladie(),

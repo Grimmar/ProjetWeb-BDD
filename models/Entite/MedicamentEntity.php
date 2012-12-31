@@ -5,7 +5,7 @@ class MedicamentEntity {
     private $codeCIS;
     private $libelleMedicament;
 
-    public function __constrcut($cCIS, $lib) {
+    public function __construct($cCIS, $lib) {
         $this->codeCIS = $cCIS;
         $this->libelleMedicament = $lib;
     }

@@ -23,51 +23,63 @@ class DAOSubstance_Actives_FR extends AbstractDAO {
 
     public function delete($id) {
         $req = $this->bdd->prepare("DELETE FROM Substances_Actives_FR WHERE identifiant = :identifiant");
-        $count = $req->execute(array("id" => $id));
+        $count = $req->execute(array("identifiant" => $id));
         return $count;
     }
 
     public function find($a) {
-        if (!is_array($a)) {
-            return null;
+       $sqlrequest = "SELECT * FROM Substances_Actives_FR";
+        if ($a != null) {
+            if (is_array($a)) {
+                $sqlrequest .=" where " . $this->getWhereArray($a);
+            } else {
+                return null;
+            }
         }
-        $req = $this->bdd->prepare('SELECT * FROM Substances_Actives_FR WHERE :where');
-        $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Substance_Actives_FREntity", array('identifiant', 'libelle', 'classes'));
-        $donnee = $req->execute(array("where" => $where));
-        return $donnee;
+        $req = $this->bdd->prepare($sqlrequest);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_OBJ);
+        $result = array();
+        foreach ($req as $data) {
+            array_push($result, new Substance_Actives_FREntity($data->IDENTIFIANT, $data->LIBELLE, $data->CLASSES));
+        }
+        return $result;
     }
 
     public function get($id) {
-        $req = $this->bdd->prepare('SELECT * FROM Substances_Actives_FR WHERE identifiant = :identifiant');
-        $req->execute(array("id" => $id));
-        if ($req->rowCount() != 1) {
-            //TODO: A TEST !
+         $req = $this->bdd->prepare('SELECT * FROM Substances_Actives_FR WHERE identifiant = :identifiant');
+        $req->execute(array("code" => $id));
+        $donnee = $req->FetchAll(PDO::FETCH_OBJ);
+        if (count($donnee) != 1) {
             return null;
         } else {
-            $donnee = $req->fetch();
-            $sub_fr = new Substance_Actives_FR($donnee['identifiant'], $donnee['libelle'], $donnee['classes']);
-            return $sub_fr;
+            return new Substance_Actives_FREntity($donnee[0]->IDENTIFIANT, $donnee[0]->LIBELLE, $donnee[0]->CLASSES);
         }
     }
 
     public function insert($entity) {
+        var_dump($entity);
         $req = $this->bdd->prepare('INSERT INTO Substances_Actives_FR (identifiant, libelle, classes) VALUES 
-			(:identifiant, :libelle, :classes');
+			(:identifiant, :libelle, classe_t(:classeId, :classeLib, :classeIdP))');
         $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
             'libelle' => $entity->getLibelle(),
-            'classes' => $entity->getClasses()
+            'classeId' => $entity->getClasses()->getIdentifiant(),
+            'classeLib' => $entity->getClasses()->getLibelle(),
+            'classeIdP' => $entity->getClasses()->getIdPere()
         ));
     }
 
     public function update($entity) {
-        $req = $this->bdd->prepare('UPDATE Substances_Actives_FR SET libelle = :libelle, classes = :classes  WHERE identifiant = :identifiant');
+        $req = $this->bdd->prepare('UPDATE Substances_Actives_FR s SET libelle = :libelle, s.Classe_t.identifiant = :classe_id, s.Classe_t.libelle = :classe_lib,
+            s.Classe_t.idPere = :classe_idP, WHERE identifiant = :identifiant');
         $count = $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
             'libelle' => $entity->getLibelle(),
-            'classes' => $entity->getClasses()
-                ));
+            'classeId' => $entity->getClasses()->getIdentifiant(),
+            'classeLib' => $entity->getClasses()->getLibelle(),
+            'classeIdP' => $entity->getClasses()->getIdPere()
+        ));
         return $count;
     }
 

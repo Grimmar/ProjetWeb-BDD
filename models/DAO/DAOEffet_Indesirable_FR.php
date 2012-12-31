@@ -24,37 +24,43 @@ class DAOEffet_Indesirable_FR extends AbstractDAO{
 
     public function delete($id) {
         $req = $this->bdd->prepare("DELETE FROM Effets_Indesirables_FR WHERE identifiant = :identifiant");
-        $count = $req->execute(array("id" => $id));
+        $count = $req->execute(array("identifiant" => $id));
         return $count;
     }
 
     public function find($a) {
-        if (!is_array($a)) {
-            return null;
+        $sqlrequest = "SELECT * FROM Effets_Indesirables_FR";
+       if ($a != null) {
+            if (is_array($a)) {
+                $sqlrequest .=" where " . $this->getWhereArray($a);
+            } else {
+                return null;
+            }
         }
-        $req = $this->bdd->prepare('SELECT * FROM Effets_Indesirables_FR WHERE :where');
-        $where = getWhereArray($a);
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "Effet_Indesirable_FREntity", array('identifiant', 'libelle', 'idPere'));
-        $donnee = $req->execute(array("where" => $where));
-        return $donnee;
+       $req = $this->bdd->prepare($sqlrequest);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_OBJ);
+        $result = array();
+        foreach ($req as $data){
+            array_push($result, new Effet_Indesirable_FREntity($data->IDENTIFIANT, $data->LIBELLE, $data->IDPERE));
+        }
+        return $result;
     }
 
     public function get($id) {
         $req = $this->bdd->prepare('SELECT * FROM Effets_Indesirables_FR WHERE identifiant = :identifiant');
-        $req->execute(array("id" => $id));
-        if ($req->rowCount() != 1) {
-            //TODO: A TEST !
+        $req->execute(array("identifiant" => $id));
+         $donnee = $req->FetchAll(PDO::FETCH_OBJ);
+        if (count($donnee) != 1) {
             return null;
         } else {
-            $donnee = $req->fetch();
-            $effet_ind_FR = new Effet_Indesirable_FR($donnee['identifiant'], $donnee['libelle'], $donnee['idPere']);
-            return $effet_ind_FR;
+            return new Effet_Indesirable_FREntity($donnee[0]->IDENTIFIANT, $donnee[0]->LIBELLE, $donnee[0]->IDPERE);
         }
     }
 
     public function insert($entity) {
         $req = $this->bdd->prepare('INSERT INTO Effets_Indesirables_FR (identifiant, libelle, idPere) VALUES 
-			(:identifiant, :libelle, :idPere');
+			(:identifiant, :libelle, :idPere)');
         $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
             'libelle' => $entity->getLibelle(),

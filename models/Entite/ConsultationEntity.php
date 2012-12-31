@@ -5,14 +5,12 @@ class ConsultationEntity {
     private $identifiant;
     private $matriculeMedecin;
     private $matriculePatient;
-    private $idMaladie;
     private $dateConsultation;
 
-    public function __construct($identifiant, $matriculeMedecin, $matriculePatient, $idMaladie, $dateConsultation) {
+    public function __construct($identifiant, $matriculeMedecin, $matriculePatient, $dateConsultation) {
         $this->identifiant = $identifiant;
         $this->matriculeMedecin = $matriculeMedecin;
         $this->matriculePatient = $matriculePatient;
-        $this->idMaladie = $idMaladie;
         $this->dateConsultation = $dateConsultation;
     }
 
@@ -26,10 +24,6 @@ class ConsultationEntity {
 
     public function getMatriculePatient() {
         return $this->matriculePatient;
-    }
-
-    public function getIdMaladie() {
-        return $this->idMaladie;
     }
 
     public function getDateConsultation() {
