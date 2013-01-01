@@ -52,7 +52,7 @@ try {
 
 
 $obj = array(
-    "Caracteristique" => new DAOCaracteristique(),
+    /*"Caracteristique" => new DAOCaracteristique(),
     "Classe chimique" => new DAOClasse_Chimique(),
     "Classe pharmacologique" => new DAOClasse_Pharmacologique(),
     "Consultation" => new DAOConsultation(),
@@ -63,15 +63,15 @@ $obj = array(
     "Maladie chronique" => new DAOMaladie_Chronique(),
     "Medecin" => new DAOMedecin(),
     "Patient" => new DAOPatient(),
-    "Medicament" => new DAOMedicament(),
+    "Medicament" => new DAOMedicament(),*/
     "Substance active fr" => new DAOSubstance_Actives_FR(),
-    "Substance active OMS" => new DAOSubstance_Actives_OMS(),
-    "Symptome" => new DAOSymptome(),
-    "Traitement" => new DAOTraitement()
+    "Substance active OMS" => new DAOSubstance_Actives_OMS()
+    /*"Symptome" => new DAOSymptome(),
+    "Traitement" => new DAOTraitement()*/
 );
 
 $insert = array(
-    "Caracteristique" => new CaracteristiqueEntity(0, "test"),
+    /*"Caracteristique" => new CaracteristiqueEntity(0, "test"),
     "Classe chimique" => new Classe_ChimiquesEntity(0, "test", null),
     "Classe pharmacologique" => new Classe_PharmacologiquesEntity(0, "test", null),
     "Consultation" => new ConsultationEntity("1", "0", "0", "12/12/12"),
@@ -82,11 +82,12 @@ $insert = array(
     "Maladie chronique" => new Maladie_ChroniqueEntity("0", "test"),
     "Medecin" => new MedecinEntity("test", "test", "medecin", 0, "test", "test", 32131, 45456454, "12/12/12", new Addresse_TypeEntity(0, "test", "test", 2300)),
     "Patient" => new PatientEntity(0, "test", "test", 32131, 45456454, "12/12/12", new Addresse_TypeEntity(0, "test", "test", 2300)),
-    "Medicament" => new MedicamentEntity("0", "test"),
-    "Substance active fr" => new Substance_Actives_FREntity("0", "test", new Classe_PharmacologiquesEntity(0, "test", null)),
-    "Substance active OMS" => new Substance_Actives_OMSEntity("0", "test", new Classe_PharmacologiquesEntity(0, "test", null)),
-    "Symptome" => new SymptomeEntity("0", "test"),
-    "Traitement" => new TraitementEntity("0", "0", "1"));
+    "Medicament" => new MedicamentEntity("0", "test"),*/
+    "Substance active fr" => new Substance_Actives_FREntity("2", "test", new Classe_PharmacologiquesEntity(1, "pouet", null)),
+    "Substance active OMS" => new Substance_Actives_OMSEntity("2", "test", new Classe_PharmacologiquesEntity(1, "pouet", null))
+    /*"Symptome" => new SymptomeEntity("0", "test"),
+    "Traitement" => new TraitementEntity("0", "0", "1")*/
+   );
 
 
 
@@ -97,10 +98,10 @@ foreach ($obj as $key => $val) {
         //$v = $val->delete(0);
         echo "DELETE OK : ";
         echo "<h2>INSERT</h2>";
-       // $v = $val->insert($insert[$key]);
-        echo "INSERT OK : " . $v;
+        //$val->insert($insert[$key]);
+        echo "INSERT OK : ";
         echo "<h2>GET</h2>";
-        $v = $val->get(0);
+        $v = $val->get(1);
         echo "GET OK : " . var_dump($v);
         echo "<h2>UPDATE</h2>";
         $val->update($insert[$key]);

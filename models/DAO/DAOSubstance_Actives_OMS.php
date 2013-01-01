@@ -62,7 +62,7 @@ class DAOSubstance_Actives_OMS extends AbstractDAO {
    public function insert($entity) {
         var_dump($entity);
         $req = $this->bdd->prepare('INSERT INTO Substances_Actives_OMS (identifiant, libelle, classes) VALUES 
-			(:identifiant, :libelle, Classe_t(:classeId, :classeLib, :classeIdP))');
+			(:identifiant, :libelle, NULL)');
         $req->execute(array(
             'identifiant' => $entity->getIdentifiant(),
             'libelle' => $entity->getLibelle(),
