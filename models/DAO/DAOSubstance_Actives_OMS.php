@@ -20,12 +20,6 @@ class DAOSubstance_Actives_OMS extends AbstractDAO {
         return $count;
     }
 
-    public function delete($id) {
-        $req = $this->bdd->prepare("DELETE FROM Substances_Actives_OMS WHERE identifiant = :identifiant");
-        $count = $req->execute(array("identifiant" => $id));
-        return $count;
-    }
-
     public function find($a) {
         $sqlrequest = "SELECT * FROM Substances_Actives_OMS ";
         if ($a != null) {
