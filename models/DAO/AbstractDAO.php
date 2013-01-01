@@ -26,18 +26,19 @@ abstract class AbstractDAO implements DAO {
         $finReq = "";
         $last_key = end(array_keys($whereArray));
         $first_key = TRUE;
-       
+
         foreach ($whereArray as $key => $value) {
             if (strpos($key, "order") !== FALSE || strpos($key, "LIMIT") !== FALSE) {
                 $finReq .= $key . " " . $value . " ";
             } else {
-                if ($last_key == $key) {
-                    $where .= $key . "'" . $value . "'";
-                } else if ($first_key) {
-                    $where .= " where ".$key . "'" . $value . "'";
+
+                if ($first_key === TRUE) {
+                    $where .= " where " . $key . "'" . $value . "' and ";
                     $first_key = FALSE;
-                }{
-                    $where .= $key . "'" . $value . "' and ";
+                }
+                $where .= $key . "'" . $value . "'";
+                if ($last_key != $key) {
+                    $where .= " and ";
                 }
             }
         }

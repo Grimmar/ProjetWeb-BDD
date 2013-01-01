@@ -29,11 +29,11 @@ class login extends Controller {
             $user = $this->medecin->find(array("login=" => $_POST['login'],
                 "motDePasse=" => $_POST['password']
                     ));
-            $user = $user[0];
             //$user = new MedecinEntity("toto", "toto", "admin", "0", "toto", "toto", "toto", "toto", "toto",null);
             if ($user == NULL) {
                 $this->render('index');
             } else {
+                $user = $user[0];
                $this->redirect($user);
             }
         } else {
