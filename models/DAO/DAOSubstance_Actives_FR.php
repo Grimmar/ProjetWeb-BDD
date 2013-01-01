@@ -28,10 +28,10 @@ class DAOSubstance_Actives_FR extends AbstractDAO {
     }
 
     public function find($a) {
-       $sqlrequest = "SELECT * FROM Substances_Actives_FR";
+       $sqlrequest = "SELECT * FROM Substances_Actives_FR ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }

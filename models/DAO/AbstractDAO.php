@@ -24,11 +24,21 @@ abstract class AbstractDAO implements DAO {
     protected function getWhereArray($whereArray) {
         $where = "";
         $finReq = "";
+        $last_key = end(array_keys($whereArray));
+        $first_key = TRUE;
+       
         foreach ($whereArray as $key => $value) {
             if (strpos($key, "order") !== FALSE || strpos($key, "LIMIT") !== FALSE) {
                 $finReq .= $key . " " . $value . " ";
             } else {
-                $where .= $key . " " . $value . " and";
+                if ($last_key == $key) {
+                    $where .= $key . "'" . $value . "'";
+                } else if ($first_key) {
+                    $where .= " where ".$key . "'" . $value . "'";
+                    $first_key = FALSE;
+                }{
+                    $where .= $key . "'" . $value . "' and ";
+                }
             }
         }
         $where .= $finReq;

@@ -28,10 +28,10 @@ class DAOMaladie_Chronique extends AbstractDAO {
     }
 
     public function find($a) {
-        $sqlrequest = "SELECT * FROM Maladies_Chroniques";
+        $sqlrequest = "SELECT * FROM Maladies_Chroniques ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }

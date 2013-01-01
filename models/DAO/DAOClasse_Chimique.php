@@ -28,10 +28,10 @@ class DAOClasse_Chimique extends AbstractDAO {
     }
 
     public function find($a) {
-        $sqlrequest = "SELECT * FROM Classes_Chimiques";
+        $sqlrequest = "SELECT * FROM Classes_Chimiques ";
        if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }

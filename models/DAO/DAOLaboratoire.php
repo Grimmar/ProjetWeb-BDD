@@ -28,10 +28,10 @@ class DAOLaboratoire extends AbstractDAO {
     }
 
     public function find($a) {
-        $sqlrequest = "SELECT * FROM Laboratoires";
+        $sqlrequest = "SELECT * FROM Laboratoires ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }

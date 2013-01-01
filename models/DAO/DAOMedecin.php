@@ -4,30 +4,33 @@ require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
 require_once(ROOT . "models/Entite/MedecinEntity.php");
+require_once(ROOT . "models/Entite/Adresse_TypeEntity.php");
 
 class DAOMedecin extends AbstractDAO {
 
     //Select One
     public function get($id) {
-        $req = $this->bdd->prepare('SELECT * FROM Medecins WHERE matricule = :id');
+        $req = $this->bdd->prepare("SELECT LOGIN, MOTDEPASSE, ROLE, MATRICULE, NOM, PRENOM, TELEPHONE, NUMEROSECU, DATENAISSANCE
+            , m.ADRESSE.NUMERO \"NUMERO\", m.ADRESSE.ADRESSE \"ADRESSE\", m.ADRESSE.VILLE \"VILLE\", m.ADRESSE.CODEPOSTAL \"CODEPOSTAL\" FROM Medecins m WHERE matricule = :id");
         $req->execute(array(":id" => $id));
         $donnee = $req->FetchAll(PDO::FETCH_OBJ);
         if (count($donnee) != 1) {
             echo "ici !";
             return null;
         } else {
-            var_dump($donnee);
-            return new MedecinEntity($donnee[0]->login, $donnee[0]->motDePasse, $donnee[0]->role, $donnee[0]->matricule
-                            , $donnee[0]->nom, $donnee[0]->prenom, $donnee[0]->telephone, $donnee[0]->numeroSecu, $donnee[0]->dateNaissance, $donnee[0]->adresse);
+            return new MedecinEntity($donnee[0]->LOGIN, $donnee[0]->MOTDEPASSE, $donnee[0]->ROLE, $donnee[0]->MATRICULE
+                            , $donnee[0]->NOM, $donnee[0]->PRENOM, $donnee[0]->TELEPHONE, $donnee[0]->NUMEROSECU, $donnee[0]->DATENAISSANCE, 
+                    new Addresse_TypeEntity($donnee[0]->NUMERO, $donnee[0]->ADRESSE, $donnee[0]->VILLE,$donnee[0]->CODEPOSTAL));
         }
     }
 
     //Select All With Criteria
     public function find($a) {
-        $sqlrequest = "SELECT * FROM Medecins";
+        $sqlrequest = "SELECT LOGIN, MOTDEPASSE, ROLE, MATRICULE, NOM, PRENOM, TELEPHONE, NUMEROSECU, DATENAISSANCE
+            , m.ADRESSE.NUMERO \"NUMERO\", m.ADRESSE.ADRESSE \"ADRESSE\", m.ADRESSE.VILLE \"VILLE\", m.ADRESSE.CODEPOSTAL \"CODEPOSTAL\" FROM Medecins m ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }
@@ -37,8 +40,9 @@ class DAOMedecin extends AbstractDAO {
         $req->setFetchMode(PDO::FETCH_OBJ);
         $result = array();
         foreach ($req as $data) {
-            array_push($result, new MedecinEntity($data->login, $data->motDePasse, $data->role, $data->matricule
-                            , $data->nom, $data->prenom, $data->telephone, $data->numeroSecu, $data->dateNaissance,NULL));
+            array_push($result, new MedecinEntity($data->LOGIN, $data->MOTDEPASSE, $data->ROLE, $data->MATRICULE
+                            , $data->NOM, $data->PRENOM, $data->TELEPHONE, $data->NUMEROSECU, $data->DATENAISSANCE, 
+                    new Addresse_TypeEntity($data->NUMERO, $data->ADRESSE, $data->VILLE, $data->CODEPOSTAL)));
         }
         return $result;
     }
@@ -74,8 +78,8 @@ class DAOMedecin extends AbstractDAO {
     public function update($entity) {
         $req = $this->bdd->prepare('UPDATE Medecins m SET login = :login, motDePasse = :motDePasse, nom = :nom, prenom = :prenom,
             telephone = :telephone, numeroSecu = :numeroSecu, dateNaissance = :dateNaissance, 
-            m.Adresse_type.numero = :numero, m.Adresse_type.adresse = :adresse,m.Adresse_type.ville = :ville,
-            m.Adresse_type.codePostal = :codePostal WHERE matricule = :matricule');
+            m.Adresse.numero = :numero, m.Adresse.adresse = :adresse,m.Adresse.ville = :ville,
+            m.Adresse.codePostal = :codePostal WHERE matricule = :matricule');
         $count = $req->execute(array(
             'login' => $entity->getLogin(),
             'motDePasse' => $entity->getMotDePasse(),

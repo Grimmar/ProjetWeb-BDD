@@ -28,10 +28,10 @@ class DAOConsultation extends AbstractDAO {
     }
 
     public function find($a) {
-       $sqlrequest = "SELECT * FROM Consultations";
+       $sqlrequest = "SELECT * FROM Consultations ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .=$this->getWhereArray($a);
             } else {
                 return null;
             }

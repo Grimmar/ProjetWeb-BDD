@@ -28,10 +28,10 @@ class DAOSymptome extends AbstractDAO {
     }
 
     public function find($a) {
-        $sqlrequest = "SELECT * FROM Symptomes";
+        $sqlrequest = "SELECT * FROM Symptomes ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }

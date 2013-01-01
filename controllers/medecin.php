@@ -23,10 +23,10 @@ class medecin extends Controller {
     }
 
     function index() {
-        $medecins = $this->medecin->find("");
-        $user = new MedecinEntity("toto", "toto", "medecin", "0", "toto", "toto", "toto", "toto", "toto", null);
+        $medecins = $this->medecin->find(array("order by"=>"matricule"));
+        /*$user = new MedecinEntity("toto", "toto", "medecin", "0", "toto", "toto", "toto", "toto", "toto", null);
         $user2 = new MedecinEntity("toto", "toto", "medecin", "5", "titi", "titi", "toto", "toto", "toto", null);
-        $medecins = array($user, $user2);
+        $medecins = array($user, $user2);*/
         $this->set(array("medecins" => $medecins));
         $this->render('index');
     }
@@ -50,15 +50,15 @@ class medecin extends Controller {
     function addProccess() {
         $medecin = new MedecinEntity($_POST['login'], $_POST['password'], "medecin", "", $_POST['nom']
                         , $_POST['prenom'], $_POST['telephone'], $_POST['secu'], $_POST['dtns']
-                        , new Addresse_Type($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
+                        , new Addresse_TypeEntity($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
         $this->medecin->insert($medecin);
-        $this->forward("medecine/index");
+        $this->forward("medecin/index");
     }
 
     function updateProccess($matricule) {
         $medecin = new MedecinEntity($_POST['login'], $_POST['password'], "medecin", $matricule, $_POST['nom']
                         , $_POST['prenom'], $_POST['telephone'], $_POST['secu'], $_POST['dtns']
-                        , new Addresse_Type($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
+                        , new Addresse_TypeEntity($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
         $this->medecin->update($medecin);
         $this->forward("medecin/index");
     }

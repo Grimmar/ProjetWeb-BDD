@@ -29,10 +29,10 @@ class DAOEffet_Indesirable_FR extends AbstractDAO{
     }
 
     public function find($a) {
-        $sqlrequest = "SELECT * FROM Effets_Indesirables_FR";
+        $sqlrequest = "SELECT * FROM Effets_Indesirables_FR ";
        if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .=$this->getWhereArray($a);
             } else {
                 return null;
             }

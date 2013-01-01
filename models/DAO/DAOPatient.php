@@ -14,6 +14,7 @@ require_once("DAO.php");
 require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
 require_once(ROOT."models/Entite/PatientEntity.php");
+require_once(ROOT . "models/Entite/Adresse_TypeEntity.php");
 
 class DAOPatient extends AbstractDAO {
 
@@ -23,16 +24,17 @@ class DAOPatient extends AbstractDAO {
     }
 
     public function delete($id) {
-       /* $req = $this->bdd->prepare("DELETE FROM Patients WHERE matricule = :id");
+        $req = $this->bdd->prepare("DELETE FROM Patients WHERE matricule = :id");
         $count = $req->execute(array("id" => $id));
-        return $count;*/
+        return $count;
     }
 
     public function find($a) {
-       $sqlrequest = "SELECT * FROM Patients";
+        $sqlrequest = "SELECT MATRICULE, NOM, PRENOM, TELEPHONE, NUMEROSECU, DATENAISSANCE
+            , m.ADRESSE.NUMERO \"NUMERO\", m.ADRESSE.ADRESSE \"ADRESSE\", m.ADRESSE.VILLE \"VILLE\", m.ADRESSE.CODEPOSTAL \"CODEPOSTAL\" FROM Patients m ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }
@@ -42,23 +44,25 @@ class DAOPatient extends AbstractDAO {
         $req->setFetchMode(PDO::FETCH_OBJ);
         $result = array();
         foreach ($req as $data) {
-            array_push($result, new PatientEntity( $data->matricule
-                            , $data->nom, $data->prenom, $data->telephone, $data->numeroSecu, $data->dateNaissance, $data->adresse));
+            array_push($result,new PatientEntity( $data->MATRICULE
+                            , $data->NOM, $data->PRENOM, $data->TELEPHONE, $data->NUMEROSECU, $data->DATENAISSANCE, 
+                    new Addresse_TypeEntity($data->NUMERO, $data->ADRESSE, $data->VILLE, $data->CODEPOSTAL)));
         }
         return $result;
     }
 
     public function get($id) {
-        $req = $this->bdd->prepare('SELECT * FROM Patients WHERE matricule = :id');
+          $req = $this->bdd->prepare("SELECT MATRICULE, NOM, PRENOM, TELEPHONE, NUMEROSECU, DATENAISSANCE
+            , m.ADRESSE.NUMERO \"NUMERO\", m.ADRESSE.ADRESSE \"ADRESSE\", m.ADRESSE.VILLE \"VILLE\", m.ADRESSE.CODEPOSTAL \"CODEPOSTAL\" FROM Patients m WHERE matricule = :id");
         $req->execute(array(":id" => $id));
         $donnee = $req->FetchAll(PDO::FETCH_OBJ);
         if (count($donnee) != 1) {
             echo "ici !";
             return null;
         } else {
-            var_dump($donnee);
-            return new PatientEntity( $donnee[0]->matricule
-                            , $donnee[0]->nom, $donnee[0]->prenom, $donnee[0]->telephone, $donnee[0]->numeroSecu, $donnee[0]->dateNaissance, $donnee[0]->adresse);
+            return new PatientEntity( $donnee[0]->MATRICULE
+                            , $donnee[0]->NOM, $donnee[0]->PRENOM, $donnee[0]->TELEPHONE, $donnee[0]->NUMEROSECU, $donnee[0]->DATENAISSANCE, 
+                    new Addresse_TypeEntity($donnee[0]->NUMERO, $donnee[0]->ADRESSE, $donnee[0]->VILLE,$donnee[0]->CODEPOSTAL));
         }
     }
 
@@ -83,8 +87,8 @@ class DAOPatient extends AbstractDAO {
     public function update($entity) {
         $req = $this->bdd->prepare('UPDATE Patients p SET nom = :nom, prenom = :prenom,
             telephone = :telephone, numeroSecu = :numeroSecu, dateNaissance = :dateNaissance, 
-            p.Adresse_type.numero = :numero, p.Adresse_type.adresse = :adresse, p.Adresse_type.ville = :ville,
-            p.Adresse_type.codePostal = :codePostal
+            p.Adresse.numero = :numero, p.Adresse.adresse = :adresse, p.Adresse.ville = :ville,
+            p.Adresse.codePostal = :codePostal
         WHERE matricule = :matricule');
 
         $count = $req->execute(array(

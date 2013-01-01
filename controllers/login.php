@@ -26,10 +26,11 @@ class login extends Controller {
 
     function process() {
         if (isset($_POST['login']) && isset($_POST['password'])) {
-            /*$user = $this->dao->find(array("login=" => $_POST['login'],
-                "motDePass=" => $_POST['password']
-                    ));*/
-            $user = new MedecinEntity("toto", "toto", "admin", "0", "toto", "toto", "toto", "toto", "toto",null);
+            $user = $this->medecin->find(array("login=" => $_POST['login'],
+                "motDePasse=" => $_POST['password']
+                    ));
+            $user = $user[0];
+            //$user = new MedecinEntity("toto", "toto", "admin", "0", "toto", "toto", "toto", "toto", "toto",null);
             if ($user == NULL) {
                 $this->render('index');
             } else {

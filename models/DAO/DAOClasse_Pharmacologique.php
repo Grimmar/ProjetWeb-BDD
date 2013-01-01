@@ -28,10 +28,10 @@ class DAOClasse_Pharmacologique extends AbstractDAO {
     }
 
    public function find($a) {
-        $sqlrequest = "SELECT * FROM Classes_Pharmacologiques";
+        $sqlrequest = "SELECT * FROM Classes_Pharmacologiques ";
        if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }

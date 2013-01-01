@@ -97,7 +97,7 @@ foreach ($obj as $key => $val) {
         //$v = $val->delete(0);
         echo "DELETE OK : ";
         echo "<h2>INSERT</h2>";
-        $v = $val->insert($insert[$key]);
+       // $v = $val->insert($insert[$key]);
         echo "INSERT OK : " . $v;
         echo "<h2>GET</h2>";
         $v = $val->get(0);

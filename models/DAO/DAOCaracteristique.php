@@ -28,10 +28,10 @@ class DAOCaracteristique extends AbstractDAO {
     }
 
     public function find($a) {
-        $sqlrequest = "SELECT * FROM Caracteristiques";
+        $sqlrequest = "SELECT * FROM Caracteristiques ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .= $this->getWhereArray($a);
             } else {
                 return null;
             }

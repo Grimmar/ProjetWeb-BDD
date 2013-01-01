@@ -28,10 +28,10 @@ class DAOMedicament extends AbstractDAO {
     }
 
     public function find($a) {
-        $sqlrequest = "SELECT * FROM Medicaments";
+        $sqlrequest = "SELECT * FROM Medicaments ";
         if ($a != null) {
             if (is_array($a)) {
-                $sqlrequest .=" where " . $this->getWhereArray($a);
+                $sqlrequest .=$this->getWhereArray($a);
             } else {
                 return null;
             }

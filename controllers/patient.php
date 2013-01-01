@@ -16,9 +16,9 @@ class patient extends Controller {
 
     function index() {
         $patients = $this->patient->find("");
-        $user = new PatientEntity("0", "toto", "toto", "toto", "toto", "toto", null);
+        /*$user = new PatientEntity("0", "toto", "toto", "toto", "toto", "toto", null);
         $user2 = new PatientEntity("5", "titi", "titi", "toto", "toto", "toto", null);
-        $patients = array($user, $user2);
+        $patients = array($user, $user2);*/
         $this->set(array("patients" => $patients));
         $this->render('index');
     }
@@ -50,7 +50,7 @@ class patient extends Controller {
     function updateProccess($matricule) {
         $patient = new PatientEntity($matricule, $_POST['nom']
                         , $_POST['prenom'], $_POST['telephone'], $_POST['secu'], $_POST['dtns']
-                        , new Addresse_Type($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
+                        , new Addresse_TypeEntity($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
         $this->patient->update($patient);
         $this->forward("patient/index");
     }
