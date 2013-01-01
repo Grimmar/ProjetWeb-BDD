@@ -42,7 +42,7 @@ class patient extends Controller {
     function addProccess() {
         $medecin = new PatientEntity("", $_POST['nom']
                         , $_POST['prenom'], $_POST['telephone'], $_POST['secu'], $_POST['dtns']
-                        , new Addresse_Type($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
+                        , new Addresse_TypeEntity($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
         $this->patient->insert($medecin);
         $this->forward("patient/index");
     }
