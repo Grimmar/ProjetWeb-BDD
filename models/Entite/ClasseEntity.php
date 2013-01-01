@@ -1,6 +1,6 @@
 <?php
 
-abstract class ClasseEntity{
+class ClasseEntity{
 	
 	private $identifiant;
 	private $libelle;
