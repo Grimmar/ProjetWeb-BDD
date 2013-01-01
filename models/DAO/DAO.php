@@ -9,7 +9,7 @@ interface DAO {
         public function find($a);
         
         //Count
-        public function count($entity);
+        public function count();
         
         //Insert
         public function insert($entity);

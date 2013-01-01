@@ -1,13 +1,11 @@
 <?php
 
-class admin extends Controller{
-    
-    
+class admin extends Controller {
+
+    protected $models = array("medecin");
+
     public function __construct() {
         parent::__construct();
-        //$this->dao = new DAOMedecin();
-        $this->loadModel("medecin");
-        session_start();
         if (isset($_SESSION['user'])) {
             $user = unserialize($_SESSION['user']);
             $this->set(array("user" => $user));
@@ -17,7 +15,9 @@ class admin extends Controller{
     }
 
     function index() {
-       $this->render('index');
+        $this->render('index');
     }
+
 }
+
 ?>

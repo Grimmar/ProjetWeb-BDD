@@ -1,6 +1,4 @@
 <?php
-//define('ROOT', str_replace('testDAO.php', '', $_SERVER['SCRIPT_FILENAME']));
-include_once("DAO.php");
 include_once(ROOT . "models/Entite/MedecinEntity.php");
 require_once(ROOT . "models/Param.php");
 

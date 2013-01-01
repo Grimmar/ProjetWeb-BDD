@@ -1,23 +1,16 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of DAOSubstance_Actives_OMS
  *
  * @author david
  */
-require_once("DAO.php");
-require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
 require_once(ROOT . "models/Entite/Substance_Actives_OMSEntity.php");
 
 class DAOSubstance_Actives_OMS extends AbstractDAO {
 
-    function count($entity) {
+    function count() {
         
     }
 

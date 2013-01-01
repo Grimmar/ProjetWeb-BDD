@@ -10,14 +10,12 @@
  *
  * @author david
  */
-require_once("DAO.php");
-require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
 require_once(ROOT."models/Entite/SymptomeEntity.php");
 
 class DAOSymptome extends AbstractDAO {
 
-    public function count($entity) {
+    public function count() {
         
     }
 

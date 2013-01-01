@@ -13,6 +13,7 @@ class Controller {
     private $processErrors;
     
     public function __construct() {
+        session_start();
         $this->vars = array();
         $this->vars['WEBROOT'] = WEBROOT;
         $this->processErrors = array();

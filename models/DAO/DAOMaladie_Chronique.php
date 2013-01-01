@@ -1,10 +1,4 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of DAOMaladie_Chronique
  *
@@ -17,7 +11,7 @@ require_once(ROOT . "models/Entite/Maladie_ChroniqueEntity.php");
 
 class DAOMaladie_Chronique extends AbstractDAO {
 
-    public function count($entity) {
+    public function count() {
         
     }
 

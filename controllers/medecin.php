@@ -9,11 +9,10 @@ require_once(ROOT . "models/Entite/Adresse_TypeEntity.php");
 
 class medecin extends Controller {
 
+    protected $models = array("medecin");
+    
     public function __construct() {
         parent::__construct();
-        $this->loadModel("medecin");
-        //$this->medecin = new DAOMedecin();
-        session_start();
         if (isset($_SESSION['user'])) {
             $user = unserialize($_SESSION['user']);
             $this->set(array("user" => $user));
@@ -24,9 +23,6 @@ class medecin extends Controller {
 
     function index() {
         $medecins = $this->medecin->find(array("order by"=>"matricule"));
-        /*$user = new MedecinEntity("toto", "toto", "medecin", "0", "toto", "toto", "toto", "toto", "toto", null);
-        $user2 = new MedecinEntity("toto", "toto", "medecin", "5", "titi", "titi", "toto", "toto", "toto", null);
-        $medecins = array($user, $user2);*/
         $this->set(array("medecins" => $medecins));
         $this->render('index');
     }
@@ -36,7 +32,6 @@ class medecin extends Controller {
             $this->index();
         } else {
             $userDetail = $this->medecin->get($matricule);
-            // $userDetail = new MedecinEntity("toto", "toto", "medecin", "5", "titi", "titi", "toto", "toto", "toto", null);
             $d = array("medecin" => $userDetail);
             $this->set($d);
             $this->render('view');
@@ -68,7 +63,6 @@ class medecin extends Controller {
             $this->index();
         } else {
             $userModif = $this->medecin->get($matricule);
-            //$userModif = new MedecinEntity("toto", "toto", "medecin", "5", "titi", "titi", "toto", "toto", "toto", new Addresse_TypeEntity("pouet","pouet2", "pouet3", "pouet4"));
             $this->set(array("userModif" => $userModif, "matricule" => $matricule));
             $this->render('update');
         }
@@ -79,8 +73,6 @@ class medecin extends Controller {
             $this->index();
         } else {
             $this->medecin->delete($matricule);
-            /* $d = array('matricule' => $matricule);
-              $this->set($d); */
             $this->render('delete');
         }
     }

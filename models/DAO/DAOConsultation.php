@@ -1,23 +1,15 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of DAOConsultation
  *
  * @author david
  */
-require_once("DAO.php");
-require_once("DAOManager.php");
 require_once ("AbstractDAO.php");
 require_once(ROOT . "models/Entite/ConsultationEntity.php");
 
 class DAOConsultation extends AbstractDAO {
 
-    public function count($entity) {
+    public function count() {
         
     }
 

@@ -1,16 +1,13 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of AbstractDAO
  *
  * @author david
  */
-//define('ROOT', str_replace('index.php', '', $_SERVER['SCRIPT_FILENAME']));
+
+require_once("DAO.php");
+require_once("DAOManager.php");
 abstract class AbstractDAO implements DAO {
 
     protected $dao;
