@@ -73,6 +73,29 @@ class CaracteristiqueDao extends AbstractDao {
         return $count;
     }
 
+    public function getCaracteristiquesOfPatient($mat) {
+        if ($mat == null) {
+            return null;
+        }
+
+        $sql = "SELECT * FROM Caracteristiques 
+            JOIN Patients_Caracteristiques ON matricule = :mat";
+
+        $statement = $this->bdd->prepare($sql);
+        $statement->bindParam(":mat", $mat);
+        $statement->execute();
+        $d = $statement->fetchAll(PDO::FETCH_OBJ);
+        $r = array();
+        foreach ($statement as $d) {
+            $caracteristique = new CaracteristiqueEntity($d->code,
+                            $d->libelle);
+
+            array_push($r, $caracteristique);
+            unset($caracteristique);
+        }
+        return $r;
+    }
+    
 }
 
 ?>

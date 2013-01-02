@@ -9,8 +9,8 @@
 require_once ("AbstractDao.php");
 require_once(ROOT . "models/Entite/PatientEntity.php");
 require_once(ROOT . "models/Entite/AdresseTypeEntity.php");
-require_once(ROOT . "models/Entite/CaracteristiqueEntity.php");
-require_once(ROOT . "models/Entite/MaladieChroniqueEntity.php");
+require_once(ROOT . "models/DAO/CaracteristiqueDao.php");
+require_once(ROOT . "models/DAO/MaladieChroniqueDao.php");
 
 class PatientDao extends AbstractDao {
 
@@ -46,11 +46,16 @@ class PatientDao extends AbstractDao {
         foreach ($statement as $d) {
             $adresse = new AdresseTypeEntity($d->numero,
                             $d->adresse, $d->ville, $d->codepostal);
+            $caracteristiques = getCaracteristiquesOfPatient($d->matricule);
+            $maladies = getMaladiesChroniquesOfPatient($d->matricule);
             $patient = new PatientEntity($d->matricule, $d->nom,
                             $d->prenom, $d->telephone, $d->numerosecu,
-                            $d->datenaissance, $adresse);
+                            $d->datenaissance, $adresse, $caracteristiques,
+                            $maladies);
             array_push($result, $patient);
             unset($adresse);
+            unset($caracteristiques);
+            unset($maladies);
             unset($patient);
         }
         return $result;
@@ -69,11 +74,14 @@ class PatientDao extends AbstractDao {
         if ($statement::rowCount() != 1) {
             return null;
         }
-        return new PatientEntity($d[0]->matricule, $d[0]->nom, $d[0]->prenom,
-                        $d[0]->telephone, $d[0]->numerosecu,
-                        $d[0]->datenaissance, new AdresseTypeEntity(
-                                $d[0]->numero, $d[0]->adresse, $d[0]->ville,
-                                $d[0]->codepostal));
+        $adresse = new AdresseTypeEntity($d[0]->numero, $d[0]->adresse,
+                        $d[0]->ville, $d[0]->codepostal);
+        $caracteristiques = getCaracteristiquesOfPatient($d[0]->matricule);
+        $maladies = getMaladiesChroniquesOfPatient($d[0]->matricule);
+        $patient = new PatientEntity($d[0]->matricule, $d[0]->nom, $d[0]->prenom,
+                        $d[0]->telephone, $d[0]->numerosecu, $d[0]->datenaissance,
+                        $adresse, $caracteristiques, $maladies);
+        return $patient;
     }
 
     public function insert($entity) {

@@ -70,6 +70,29 @@ class MaladieChroniqueDao extends AbstractDao {
         return $count;
     }
 
+    public function getMaladiesChroniquesOfPatient($mat) {
+        if ($mat == null) {
+            return null;
+        }
+
+        $sql = "SELECT * FROM Maladies_Chroniques 
+            JOIN Patients_MaladieChronique ON matricule = :mat";
+
+        $statement = $this->bdd->prepare($sql);
+        $statement->bindParam(":mat", $mat);
+        $statement->execute();
+        $d = $statement->fetchAll(PDO::FETCH_OBJ);
+        $r = array();
+        foreach ($statement as $d) {
+            $caracteristique = new MaladieChroniqueEntity($d->code,
+                            $d->libelle);
+
+            array_push($r, $caracteristique);
+            unset($caracteristique);
+        }
+        return $r;
+    }
+
 }
 
 ?>
