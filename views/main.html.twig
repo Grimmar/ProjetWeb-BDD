@@ -5,31 +5,38 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         {% block stylesheets %}
         <link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/form.css"/>
+        <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+        <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
         {% endblock %}
     </head>
     <body>
         <header class="top">
             {% block header %}
-            <h1>Gestionnaire de traitements médicaux</h1>
+                <h1>Gestionnaire de traitements médicaux</h1>
             {% endblock %}
-        </header>
-        <section>
-           <header class="sectionHeader">
-                {% block sectionHeader%}
-                Main
-                {% endblock %}
             </header>
-            <section class="{% block classNotifs %}error{% endblock %}">
-                {% block notifications %}
+            <section>
+                <header class="sectionHeader">
+                {% block sectionHeader%}
+                        Main
                 {% endblock %}
-            </section>
+                    </header>
+                    <section class="{% block classNotifs %}error{% endblock %}">
+                {% block notifications %}
+                    {% if messages is not null %}
+                         {% for m in messages %}
+                            <p>m</p>
+                         {% endfor %}
+                    {% endif %}
+                {% endblock %}
+                        </section>
             {% block body %}
             {% endblock %}
-        </section>
-        <footer>
+                    </section>
+                    <footer>
             {% block footer %}
-            Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
+                            Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
             {% endblock %}
-        </footer>
-    </body>
-</html>
+                        </footer>
+                    </body>
+                </html>

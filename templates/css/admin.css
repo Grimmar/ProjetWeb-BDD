@@ -1,21 +1,24 @@
-/* 
-    Document   : main
-    Created on : 30 déc. 2012, 15:01:06
-    Author     : David
-    Description:
-        Purpose of the stylesheet follows.
-*/
 header{
     text-align: center;
 }
-.menu{
-    margin-top : 5px;
-    margin-left : 5px;
-    display: block;
-    height: 600px;
-    border-right : solid black 1px;
+.menu {
     float: left;
+    width:160px;
 }
+
+.menu a  {
+    padding-left: 10px;
+    padding-right: 10px;
+    width:180px;
+    line-height: 40px;
+    text-decoration: none;
+}
+
+.menu a:hover {
+    background-color: #4099FF;
+    box-shadow: 2px 2px 2px #999;
+}
+
 .deconnexion{
     display: block;
     float:right;
@@ -24,32 +27,18 @@ header{
 }
 
 ul{
-    width: 200px;
+    width: 180px;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-ul li {
-    margin-bottom: 1px ;
+ul li a, ul li ul li a{
+    display: block ;
+    line-height: 1em ;
+    text-decoration: none;
 }
 
-ul li  a{
-    display: block ;
-    line-height: 1em ;
-    text-decoration: none ;
-    padding: 4px 0 ;
-}
-ul li ul li a{
-    display: block ;
-    line-height: 1em ;
-    text-align: center ;
-    text-decoration: none ;
-    padding: 4px 0 ;
-}
-ul li a:hover, ul li a:focus, ul li a:active {
-    text-decoration: underline ;
-}
 footer{
     width:100%;
     position: absolute;

@@ -6,6 +6,18 @@
 
 {% block stylesheets %}
 {{ parent() }}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
 {% endblock %}
 
 {% block header %}
@@ -17,22 +29,36 @@
 {% block menu %}
 {{ parent() }}
 {% endblock %}
-<div class="content">
-    <h2>Liste des patients</h2>
+    <div class="content">
+        <h2>Liste des patients</h2>
 {%if patients != NULL %}
-<table>
-    <tr><th>Nom</th><th>Prenom</th><th>Actions</th></tr>
+        <table class="consult">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
     {% for m in patients %}
-    <tr><td>{{m.nom}}</td><td>{{m.prenom}}</td><td>
-                    <a href="{{WEBROOT}}patient/view/{{m.matricule}}">Details</a>
-                    <a href="{{WEBROOT}}patient/update/{{m.matricule}}">Modifier</a>
-                    <a href="{{WEBROOT}}patient/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer se patient?');">Supprimer</a></td></tr>
+            <tbody id="itemContainer">
+                <tr>
+                    <td>{{m.nom}}</td>
+                    <td>{{m.prenom}}</td>
+                    <td>
+                        <a href="{{WEBROOT}}patient/view/{{m.matricule}}">Details</a>
+                        <a href="{{WEBROOT}}patient/update/{{m.matricule}}">Modifier</a>
+                        <a href="{{WEBROOT}}patient/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer se patient?');">Supprimer</a>
+                    </td>
+                </tr>
+            </tbody>
     {% endfor %}
-</table>
+        </table>
+        <div class="holder"></div>
 {% else %}
-    Il n'y a aucun patient enregistr&eacute;
+        Il n'y a aucun patient enregistr&eacute;
 {% endif %}
-</div>
+    </div>
 {% endblock %}
 {% block footer %}
 {{parent()}}

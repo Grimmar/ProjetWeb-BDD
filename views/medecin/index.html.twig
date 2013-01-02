@@ -6,6 +6,18 @@
 
 {% block stylesheets %}
 {{ parent() }}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
 {% endblock %}
 
 {% block header %}
@@ -16,20 +28,37 @@
 {% block menu %}
 {{ parent() }}
 {% endblock %}
-<div class="content">
-    <h2>Liste des médecins</h2>
+    <div class="content">
+        <h2>Liste des médecins</h2>
     {%if medecins != NULL %}
-    <table>
-        <tr><th>Identifiant</th><th>Nom</th><th>Prenom</th><th>Actions</th></tr>
+        <table>
+            <thead>
+                <tr>
+                    <th>Identifiant</th>
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="itemContainer">
         {% for m in medecins %}
-        <tr><td>{{m.login}}</td><td>{{m.nom}}</td><td>{{m.prenom}}</td><td>
-                <a href="{{WEBROOT}}medecin/view/{{m.matricule}}">D&eacute;tails</a>
-                <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">Modifier</a>
-                <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">Supprimer</a></td></tr>
+                    <tr>
+                        <td>{{m.login}}</td>
+                        <td>{{m.nom}}</td>
+                        <td>{{m.prenom}}</td>
+                        <td>
+                            <a href="{{WEBROOT}}medecin/view/{{m.matricule}}">D&eacute;tails</a>
+                            <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">Modifier</a>
+                            <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">Supprimer</a>
+                        </td>
+                    </tr>
         {% endfor %}
-    </table>
+                </tbody>
+            </table>
+            <div class="holder"></div>
     {% else %}
-    Il n'y a aucun medecins enregistr&eacute;
+            Il n'y a aucun medecins enregistr&eacute;
     {% endif %}
-</div>
+        </div>
 {% endblock %}
