@@ -40,25 +40,27 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-    {% for m in patients %}
             <tbody id="itemContainer">
-                <tr>
-                    <td>{{m.nom}}</td>
-                    <td>{{m.prenom}}</td>
-                    <td>
-                        <a href="{{WEBROOT}}patient/view/{{m.matricule}}">Details</a>
-                        <a href="{{WEBROOT}}patient/update/{{m.matricule}}">Modifier</a>
-                        <a href="{{WEBROOT}}patient/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer se patient?');">Supprimer</a>
-                    </td>
-                </tr>
-            </tbody>
+    {% for m in patients %}
+
+                    <tr>
+                        <td>{{m.nom}}</td>
+                        <td>{{m.prenom}}</td>
+                        <td>
+                            <a href="{{WEBROOT}}patient/view/{{m.matricule}}">Details</a>
+                            <a href="{{WEBROOT}}patient/update/{{m.matricule}}">Modifier</a>
+                            <a href="{{WEBROOT}}patient/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer se patient?');">Supprimer</a>
+                        </td>
+                    </tr>
+
     {% endfor %}
-        </table>
-        <div class="holder"></div>
+                </tbody>
+            </table>
+            <div class="holder"></div>
 {% else %}
-        Il n'y a aucun patient enregistr&eacute;
+            Il n'y a aucun patient enregistr&eacute;
 {% endif %}
-    </div>
+        </div>
 {% endblock %}
 {% block footer %}
 {{parent()}}
