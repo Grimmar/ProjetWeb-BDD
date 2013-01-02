@@ -4,7 +4,8 @@
  *
  * @author bissoqu1
  */
-class consultation extends Controller {
+require_once(ROOT . 'controllers\identifiedController.php');
+class Consultation extends IdentifiedController {
     //put your code here
 }
 

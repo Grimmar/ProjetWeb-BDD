@@ -1,0 +1,48 @@
+{% extends "connected.html.twig" %}
+
+{% block title %}
+Administration
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/admin.css"/>
+<link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/content.css"/>
+{% endblock %}
+
+{% block sectionTitle %}
+    Administration
+{% endblock %}
+
+{% block body %}
+{% block menu %}
+<div class="menu">
+    <h2>Menu</h2>
+    <aside>
+        <nav>
+            <ul>
+                <li>
+                    <a href="{{WEBROOT}}patient">Patients</a>
+                    <ul>
+                        <li>
+                            <a href="{{WEBROOT}}patient/add">Ajouter un patient</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{WEBROOT}}medecin">Médecins</a>
+                    <ul>
+                        <li>
+                            <a href="{{WEBROOT}}medecin/add">Ajouter un médecin</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{WEBROOT}}admin">Administration générale</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+</div>
+{% endblock %}
+{% endblock %}

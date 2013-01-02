@@ -3,19 +3,19 @@
 class MedicamentEntity {
 
     private $codeCIS;
-    private $libelleMedicament;
+    private $libelle;
 
-    public function __construct($cCIS, $lib) {
-        $this->codeCIS = $cCIS;
-        $this->libelleMedicament = $lib;
+    public function __construct($c, $l) {
+        $this->codeCIS = $c;
+        $this->libelle = $l;
     }
 
     public function getCodeCIS() {
         return $this->codeCIS;
     }
 
-    public function getLibelleMedicament() {
-        return $this->libelleMedicament;
+    public function getLibelle() {
+        return $this->libelle;
     }
 
 }

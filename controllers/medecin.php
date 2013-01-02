@@ -5,24 +5,14 @@
  *
  * @author bissoqu1
  */
-require_once(ROOT . "models/Entite/Adresse_TypeEntity.php");
-
-class medecin extends Controller {
+require_once(ROOT . "models/Entite/AdresseTypeEntity.php");
+require_once(ROOT . 'controllers\identifiedController.php');
+class Medecin extends IdentifiedController {
 
     protected $models = array("medecin");
-    
-    public function __construct() {
-        parent::__construct();
-        if (isset($_SESSION['user'])) {
-            $user = unserialize($_SESSION['user']);
-            $this->set(array("user" => $user));
-        } else {
-            $this->forward("login");
-        }
-    }
 
     function index() {
-        $medecins = $this->medecin->find(array("order by"=>"matricule"));
+        $medecins = $this->medecin->find(array("order by" => "nom"));
         $this->set(array("medecins" => $medecins));
         $this->render('index');
     }
@@ -31,8 +21,8 @@ class medecin extends Controller {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
         } else {
-            $userDetail = $this->medecin->get($matricule);
-            $d = array("medecin" => $userDetail);
+            $medecin = $this->medecin->get($matricule);
+            $d = array("medecin" => $medecin);
             $this->set($d);
             $this->render('view');
         }
@@ -41,29 +31,13 @@ class medecin extends Controller {
     function add() {
         $this->render('update');
     }
-
-    function addProccess() {
-        $medecin = new MedecinEntity($_POST['login'], $_POST['password'], "medecin", "", $_POST['nom']
-                        , $_POST['prenom'], $_POST['telephone'], $_POST['secu'], $_POST['dtns']
-                        , new Addresse_TypeEntity($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
-        $this->medecin->insert($medecin);
-        $this->forward("medecin/index");
-    }
-
-    function updateProccess($matricule) {
-        $medecin = new MedecinEntity($_POST['login'], $_POST['password'], "medecin", $matricule, $_POST['nom']
-                        , $_POST['prenom'], $_POST['telephone'], $_POST['secu'], $_POST['dtns']
-                        , new Addresse_TypeEntity($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
-        $this->medecin->update($medecin);
-        $this->forward("medecin/index");
-    }
-
+    
     function update($matricule = null) {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
         } else {
-            $userModif = $this->medecin->get($matricule);
-            $this->set(array("userModif" => $userModif, "matricule" => $matricule));
+            $medecin = $this->medecin->get($matricule);
+            $this->set(array("medecin" => $medecin, "matricule" => $matricule));
             $this->render('update');
         }
     }
@@ -75,6 +49,35 @@ class medecin extends Controller {
             $this->medecin->delete($matricule);
             $this->render('delete');
         }
+    }
+    
+    function addProccess() {
+        echo $this->data['dtns'];
+        if (isset($this->data)) {
+            $adresse = new AdresseTypeEntity($this->data['numero'],
+                            $this->data['adresse'], $this->data['ville'],
+                            $this->data['codePostal']);
+            $medecin = new MedecinEntity($this->data['login'],
+                            $this->data['password'], "medecin", null,
+                            $this->data['nom'], $this->data['prenom'],
+                            $this->data['telephone'], $this->data['secu'],
+                            $this->data['dtns'], $adresse);
+        }
+        $this->medecin->insert($medecin);
+        $this->forward("medecin/index");
+    }
+
+    function updateProccess($matricule) {
+        $adresse = new AdresseTypeEntity($this->data['numero'],
+                        $this->data['adresse'], $this->data['ville'],
+                        $this->data['codePostal']);
+        $medecin = new MedecinEntity($this->data['login'],
+                        $this->data['password'], $this->role,
+                        $matricule, $this->data['nom'], $this->data['prenom'],
+                        $this->data['telephone'], $this->data['secu'],
+                        $this->data['dtns'], $adresse);
+        $this->medecin->update($medecin);
+        $this->forward("medecin/index");
     }
 
 }

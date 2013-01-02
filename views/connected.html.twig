@@ -1,0 +1,25 @@
+{% extends "main.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+{% block header %}
+<h1>{% block sectionTitle %}{% endblock %}</h1>
+<div class="deconnexion">
+    Vous êtes connect&eacute; en tant que : {{user.login}}.<br/>
+    <a href="{{WEBROOT}}deconnexion">D&eacute;connexion</a>
+</div>
+{% endblock %}
+
+
+{% block classNotifs %}
+{% endblock %}
+
+{% block notifications %}
+{% endblock %}
+
+{% block body %}
+{% block menu %}
+{% endblock %}
+{% endblock %}

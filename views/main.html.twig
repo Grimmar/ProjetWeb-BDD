@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> {% block title %}Titre{% endblock %}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/form.css"/>
+        {% endblock %}
+    </head>
+    <body>
+        <header class="top">
+            {% block header %}
+            <h1>Gestionnaire de traitements médicaux</h1>
+            {% endblock %}
+        </header>
+        <section>
+           <header class="sectionHeader">
+                {% block sectionHeader%}
+                Main
+                {% endblock %}
+            </header>
+            <section class="{% block classNotifs %}error{% endblock %}">
+                {% block notifications %}
+                {% endblock %}
+            </section>
+            {% block body %}
+            {% endblock %}
+        </section>
+        <footer>
+            {% block footer %}
+            Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
+            {% endblock %}
+        </footer>
+    </body>
+</html>

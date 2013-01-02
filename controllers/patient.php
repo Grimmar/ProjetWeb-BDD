@@ -1,21 +1,12 @@
 <?php
 
-class patient extends Controller {
+require_once(ROOT . 'controllers\identifiedController.php');
+class Patient extends IdentifiedController {
 
     protected $models = array("patient");
 
-    public function __construct() {
-        parent::__construct();
-        if (isset($_SESSION['user'])) {
-            $user = unserialize($_SESSION['user']);
-            $this->set(array("user" => $user));
-        } else {
-            $this->forward("login");
-        }
-    }
-
     function index() {
-        $patients = $this->patient->find("");
+        $patients = $this->patient->find(array("order by" => "matricule"));
         $this->set(array("patients" => $patients));
         $this->render('index');
     }
@@ -24,8 +15,8 @@ class patient extends Controller {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
         } else {
-            $userDetail = $this->patient->get($matricule);
-            $d = array("patient" => $userDetail);
+            $patient = $this->patient->get($matricule);
+            $d = array("patient" => $patient);
             $this->set($d);
             $this->render('view');
         }
@@ -39,8 +30,8 @@ class patient extends Controller {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
         } else {
-            $userModif = $this->patient->get($matricule);
-            $this->set(array("userModif" => $userModif, "matricule" => $matricule));
+            $patient = $this->patient->get($matricule);
+            $this->set(array("patient" => $patient, "matricule" => $matricule));
             $this->render('update');
         }
     }
@@ -53,21 +44,26 @@ class patient extends Controller {
             $this->render('delete');
         }
     }
-        
+
     function addProccess() {
-        $patient = new PatientEntity("", $_POST['nom']
-                        , $_POST['prenom'], $_POST['telephone'], $_POST['secu'],
-                        $_POST['dtns'], new Addresse_TypeEntity($_POST['numero'],
-                                $_POST['adresse'], $_POST['ville'],
-                                $_POST['codePostal']));
+        $adresse = new AdresseTypeEntity($this->data['numero'],
+                        $this->data['adresse'], $this->data['ville'],
+                        $this->data['codePostal']);
+        $patient = new PatientEntity(null, $this->data['nom'],
+                        $this->data['prenom'], $this->data['telephone'],
+                        $this->data['secu'], $this->data['dtns'], $adresse);
         $this->patient->insert($patient);
         $this->forward('patient/index');
     }
 
     function updateProccess($matricule) {
-        $patient = new PatientEntity($matricule, $_POST['nom']
-                        , $_POST['prenom'], $_POST['telephone'], $_POST['secu'], $_POST['dtns']
-                        , new Addresse_TypeEntity($_POST['numero'], $_POST['adresse'], $_POST['ville'], $_POST['codePostal']));
+        $adresse = new AdresseTypeEntity($this->data['numero'],
+                        $this->data['adresse'], $this->data['ville'],
+                        $this->data['codePostal']);
+
+        $patient = new PatientEntity($matricule, $this->data['nom'],
+                        $this->data['prenom'], $this->data['telephone'],
+                        $this->data['secu'], $_POST['dtns'], $adresse);
         $this->patient->update($patient);
         $this->forward('patient/index');
     }

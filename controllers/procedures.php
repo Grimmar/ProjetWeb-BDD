@@ -1,9 +1,13 @@
 <?php
 
+/**
+ * Description of procedures
+ *
+ * @author Quentin
+ */
 require_once(ROOT . 'controllers\identifiedController.php');
-class Admin extends IdentifiedController {
 
-    protected $models = array("medecin");
+class Procedures extends IdentifiedController {
 
     function index() {
         $this->render('index');

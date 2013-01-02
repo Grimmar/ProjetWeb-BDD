@@ -20,10 +20,6 @@ abstract class PersonneEntity {
         $this->adresse = $adresse;
     }
 
-        /* public function __call($name, $argument){
-      $get = strtolower(substr($name,3,strlen($name)));
-      return $this->$get;
-      } */
     public function getMatricule() {
         return $this->matricule;
     }

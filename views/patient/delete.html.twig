@@ -1,0 +1,28 @@
+{% extends "admin.html.twig" %}
+
+{% block title %}
+    {{ parent() }} - Patients
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+
+
+{% block header %}
+{{parent()}}
+{% endblock %}
+
+{% block body %}
+
+{% block menu %}
+{{ parent() }}
+{% endblock %}
+<div class="content">
+    <h2>Patient supprim&eacute;</h2>
+</div>
+{% endblock %}
+{% block footer %}
+{{parent()}}
+{% endblock %}

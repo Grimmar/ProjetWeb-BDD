@@ -1,11 +1,6 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-class deconnexion extends Controller {
+class Deconnexion extends Controller {
 
     public function index() {
         session_destroy();

@@ -43,7 +43,6 @@ DROP TABLE Medicaments;
 DROP TABLE Substances_Actives_FR;
 DROP TABLE Substances_Actives_OMS;
 DROP TYPE Substance;
-DROP TYPE Classe_T;
 DROP TYPE CodeLibelle;
 DROP TYPE Medecin;
 DROP TYPE Personne;
@@ -107,15 +106,15 @@ CREATE SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_PH
 
 CREATE TABLE Maladies (
     idMaladie        VARCHAR2(50),	
-	codeArborescence VARCHAR2(50),
-	idPere           VARCHAR2(50),
+    codeArborescence VARCHAR2(50),
+    idPere           VARCHAR2(50),
     libelle          VARCHAR2(100),
     CONSTRAINT pkMaladies PRIMARY KEY (idMaladie)
 );
 
 CREATE TABLE Medicaments (
     codeCIS VARCHAR2(10),
-    libelleMedicament VARCHAR2(100),
+    libelle VARCHAR2(100),
     CONSTRAINT PKMedicaments PRIMARY KEY (codeCIS)
 );
 
@@ -155,7 +154,6 @@ CREATE TYPE Substance AS OBJECT (
 );
 /
 
-
 CREATE TABLE Substances_Actives_FR OF Substance (
     CONSTRAINT PKSubstances_Actives_FR PRIMARY KEY(identifiant)
 );
@@ -166,7 +164,7 @@ CREATE TABLE Substances_Actives_OMS OF Substance (
 
 CREATE TABLE SubsActClasseChimique (
     identifiant  NUMBER(9),
-    substance    VARCHAR2 (5),
+    substance    VARCHAR2(5),
     classe       VARCHAR2(5),
     CONSTRAINT PKSubsActClasseChimique PRIMARY KEY(identifiant),
     FOREIGN KEY (substance) REFERENCES Substances_Actives_OMS(identifiant),
@@ -288,7 +286,7 @@ CREATE TABLE Patients_MaladieChronique (
 );
 
 CREATE TABLE Medecins OF Medecin (  
-    CONSTRAINT PKMedecins PRIMARY KEY(matricule)
+    CONSTRAINT PKMedecins PRIMARY KEY(matricule, login)
 );
 
 CREATE TABLE Laboratoires (
@@ -537,18 +535,6 @@ EXCEPTION
 END;
 /
 --------------------------------------------------------
---  DDL for Function IDENTIFIER_MALADIES
---------------------------------------------------------
-CREATE OR REPLACE FUNCTION IDENTIFIER_MALADIES (
-  idPatient Patients.matricule%TYPE) RETURN SYS_REFCURSOR IS
-curseur SYS_REFCURSOR;
-BEGIN
-
-
-    RETURN curseur;
-END IDENTIFIER_MALADIES;
-/
---------------------------------------------------------
 --  DDL for Function MEDICAMENTS_FROM_MALADIE
 --------------------------------------------------------
 CREATE OR REPLACE FUNCTION MEDICAMENTS_FROM_MALADIE (
@@ -619,4 +605,85 @@ EXCEPTION
   WHEN Others then
     RETURN FALSE;
 END;
+/
+
+--------------------------------------------------------
+--  DDL for Function 4 DETERMINER_MED_EI
+--------------------------------------------------------
+CREATE OR REPLACE FUNCTION DETERMINER_MED_EI (ID_MED Medicaments_Substances_OMS.codeCIS%TYPE,
+codeSubOMS Medicaments_Substances_OMS.codeSubstanceOMS%TYPE ) RETURN VARCHAR2 IS
+
+EI_fr varchar2(4);
+Nom_Medicament VARCHAR2(100);
+Effets_Indésirables varchar2(4);
+
+BEGIN
+
+  SELECT  libelleMedicament INTO Nom_Medicament,EI_fr INTO Effets_Indésirables--etape2:afficher le medicament
+  FROM    Medicaments,Effet_Indesirable_Substance_FR,Correspondance_Substances;-- et sont effet indésirable en question
+  WHERE   (ID_MED=codeCIS.Medicaments_Substances_OMS 
+           AND 
+           EI_fr IN 
+          (SELECT  idEffetIndesirable INTO EI_fr  --etape1:selectionner l'effet indésirable concerné
+          FROM    Effet_Indesirable_Substance_FR,Correspondance_Substances
+          WHERE   idSubstance  =  (SELECT identifiantFR
+                           FROM   Correspondance_Substances
+                           codeSubOMS = identifiantOMS.Correspondance_Substances; ))
+
+          )
+ 	RETURN(Nom_Medicament,Effets_Indésirables);
+	-- je ne sais pas si l'information récupérée "c-à-d -> l'effet indésirable" doit être inserée dans la table médicament,
+	-- Où alors son affichage doit être suffisant?
+
+END DETERMINER_MED_EI;
+
+--------------------------------------------------------
+--  DDL for Function 5 Medicament_Medecin_Developpeur
+--------------------------------------------------------
+CREATE OR REPLACE FUNCTION Medicament_Medecin_Developpeur( code_medicament medicaments.codecis%TYPE) 
+RETURN BOOLEAN IS
+traitement NUMBER(9);
+consultation NUMBER(9);
+medecin_traitant  Medecins_Medicaments.matricule%TYPE;
+medecin_medicament Medecins_Medicaments.matricule%TYPE;
+--récuperer le traitement du médicament en question(utiliser un curseur)
+CURSOR C1 IS
+    SELECT idTraitement 
+    FROM Traitement_Medicaments 
+    WHERE code_medicament = codeCIS;
+--récuperer les medecins qui ont contribué à la fabrication du médicament.
+CURSOR C2 IS
+    SELECT matricule INTO medecin_medicament
+    FROM Medecins_Medicaments
+    WHERE code_medicament = codeCIS ;
+
+BEGIN
+--récuperer la consultation du traitement en question
+OPEN C1 FOR
+FETCH C1 INTO Traitement; 
+    SELECT idConsultation INTO consultation
+    FROM   Traitements
+    WHERE  Traitement=identifiant;
+CLOSE C1; 
+--récuperer les medecins qui ont préscrit le medicament lors d'une consultation
+    SELECT matriculeMedecin INTO medecin_traitant
+    FROM   Consultations
+    WHERE  consultation = identifiant ;
+--faire la comparaison entre le medecin traitant et chaque medecin du 
+
+EXCEPTION
+
+END;
+
+--------------------------------------------------------
+--  DDL for Function 7 IDENTIFIER_MALADIES
+--------------------------------------------------------
+CREATE OR REPLACE FUNCTION IDENTIFIER_MALADIES (
+  idPatient Patients.matricule%TYPE) RETURN SYS_REFCURSOR IS
+curseur SYS_REFCURSOR;
+BEGIN
+
+
+    RETURN curseur;
+END IDENTIFIER_MALADIES;
 /

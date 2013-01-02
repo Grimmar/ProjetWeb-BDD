@@ -1,8 +1,0 @@
-<?php
-	include_once(ROOT ."/models/Entite/Medecin.php");
-	session_start();
-	echo "Medecin";
-	$m = unserialize($_SESSION['user']);
-	echo "<h1>".$m->getLogin()."</h1>"
-	//echo "<h1>".$_SESSION['user']."</h1>"
-?>

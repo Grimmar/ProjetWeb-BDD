@@ -5,9 +5,7 @@
  *
  * @author bissoqu1
  */
-require_once(ROOT . "/models/DAO/DAOMedecin.php");
-
-class login extends Controller {
+class Login extends Controller {
 
     protected $models = array("medecin");
 
@@ -37,16 +35,16 @@ class login extends Controller {
 
     private function redirect($user) {
         $this->set(array('user' => $user));
-        if ($user->getRole() == "admin") {
+        if ($user->getRole() == "ADMIN") {
             $_SESSION['user'] = serialize($user);
             $this->forward("admin");
-        } else if ($user->getRole() == "medecin") {
+        } else if ($user->getRole() == "MEDECIN") {
             $_SESSION['user'] = serialize($user);
-            $this->render("accueil");
+            $this->forward("accueil");
         } else {
             $_SESSION['user'] = null;
             session_destroy();
-            $this->render("login");
+            $this->render("index");
         }
     }
 
