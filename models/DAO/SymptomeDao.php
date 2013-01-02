@@ -11,13 +11,13 @@ require_once(ROOT . "models/Entite/SymptomeEntity.php");
 class SymptomeDao extends AbstractDao {
 
     function count($a = null) {
-        $sql = "SELECT * FROM Symptomes ";
+        $sql = "SELECT COUNT(*) FROM Symptomes ";
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement::rowCount();
+        return $statement->fetchColumn();
     }
 
     public function delete($id) {
@@ -47,7 +47,7 @@ class SymptomeDao extends AbstractDao {
             WHERE code = :id');
         $statement->execute(array(":id" => $id));
         $d = $statement->FetchAll(PDO::FETCH_OBJ);
-        if ($statement::rowCount() != 1) {
+        if (count($d) != 1) {
             return null;
         }
         return new SymptomeEntity($d[0]->code, $d[0]->libelle);

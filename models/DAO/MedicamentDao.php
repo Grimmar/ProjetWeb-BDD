@@ -11,13 +11,13 @@ require_once(ROOT . "models/Entite/MedicamentEntity.php");
 class MedicamentDao extends AbstractDao {
 
     function count($a = null) {
-        $sql = "SELECT * FROM Medicaments ";
+        $sql = "SELECT COUNT(*) FROM Medicaments ";
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement::rowCount();
+        return $statement->fetchColumn();
     }
 
     public function delete($id) {
@@ -47,7 +47,7 @@ class MedicamentDao extends AbstractDao {
             WHERE codeCis = :code');
         $statement->execute(array("code" => $id));
         $d = $statement->fetchAll(PDO::FETCH_OBJ);
-        if ($statement::rowCount() != 1) {
+        if (count($d) != 1) {
             return null;
         }
         return new MedicamentEntity($d[0]->codecis, $d[0]->libelle);

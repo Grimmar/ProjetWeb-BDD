@@ -11,13 +11,13 @@ require_once(ROOT . "models/Entite/ConsultationEntity.php");
 class ConsultationDao extends AbstractDao {
 
     function count($a = null) {
-        $sql = "SELECT * FROM Consultations ";
+        $sql = "SELECT COUNT(*) FROM Consultations ";
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement::rowCount();
+        return $statement->fetchColumn();
     }
 
     public function delete($id) {
@@ -49,7 +49,7 @@ class ConsultationDao extends AbstractDao {
             WHERE identifiant = :id');
         $statement->execute(array(":id" => $id));
         $d = $statement->FetchAll(PDO::FETCH_OBJ);
-        if ($statement::rowCount() != 1) {
+        if (count($d) != 1) {
             return null;
         }
         return new ConsultationEntity($d[0]->identifiant,

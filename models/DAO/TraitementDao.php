@@ -12,13 +12,13 @@ require_once("ConsultationDao.php");
 class TraitementDao extends AbstractDao {
 
     function count($a = null) {
-        $sql = "SELECT * FROM Traitements ";
+        $sql = "SELECT COUNT(*) FROM Traitements ";
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement::rowCount();
+        return $statement->fetchColumn();
     }
 
     public function delete($id) {
@@ -49,7 +49,7 @@ class TraitementDao extends AbstractDao {
             WHERE identifiant = :id');
         $statement->execute(array(":id" => $id));
         $d = $statement->FetchAll(PDO::FETCH_OBJ);
-        if ($statement::rowCount() != 1) {
+        if (count($d) != 1) {
             echo "ici !";
             return null;
         }

@@ -14,14 +14,23 @@ require_once(ROOT . "models/DAO/MaladieChroniqueDao.php");
 
 class PatientDao extends AbstractDao {
 
+    private $caracteristiques;
+    private $maladies;
+    
+    public function __construct() {
+        parent::__construct();
+        $this->caracteristiques = new CaracteristiqueDao();
+        $this->maladies = new MaladieChroniqueDao();
+    }
+    
     function count($a = null) {
-        $sql = "SELECT * FROM Patients ";
+        $sql = "SELECT COUNT(*) FROM Patients ";
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement::rowCount();
+        return $statement->fetchColumn();
     }
 
     public function delete($id) {
@@ -46,8 +55,8 @@ class PatientDao extends AbstractDao {
         foreach ($statement as $d) {
             $adresse = new AdresseTypeEntity($d->numero,
                             $d->adresse, $d->ville, $d->codepostal);
-            $caracteristiques = getCaracteristiquesOfPatient($d->matricule);
-            $maladies = getMaladiesChroniquesOfPatient($d->matricule);
+            $caracteristiques = $this->caracteristiques->getCaracteristiquesOfPatient($d->matricule);
+            $maladies = $this->maladies->getMaladiesChroniquesOfPatient($d->matricule);
             $patient = new PatientEntity($d->matricule, $d->nom,
                             $d->prenom, $d->telephone, $d->numerosecu,
                             $d->datenaissance, $adresse, $caracteristiques,
@@ -71,13 +80,13 @@ class PatientDao extends AbstractDao {
         $statement = $this->bdd->prepare($sql);
         $statement->execute(array(":id" => $id));
         $d = $statement->fetchAll(PDO::FETCH_OBJ);
-        if ($statement::rowCount() != 1) {
+        if (count($d) != 1) {
             return null;
         }
         $adresse = new AdresseTypeEntity($d[0]->numero, $d[0]->adresse,
                         $d[0]->ville, $d[0]->codepostal);
-        $caracteristiques = getCaracteristiquesOfPatient($d[0]->matricule);
-        $maladies = getMaladiesChroniquesOfPatient($d[0]->matricule);
+        $caracteristiques = $this->caracteristiques->getCaracteristiquesOfPatient($d[0]->matricule);
+        $maladies = $this->maladies->getMaladiesChroniquesOfPatient($d[0]->matricule);
         $patient = new PatientEntity($d[0]->matricule, $d[0]->nom, $d[0]->prenom,
                         $d[0]->telephone, $d[0]->numerosecu, $d[0]->datenaissance,
                         $adresse, $caracteristiques, $maladies);

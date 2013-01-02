@@ -11,13 +11,13 @@ require_once(ROOT . "models/Entite/CaracteristiqueEntity.php");
 class CaracteristiqueDao extends AbstractDao {
 
     function count($a = null) {
-        $sql = "SELECT * FROM Caracteristiques ";
+        $sql = "SELECT COUNT(*) FROM Caracteristiques ";
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement::rowCount();
+        return $statement->fetchColumn();
     }
 
     public function delete($id) {
@@ -47,8 +47,8 @@ class CaracteristiqueDao extends AbstractDao {
         $statement = $this->bdd->prepare('SELECT * FROM Caracteristiques 
             WHERE code = :code');
         $statement->execute(array("code" => $id));
-        $d = $statement->FetchAll(PDO::FETCH_OBJ);
-        if ($statement::rowCount() != 1) {
+        $d = $statement->fetchAll(PDO::FETCH_OBJ);
+        if (count($d) != 1) {
             return null;
         }
         $carac = new CaracteristiqueEntity($d[0]->code, $d[0]->libelle);

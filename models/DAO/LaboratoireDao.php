@@ -11,13 +11,13 @@ require_once(ROOT . "models/Entite/LaboratoireEntity.php");
 class LaboratoireDao extends AbstractDao {
 
     function count($a = null) {
-        $sql = "SELECT * FROM Laboratoires ";
+        $sql = "SELECT COUNT(*) FROM Laboratoires ";
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement::rowCount();
+        return $statement->fetchColumn();
     }
 
     public function delete($id) {
@@ -47,7 +47,7 @@ class LaboratoireDao extends AbstractDao {
             WHERE identifiant = :id');
         $statement->execute(array("id" => $id));
         $d = $statement->FetchAll(PDO::FETCH_OBJ);
-        if ($statement::rowCount() != 1) {
+        if (count($d) != 1) {
             return null;
         }
         return new LaboratoireEntity($d[0]->identifiant, $d[0]->nom);

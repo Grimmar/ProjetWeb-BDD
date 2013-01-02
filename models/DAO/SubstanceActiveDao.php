@@ -8,13 +8,13 @@
 abstract class SubstanceActiveDao extends AbstractDao {
 
     function count($a = null) {
-        $sql = "SELECT * FROM " . getTable() . " ";
+        $sql = "SELECT COUNT(*) FROM " . getTable() . " ";
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement::rowCount();
+        return $statement->fetchColumn();
     }
 
     abstract function getTable();
@@ -93,7 +93,7 @@ abstract class SubstanceActiveDao extends AbstractDao {
             WHERE identifiant = :id) ');
         $statement->execute(array("id" => $id));
         $donnee = $statement->fetchAll(PDO::FETCH_OBJ);
-        if ($statement::rowCount() != 1) {
+        if (count($d) != 1) {
             return null;
         }
         $classes = getClasses($id);
