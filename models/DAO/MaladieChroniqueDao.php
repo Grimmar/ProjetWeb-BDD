@@ -79,7 +79,7 @@ class MaladieChroniqueDao extends AbstractDao {
             JOIN Patients_MaladieChronique ON matricule = :mat";
 
         $statement = $this->bdd->prepare($sql);
-        $statement->bindParam(":mat", $mat);
+        $statement->bindValue(":mat", $mat);
         $statement->execute();
         $d = $statement->fetchAll(PDO::FETCH_OBJ);
         $r = array();

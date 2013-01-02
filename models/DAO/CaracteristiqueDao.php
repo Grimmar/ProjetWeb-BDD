@@ -82,7 +82,7 @@ class CaracteristiqueDao extends AbstractDao {
             JOIN Patients_Caracteristiques ON matricule = :mat";
 
         $statement = $this->bdd->prepare($sql);
-        $statement->bindParam(":mat", $mat);
+        $statement->bindValue(":mat", $mat);
         $statement->execute();
         $d = $statement->fetchAll(PDO::FETCH_OBJ);
         $r = array();
