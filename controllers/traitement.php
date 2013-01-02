@@ -5,8 +5,9 @@
  *
  * @author bissoqu1
  */
-require_once(ROOT . 'controllers\identifiedController.php');
-class Traitement extends IdentifiedController {
+require_once(ROOT . 'controllers\userController.php');
+
+class Traitement extends UserController {
     //put your code here
 }
 

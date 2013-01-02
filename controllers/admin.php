@@ -1,7 +1,7 @@
 <?php
 
-require_once(ROOT . 'controllers\identifiedController.php');
-class Admin extends IdentifiedController {
+require_once(ROOT . 'controllers\administrationController.php');
+class Admin extends AdministrationController {
 
     protected $models = array("medecin");
 

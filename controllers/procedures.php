@@ -5,9 +5,9 @@
  *
  * @author Quentin
  */
-require_once(ROOT . 'controllers\identifiedController.php');
+require_once(ROOT . 'controllers\administrationController.php');
 
-class Procedures extends IdentifiedController {
+class Procedures extends AdministrationController {
 
     function index() {
         $this->render('index');

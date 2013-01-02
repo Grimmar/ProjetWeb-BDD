@@ -1,6 +1,6 @@
 <?php
-
-class Deconnexion extends Controller {
+require_once(ROOT . 'controllers\identifiedController.php');
+class Deconnexion extends IdentifiedController {
 
     public function index() {
         session_destroy();

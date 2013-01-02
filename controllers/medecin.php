@@ -6,8 +6,9 @@
  * @author bissoqu1
  */
 require_once(ROOT . "models/Entite/AdresseTypeEntity.php");
-require_once(ROOT . 'controllers\identifiedController.php');
-class Medecin extends IdentifiedController {
+require_once(ROOT . 'controllers\administrationController.php');
+
+class Medecin extends AdministrationController {
 
     protected $models = array("medecin");
 
@@ -31,7 +32,7 @@ class Medecin extends IdentifiedController {
     function add() {
         $this->render('update');
     }
-    
+
     function update($matricule = null) {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
@@ -50,9 +51,8 @@ class Medecin extends IdentifiedController {
             $this->render('delete');
         }
     }
-    
+
     function addProccess() {
-        echo $this->data['dtns'];
         if (isset($this->data)) {
             $adresse = new AdresseTypeEntity($this->data['numero'],
                             $this->data['adresse'], $this->data['ville'],

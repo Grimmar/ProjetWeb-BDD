@@ -5,20 +5,10 @@
  *
  * @author bissoqu1
  */
-require_once(ROOT . 'controllers\identifiedController.php');
-class Accueil extends Controller {
+require_once(ROOT . 'controllers\userController.php');
+class Accueil extends UserController {
 
     protected $models = array("medecin");
-
-    public function __construct() {
-        parent::__construct();
-        if (isset($_SESSION['user'])) {
-            $user = unserialize($_SESSION['user']);
-            $this->set(array("user" => $user));
-        } else {
-            $this->forward("login");
-        }
-    }
 
     function index() {
         if (!isset($_SESSION['user'])) {

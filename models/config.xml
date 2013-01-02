@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <dbConf>
-	<dbname></dbname>
-	<dbport></dbport>
-	<user>
-		<name></name>
-		<password></password>
-	</user>
+    <dbname></dbname>
+    <dbport></dbport>
+    <user>
+        <name></name>
+        <password></password>
+    </user>
 </dbConf>
