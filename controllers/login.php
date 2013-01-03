@@ -19,9 +19,11 @@ class Login extends Controller {
     }
 
     function process() {
-        if (isset($_POST['login']) && isset($_POST['password'])) {
+        var_dump($_POST);
+        echo md5("raoul");
+        if (isset($_POST['login']) && isset($_POST['md5'])) {
             $user = $this->medecin->find(array("login=" => $_POST['login'],
-                "motDePasse=" => $_POST['password']));
+                "motDePasse=" => $_POST['md5']));
             if ($user == NULL) {
                 $this->render('index');
             } else {
