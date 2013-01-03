@@ -8,44 +8,59 @@ Administration
     {{ parent() }}
 <link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/admin.css"/>
 <link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/content.css"/>
+<script>
+    $(function() {
+        $( "#accordion" ).accordion({
+            heightStyle: "content",
+            autoHeight: false,
+            navigation: true
+        });
+    });
+    </script>
 {% endblock %}
 
 {% block sectionTitle %}
-Administration
+    Administration
 {% endblock %}
 
 {% block body %}
 {% block menu %}
 
-<aside class="menu">
-    <nav>
-        <ul>
-            <li>
-                <a href="{{WEBROOT}}admin">Administration générale</a>
-                <ul>
-                    <li>
-                        <a href="{{WEBROOT}}entete">Modifier l'entête</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="{{WEBROOT}}patient">Patients</a>
-                <ul>
-                    <li>
-                        <a href="{{WEBROOT}}patient/add">Ajouter un patient</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="{{WEBROOT}}medecin">Médecins</a>
-                <ul>
-                    <li>
-                        <a href="{{WEBROOT}}medecin/add">Ajouter un médecin</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-</aside>
+    <aside class="menu">
+        <nav>
+            <ul id="accordion">
+                <li>
+                    <a href="{{WEBROOT}}admin">Administration générale</a>
+                    <ul>
+                        <li>
+                            <a href="{{WEBROOT}}entete">Modifier l'entête</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Gestion des patients</a>
+                    <ul>
+                        <li>
+                            <a href="{{WEBROOT}}patient">Consulter les patients</a>
+                        </li>
+                        <li>
+                            <a href="{{WEBROOT}}patient/add">Ajouter un patient</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Gestion des médecins</a>
+                    <ul>
+                        <li>
+                            <a href="{{WEBROOT}}medecin">Consulter les médecins</a>
+                        </li>
+                        <li>
+                            <a href="{{WEBROOT}}medecin/add">Ajouter un médecin</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </aside>
 {% endblock %}
 {% endblock %}

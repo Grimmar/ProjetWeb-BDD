@@ -541,7 +541,6 @@ CREATE OR REPLACE FUNCTION MEDICAMENTS_FROM_MALADIE (
 idMal Maladies.idMaladie%TYPE) RETURN SYS_REFCURSOR IS 
 curseur SYS_REFCURSOR;
 BEGIN
---A ESSAYER
     OPEN curseur FOR
     SELECT mm.codeCis FROM Maladie_Medicament mm
     JOIN Maladies ON maladies.idmaladie = mm.idmaladie
@@ -610,7 +609,7 @@ END;
 --------------------------------------------------------
 --  DDL for Function 4 DETERMINER_MED_EI
 --------------------------------------------------------
-CREATE OR REPLACE FUNCTION DETERMINER_MED_EI (ID_MED Medicaments_Substances_OMS.codeCIS%TYPE,
+CREATE OR REPLACE FUNCTION DETERMINER_MED_EI (codeCis Medicaments.codeCIS%TYPE,
 codeSubOMS Medicaments_Substances_OMS.codeSubstanceOMS%TYPE ) RETURN VARCHAR2 IS
 
 EI_fr varchar2(4);
