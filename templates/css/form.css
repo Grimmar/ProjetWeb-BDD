@@ -16,3 +16,28 @@ span {
     margin-bottom: 5px;
     display: block;
 }
+
+table.zebra {
+    font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;
+    font-size: 14px;
+    text-align: left;
+    border-collapse: collapse;
+    border: 1px solid #69C;
+    margin: 20px;
+}
+
+table.zebra thead th{
+    font-weight: normal;
+    font-size: 14px;
+    color: #039;
+    padding: 15px 10px 10px;
+}
+table.zebra tbody {
+    background: #E8EDFF;
+}
+
+table.zebra tbody td{
+    color: #669;
+    border-top: 1px dashed white;
+    padding: 10px;
+}

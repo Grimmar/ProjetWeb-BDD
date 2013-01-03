@@ -24,6 +24,15 @@ nav ul li, nav ul li ul li {
     list-style: none;
 }
 
+nav > ul > li > a { 
+    background: url(../img/fleche-droite.png) 95% 50% no-repeat; 
+    
+}
+
+nav > ul > li:hover > a { 
+    background: url(../img/fleche-blanche-droite.png) 95% 50% no-repeat; 
+}
+
 nav li:hover, nav li li:hover {
     background: #4099FF; 
 }
