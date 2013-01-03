@@ -16,27 +16,22 @@
             {% endblock %}
             </header>
             <section>
-                <header class="sectionHeader">
-                {% block sectionHeader%}
-                        Main
-                {% endblock %}
-                    </header>
-                    <section class="{% block classNotifs %}error{% endblock %}">
+                <section class="{% block classNotifs %}error{% endblock %}">
                 {% block notifications %}
                     {% if messages is not null %}
                          {% for m in messages %}
-                            <p>m</p>
+                        <p>m</p>
                          {% endfor %}
                     {% endif %}
                 {% endblock %}
-                        </section>
+                    </section>
             {% block body %}
             {% endblock %}
-                    </section>
-                    <footer>
+                </section>
+                <footer>
             {% block footer %}
-                            Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
+                        Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
             {% endblock %}
-                        </footer>
-                    </body>
-                </html>
+                    </footer>
+                </body>
+            </html>

@@ -32,24 +32,27 @@
     <div class="content">
         <h2>Liste des patients</h2>
 {%if patients != NULL %}
-        <table class="consult">
+        <table class="zebra">
             <thead>
                 <tr>
                     <th>Nom</th>
                     <th>Prenom</th>
+                    <th>Téléphone</th>
+                    <th>Date de naissance</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="itemContainer">
     {% for m in patients %}
-
                     <tr>
                         <td>{{m.nom}}</td>
                         <td>{{m.prenom}}</td>
+                        <td>{{m.telephone}}</td>
+                        <td>{{m.dateNaissance}}</td>
                         <td>
                             <a href="{{WEBROOT}}patient/view/{{m.matricule}}">Details</a>
                             <a href="{{WEBROOT}}patient/update/{{m.matricule}}">Modifier</a>
-                            <a href="{{WEBROOT}}patient/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer se patient?');">Supprimer</a>
+                            <a href="{{WEBROOT}}patient/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce patient?');">Supprimer</a>
                         </td>
                     </tr>
 
