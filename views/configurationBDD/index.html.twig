@@ -1,0 +1,43 @@
+{% extends "admin.html.twig" %}
+
+{% block title %}
+{{ parent() }} - Admin
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+{% block header %}
+{{parent()}}
+{% endblock %}
+
+{% block body %}
+{% block menu %}
+{{ parent() }}
+{% endblock %}
+<div class="content">
+    <h2>Configuration de la base de donn&eacute;es</h2>
+    <form action="{{WEBROOT}}configurationBDD/updateProccess" method="post" name="update">
+        <label>Adresse de la base de donn&eacute;:</label><input type="text" name="dbName" value="{{dbName}}"/> <br/>
+        <label>Port:</label><input type="text" name="port" value="{{dbport}}"/><br/>
+        <label>Utilisateur:</label><input type="text" name="user" value="{{userName}}"/><br/>
+        <label>Mot de passe:</label><input type="text" name="password" value="{{userPassword}}"/><br/>
+        <input type="submit" value="Enregistrer et tester la connexion"/>
+    </form>
+    <br/>
+       {%if connexion is defined %}  
+       {%if connexion == true%}  
+    <h3 style="color : green;">La connexion a bien ete etablie !</h3>
+        {%else%}
+    <h3 style="color : red;">Erreur de connexion !</h3>
+    {%endif%}
+    <br/>
+    {%endif%}
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{{parent()}}
+{% endblock %}

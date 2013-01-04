@@ -12,6 +12,10 @@ class Medecin extends AdministrationController {
 
     protected $models = array("medecin");
 
+    function __construct() {
+        parent::__construct();
+    }
+
     function index() {
         $medecins = $this->medecin->find(array("order by" => "nom"));
         $this->set(array("medecins" => $medecins));
@@ -58,7 +62,7 @@ class Medecin extends AdministrationController {
                             $this->data['adresse'], $this->data['ville'],
                             $this->data['codePostal']);
             $medecin = new MedecinEntity($this->data['login'],
-                            $this->data['password'], "medecin", null,
+                            $this->data['md5'], "medecin", null,
                             $this->data['nom'], $this->data['prenom'],
                             $this->data['telephone'], $this->data['secu'],
                             $this->data['dtns'], $adresse);
@@ -72,7 +76,7 @@ class Medecin extends AdministrationController {
                         $this->data['adresse'], $this->data['ville'],
                         $this->data['codePostal']);
         $medecin = new MedecinEntity($this->data['login'],
-                        $this->data['password'], $this->role,
+                        $this->data['md5'], $this->role,
                         $matricule, $this->data['nom'], $this->data['prenom'],
                         $this->data['telephone'], $this->data['secu'],
                         $this->data['dtns'], $adresse);

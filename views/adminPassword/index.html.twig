@@ -1,0 +1,41 @@
+{% extends "admin.html.twig" %}
+
+{% block title %}
+{{ parent() }} - Admin
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<script type="text/javascript" src="{{WEBROOT}}templates/js/login.js"></script>
+{% endblock %}
+
+{% block header %}
+{{parent()}}
+{% endblock %}
+
+{% block body %}
+{% block menu %}
+{{ parent() }}
+{% endblock %}
+<div class="content">
+    <h2>Configuration de la base de donn&eacute;es</h2>
+    <form action="{{WEBROOT}}adminPassword/updateProccess" method="post" name="update" onsubmit='javascript:submit_passConfirm("update");'>
+        <input type='hidden' name='md5' />
+        <input type='hidden' name='md5Confirm' />
+        <label>Mot de passe:</label><input type="password" name="password" value="{{password}}"/> <br/>
+        <label>Confirmation Mot de passe:</label><input type="password" name="passwordConfirm" value="{{password}}"/><br/>
+        <input type="submit" value="Enregistrer"/>
+    </form>
+    <div class="erreur">
+        <h3 style="color : red;">{{erreur}}</h3>
+    </div>
+    <div class="ok">
+        <h3 style="color : green;">{{ok}}</h3>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{{parent()}}
+{% endblock %}
