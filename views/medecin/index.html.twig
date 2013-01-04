@@ -20,56 +20,47 @@
     </script>
 {% endblock %}
 
-{% block header %}
-{{parent()}}
-{% endblock %}
-
-{% block body %}
-
-{% block menu %}
-{{ parent() }}
-{% endblock %}
-    <div class="content">
-        <h2>Liste des médecins</h2>
+{% block contentTitle %}Liste des médecins{% endblock %}     
+{% block content %}
     {%if medecins != NULL %}
-        <table class="zebra">
-            <thead>
-                <tr>
-                    <th>Identifiant</th>
-                    <th>Nom</th>
-                    <th>Prenom</th>
-                    <th>Téléphone</th>
-                    <th>Date de naissance</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
+    <div class="holder"></div>
+    <table class="zebra">
+        <thead>
+            <tr>
+                <th>Identifiant</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Téléphone</th>
+                <th>Date de naissance</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
 
-            <tbody id="itemContainer">
+        <tbody id="itemContainer">
         {% for m in medecins %}
-                    <tr class="click" onclick="document.location.href='{{WEBROOT}}medecin/view/{{m.matricule}}'">
-                        <td>{{m.login}}</td>
-                        <td>{{m.nom}}</td>
-                        <td>{{m.prenom}}</td>
-                        <td>{{m.telephone}}</td>
-                        <td>{{m.dateNaissance}}</td>
-                        <td>
-                            <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">
-                                <img width="32px" src="{{WEBROOT}}templates/img/edit.png" alt="Modifier"/>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">
-                                <img width="32px" src="{{WEBROOT}}templates/img/delete.png" alt="Supprimer"/>
-                            </a>
-                        </td>
-                    </tr>
+                <tr class="click" onclick="document.location.href='{{WEBROOT}}medecin/view/{{m.matricule}}'">
+                    <td>{{m.login}}</td>
+                    <td>{{m.nom}}</td>
+                    <td>{{m.prenom}}</td>
+                    <td>{{m.telephone}}</td>
+                    <td>{{m.dateNaissance}}</td>
+                    <td>
+                        <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">
+                            <img width="32px" src="{{WEBROOT}}templates/img/edit.png" alt="Modifier"/>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">
+                            <img width="32px" src="{{WEBROOT}}templates/img/delete.png" alt="Supprimer"/>
+                        </a>
+                    </td>
+                </tr>
         {% endfor %}
-                </tbody>
-            </table>
-            <div class="holder"></div>
+            </tbody>
+        </table>
     {% else %}
-            Il n'y a aucun medecins enregistr&eacute;
+        Il n'y a aucun medecins enregistr&eacute;
     {% endif %}
-        </div>
+    </div>
 {% endblock %}

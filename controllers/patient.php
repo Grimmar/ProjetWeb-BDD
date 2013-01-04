@@ -1,8 +1,8 @@
 <?php
 
-require_once(ROOT . 'controllers\administrationController.php');
+require_once(ROOT . 'controllers\userController.php');
 
-class Patient extends AdministrationController {
+class Patient extends UserController {
 
     protected $models = array("patient");
 
@@ -24,6 +24,9 @@ class Patient extends AdministrationController {
     }
 
     function add() {
+        if (isset($this->data) && !empty($this->data)) {
+            $this->set(array("patient" => $this->data));
+        }
         $this->render('update');
     }
 
@@ -32,7 +35,11 @@ class Patient extends AdministrationController {
             $this->index();
         } else {
             $patient = $this->patient->get($matricule);
-            $this->set(array("patient" => $patient, "matricule" => $matricule));
+            if (isset($this->data) && !empty($this->data)) {
+                $this->set(array("patient" => $this->data, "matricule" => $matricule));
+            } else {
+                $this->set(array("patient" => $patient, "matricule" => $matricule));
+            }
             $this->render('update');
         }
     }
@@ -41,13 +48,15 @@ class Patient extends AdministrationController {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
         } else {
+            $patient = $this->patient->get($matricule);
             $this->patient->delete($matricule);
+            $this->set(array("patient" => $medecin));
             $this->render('delete');
         }
     }
 
     function addProccess() {
-        if (isset($this->data) && $this->filter()) {
+        if (isset($this->data) && $this->filter() && !empty($_POST)) {
             $adresse = new AdresseTypeEntity($this->data['numero'],
                             $this->data['adresse'], $this->data['ville'],
                             $this->data['codePostal']);
@@ -57,11 +66,12 @@ class Patient extends AdministrationController {
             $this->patient->insert($patient);
             $this->forward('patient/index');
         }
+        $this->set($this->data);
         $this->render('update');
     }
 
     function updateProccess($matricule) {
-        if (isset($this->data) && $this->filter()) {
+        if (isset($this->data) && $this->filter() && !empty($_POST)) {
             $adresse = new AdresseTypeEntity($this->data['numero'],
                             $this->data['adresse'], $this->data['ville'],
                             $this->data['codePostal']);
@@ -72,6 +82,7 @@ class Patient extends AdministrationController {
             $this->patient->update($patient);
             $this->forward('patient/index');
         }
+        $this->set($this->data);
         $this->render('update');
     }
 
@@ -91,7 +102,7 @@ class Patient extends AdministrationController {
         }
         if ($this->data['telephone'] != null) {
             if (!is_numeric($this->data['telephone'])) {
-                $this->addMessage("Le numéro de télèphone est invalide.");
+                $this->addMessage("Le numéro de téléphone est invalide.");
                 $f = false;
             }
         }

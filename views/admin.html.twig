@@ -1,16 +1,14 @@
 {% extends "connected.html.twig" %}
 
 {% block title %}
-Administration
+    Administration
 {% endblock %}
 
 {% block sectionTitle %}
     Administration
 {% endblock %}
 
-{% block body %}
 {% block menu %}
-
     <aside class="menu">
         <nav>
             <ul id="accordion">
@@ -29,17 +27,6 @@ Administration
                     </ul>
                 </li>
                 <li>
-                    <a href="#">Gestion des patients</a>
-                    <ul>
-                        <li>
-                            <a href="{{WEBROOT}}patient">Consulter les patients</a>
-                        </li>
-                        <li>
-                            <a href="{{WEBROOT}}patient/add">Ajouter un patient</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
                     <a href="#">Gestion des médecins</a>
                     <ul>
                         <li>
@@ -53,5 +40,4 @@ Administration
             </ul>
         </nav>
     </aside>
-{% endblock %}
 {% endblock %}

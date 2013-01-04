@@ -4,16 +4,10 @@
     Accueil
 {% endblock %}
 
-{% block stylesheets %}
-{{ parent() }}
-{% endblock %}
-
 {% block sectionTitle %}
      Gestionnaire de traitements médicaux
 {% endblock %}
-     
-{% block body %}
-Bonjour {{user.prenom}}.
 
-Aujourd'hui, nous sommes le {{date}}.
+{% block contentTitle %}Accueil{% endblock %}     
+{% block content %}
 {% endblock %}

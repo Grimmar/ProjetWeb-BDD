@@ -7,9 +7,11 @@ class DaoManager {
 
     private static $dao;
     private $connexion;
+    private $oracleConnexion;
 
     private function __construct() {
         $this->createConnexion();
+        $this->createOracleConnexion();
     }
 
     public static function getInstance() {
@@ -26,9 +28,18 @@ class DaoManager {
             $this->connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connexion->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
             $this->connexion->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
+            if (!function_exists('oci_pconnect')) {
+                $oracleConnexion = oci_pconnect($param->getUserName(), $param->getUserPassword(), $param->getDbLocalisation());
+            } else {
+                $oracleConnexion = null;
+            }
         } catch (PDOException $e) {
             throw $e;
         }
+    }
+
+    public function getOracleConnexion() {
+        return $this->oracleConnexion;
     }
 
     public function getConnexion() {

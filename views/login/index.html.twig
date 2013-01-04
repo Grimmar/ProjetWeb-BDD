@@ -1,26 +1,28 @@
 {% extends "main.html.twig" %}
 
 {% block title %}
-   Authentification
+Authentification
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/login.css"/>
-    <script type="text/javascript" src="{{WEBROOT}}templates/js/login.js"></script>
-{% endblock %}
-
-{% block sectionHeader%}
-{% endblock %}
-
-{% block classNotifs %}
-{% endblock %}
-
-{% block notifications %}
+<link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/login.css"/>
+<script type="text/javascript" src="{{WEBROOT}}templates/js/login.js"></script>
 {% endblock %}
 
 {% block body %}
     <h1 id="connexion">Connexion</h1>
+
+    <section class="{% block classNotifs %}error{% endblock %}">
+    {% block notifications %}
+        {% if messages is not null %}
+             {% for m in messages %}  
+        <p><b>{{m}}</b></p>
+             {% endfor %}
+        {% endif %}
+    {% endblock %}
+    </section>
+
     <h3 class="erreur">{{erreur}}</h3>
     <form action="{{WEBROOT}}login/process" method="post" id="formLogin" onsubmit='javascript:submit_pass("formLogin");'>
         <input type='hidden' name='md5' />

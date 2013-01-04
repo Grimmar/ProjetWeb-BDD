@@ -21,14 +21,10 @@
     </script>
 {% endblock %}
 
-{% block body %}
-{% block menu %}
-{{ parent() }}
-{% endblock %}
-    <div class="content">
-        <h2>Modifier l'entête</h2>
-        <form method="POST" action="{{WEBROOT}}entete/process">
-            <textarea cols="100" rows="15" name="entete">
+{% block contentTitle %}Modifier l'entête du cabinet{% endblock %}     
+{% block content %}
+    <form method="POST" action="{{WEBROOT}}entete/process">
+        <textarea cols="100" rows="15" name="entete">
                 {% if entete is not null %}
                     {{entete}}
                 {% else %}
@@ -37,5 +33,4 @@
             </textarea>
             <input type="submit" value="Enregistrer"/>
         </form>
-    </div>
 {% endblock %}

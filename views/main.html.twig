@@ -25,24 +25,16 @@
             {% block header %}
                 <h1>Gestionnaire de traitements médicaux</h1>
             {% endblock %}
-            </header>
-            <section>
-                <section class="{% block classNotifs %}error{% endblock %}">
-                {% block notifications %}
-                    {% if messages is not null %}
-                         {% for m in messages %}  
-                        <p><b>{{m}}</b></p>
-                         {% endfor %}
-                    {% endif %}
-                {% endblock %}
-                    </section>
-            {% block body %}
-            {% endblock %}
-                </section>
-                <footer>
-            {% block footer %}
-                        Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
-            {% endblock %}
-                    </footer>
-                </body>
-            </html>
+        </header>
+        <section>
+        {% block body %}
+        {% endblock %}
+
+        </section>
+        <footer>
+        {% block footer %}
+            Réalisé par David Charpentier, Hanane Ayadi et Quentin Bisson
+        {% endblock %}
+        </footer>
+    </body>
+</html>

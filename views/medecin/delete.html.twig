@@ -4,25 +4,6 @@
     {{ parent() }} - Médecins
 {% endblock %}
 
-{% block stylesheets %}
-{{ parent() }}
-{% endblock %}
-
-
-
-{% block header %}
-{{parent()}}
-{% endblock %}
-
-{% block body %}
-
-{% block menu %}
-{{ parent() }}
-{% endblock %}
-<div class="content">
-    <h2>Medecin supprim&eacute;</h2>
-</div>
-{% endblock %}
-{% block footer %}
-{{parent()}}
+{% block contentTitle %}Suppression d'un médecin{% endblock %}     
+{% block content %}
 {% endblock %}

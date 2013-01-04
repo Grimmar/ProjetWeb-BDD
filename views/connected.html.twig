@@ -1,9 +1,5 @@
 {% extends "main.html.twig" %}
 
-{% block stylesheets %}
-{{ parent() }}
-{% endblock %}
-
 {% block header %}
 <h1>{% block sectionTitle %}{% endblock %}</h1>
 <div class="deconnexion">
@@ -14,6 +10,23 @@
 
 
 {% block body %}
+
 {% block menu %}
 {% endblock %}
+<div class="content">
+    <header>
+        <h2>{% block contentTitle %}{% endblock %}</h2>
+    </header>
+    <section class="{% block classNotifs %}error{% endblock %}">
+        {% block notifications %}
+        {% if messages is not null %}
+             {% for m in messages %}  
+            <p>{{m}}</p>
+             {% endfor %}
+        {% endif %}
+    {% endblock %}
+        </section>
+    {% block content %}
+    {% endblock %}
+    </div>
 {% endblock %}

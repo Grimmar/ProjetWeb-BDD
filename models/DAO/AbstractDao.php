@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -5,9 +6,9 @@
  *
  * @author david
  */
-
 require_once("DAO.php");
 require_once("DAOManager.php");
+
 abstract class AbstractDao implements Dao {
 
     protected $dao;
@@ -42,7 +43,6 @@ abstract class AbstractDao implements Dao {
         $where .= $finReq;
         return $where;
     }
-
 }
 
 ?>

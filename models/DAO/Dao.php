@@ -1,7 +1,7 @@
 <?php
 
 interface Dao {
-	
+
         //Select One
         public function get($id);
         
@@ -19,6 +19,6 @@ interface Dao {
         
         //Delete
         public function delete($id);
-	
+
 }
 ?>
