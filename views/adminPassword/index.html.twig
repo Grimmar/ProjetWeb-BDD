@@ -22,8 +22,8 @@
     <form action="{{WEBROOT}}adminPassword/updateProccess" method="post" name="update" onsubmit='javascript:submit_passConfirm("update");'>
         <input type='hidden' name='md5' />
         <input type='hidden' name='md5Confirm' />
-        <label>Mot de passe:</label><input type="password" name="password" value="{{password}}"/> <br/>
-        <label>Confirmation Mot de passe:</label><input type="password" name="passwordConfirm" value="{{password}}"/><br/>
+        <label>Mot de passe</label><input type="password" name="password" value="{{password}}" required/> <br/>
+        <label>Confirmation Mot de passe</label><input type="password" name="passwordConfirm" value="{{password}}" required/><br/>
         <input type="submit" value="Enregistrer"/>
     </form>
     <div class="erreur">

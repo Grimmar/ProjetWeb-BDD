@@ -32,7 +32,7 @@ class Controller {
                 }
             }
         } catch (Exception $e) {
-            if(isset($_SESSION['user']))
+            if (isset($_SESSION['user']))
                 $this->forward("configurationBDD");
         }
     }
@@ -50,6 +50,7 @@ class Controller {
     }
 
     protected function render($filename) {
+        $this->set(array('messages' => $this->messages));
         $template = $this->twig->loadTemplate(get_class($this) . '/'
                 . strtolower($filename) . '.html.twig');
         echo $template->render($this->vars);
@@ -81,7 +82,6 @@ class Controller {
             $string = mysql_real_escape_string($string);
             $string = addcslashes($string, '%_');
         }
-
         return $string;
     }
 

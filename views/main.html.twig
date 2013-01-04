@@ -19,8 +19,8 @@
                 <section class="{% block classNotifs %}error{% endblock %}">
                 {% block notifications %}
                     {% if messages is not null %}
-                         {% for m in messages %}
-                        <p>m</p>
+                         {% for m in messages %}  
+                        <p><b>{{m}}</b></p>
                          {% endfor %}
                     {% endif %}
                 {% endblock %}
