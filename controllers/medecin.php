@@ -34,6 +34,9 @@ class Medecin extends AdministrationController {
     }
 
     function add() {
+        if (isset($this->data) && !empty($this->data)) {
+            $this->set(array("medecin" => $this->data));
+        }
         $this->render('update');
     }
 
@@ -42,7 +45,11 @@ class Medecin extends AdministrationController {
             $this->index();
         } else {
             $medecin = $this->medecin->get($matricule);
-            $this->set(array("medecin" => $medecin, "matricule" => $matricule));
+            if (isset($this->data) && !empty($this->data)) {
+                $this->set(array("medecin" => $this->data, "matricule" => $matricule));
+            } else {
+                $this->set(array("medecin" => $medecin, "matricule" => $matricule));
+            }
             $this->render('update');
         }
     }
@@ -51,37 +58,86 @@ class Medecin extends AdministrationController {
         if (!isset($matricule) || !is_numeric($matricule)) {
             $this->index();
         } else {
+            $medecin = $this->medecin->get($matricule);
             $this->medecin->delete($matricule);
+            $this->set(array("medecin" => $medecin));
             $this->render('delete');
         }
     }
 
     function addProccess() {
-        if (isset($this->data)) {
+        if (isset($this->data) && $this->filter() && !empty($_POST)) {
             $adresse = new AdresseTypeEntity($this->data['numero'],
                             $this->data['adresse'], $this->data['ville'],
                             $this->data['codePostal']);
             $medecin = new MedecinEntity($this->data['login'],
-                            $this->data['md5'], "medecin", null,
+                            $this->data['md5'], "MEDECIN", null,
                             $this->data['nom'], $this->data['prenom'],
                             $this->data['telephone'], $this->data['secu'],
                             $this->data['dtns'], $adresse);
+            $this->medecin->insert($medecin);
+            $this->forward("medecin/index");
         }
-        $this->medecin->insert($medecin);
-        $this->forward("medecin/index");
+        $this->set($this->data);
+        $this->render("add");
     }
 
     function updateProccess($matricule) {
-        $adresse = new AdresseTypeEntity($this->data['numero'],
-                        $this->data['adresse'], $this->data['ville'],
-                        $this->data['codePostal']);
-        $medecin = new MedecinEntity($this->data['login'],
-                        $this->data['md5'], NULL,
-                        $matricule, $this->data['nom'], $this->data['prenom'],
-                        $this->data['telephone'], $this->data['secu'],
-                        $this->data['dtns'], $adresse);
-        $this->medecin->update($medecin);
-        $this->forward("medecin/index");
+        if (isset($this->data) && $this->filter() && !empty($_POST)) {
+            $adresse = new AdresseTypeEntity($this->data['numero'],
+                            $this->data['adresse'], $this->data['ville'],
+                            $this->data['codePostal']);
+            $medecin = new MedecinEntity($this->data['login'],
+                            $this->data['md5'], $this->role,
+                            $matricule, $this->data['nom'], $this->data['prenom'],
+                            $this->data['telephone'], $this->data['secu'],
+                            $this->data['dtns'], $adresse);
+            $this->medecin->update($medecin);
+            $this->forward("medecin/index");
+        }
+        $this->set($this->data);
+        $this->update($matricule);
+    }
+
+    function filter() {
+        $f = true;
+        if ($this->data['numero'] != null) {
+            if (!is_numeric($this->data['numero'])) {
+                $this->addMessage("Le numéro de l'adresse est invalide.");
+                $f = false;
+            }
+        }
+        if ($this->data['codePostal'] != null) {
+            if (!is_numeric($this->data['codePostal'])) {
+                $this->addMessage("Le code postal est invalide.");
+                $f = false;
+            }
+        }
+        if ($this->data['telephone'] != null) {
+            if (!is_numeric($this->data['telephone'])) {
+                $this->addMessage("Le numéro de téléphone est invalide.");
+                $f = false;
+            }
+        }
+        if ($this->data['secu'] != null) {
+            if (!is_numeric($this->data['secu'])) {
+                $this->addMessage("Le numéro de securité social est invalide.");
+                $f = false;
+            }
+        }
+        if ($this->data['dtns'] != null) {
+            if (preg_match('`^\d{1,2}/\d{1,2}/\d{4}$`', $this->data['dtns'])) {
+                $date = explode("/", $this->data['dtns']);
+                if (!checkdate($date[1], $date[0], $date[2])) {
+                    $this->addMessage("La date de naissance est invalide.");
+                    $f = false;
+                }
+            } else {
+                $this->addMessage("La date de naissance est invalide.");
+                $f = false;
+            }
+        }
+        return $f;
     }
 
 }

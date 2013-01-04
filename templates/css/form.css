@@ -41,7 +41,6 @@ table.zebra tbody td{
     border-top: 1px dashed white;
     padding: 10px;
 }
-
 .click {
     cursor: pointer;
 }
@@ -57,4 +56,8 @@ tr.click td img:hover {
 
 input, select {
     margin-bottom:5px;
+}
+
+.error{
+    color :red;
 }

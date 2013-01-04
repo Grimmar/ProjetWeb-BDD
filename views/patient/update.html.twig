@@ -1,42 +1,24 @@
 {% extends "admin.html.twig" %}
 
-{% block title %}
-{{ parent() }} - Patient
-{% endblock %}
-
-{% block stylesheets %}
-{{ parent() }}
-{% endblock %}
-
-
-{% block header %}
-{{parent()}}
-{% endblock %}
-
-{% block body %}
-
-
-{% block menu %}
-{{ parent() }}
-{% endblock %}
-<div class="content">
-    {% if patient is not null %}
-    <h1>Modifier un patient</h1>
+{% block contentTitle %}{% if patient is not null %}
+        Modifier un patient 
     {% else %}
-    <h1>Ajouter un patient</h1>
-    {% endif %}
-    {% if patient is not null %}
-    <form action="{{WEBROOT}}patient/updateProccess/{{matricule}}" method="post">
-        {% else %}
+        Ajouter un patient
+    {% endif %}{% endblock %}   
+
+{% block content %}
+    {% if patient is not null %}        
+        <form action="{{WEBROOT}}patient/updateProccess/{{matricule}}" method="post">
+    {% else %}
         <form action="{{WEBROOT}}patient/addProccess" method="post">
-            {% endif %}
+    {% endif %}
             <fieldset>
                 <legend><b>Informations</b></legend>
-                <label>Nom</label>
+                <label>Nom*</label>
                 <input type="text" name="nom" id="login" placeholder="Nom"
                        required value="{% if patient is not null %}{{patient.nom}}{%endif %}"/>
                 <br/>
-                <label>Pr&eacute;nom</label>
+                <label>Pr&eacute;nom*</label>
                 <input type="text" name="prenom" placeholder="Prenom" required
                        value="{% if patient is not null %}{{patient.prenom}}{%endif %}"/>
                 <br/>
@@ -47,6 +29,7 @@
                 <label>Date de naissance</label>
                 <input type="text" name="dtns" id="dtns" placeholder="Date de naissance" 
                        value="{% if patient is not null %}{{patient.dateNaissance}}{%endif %}"/>
+                Format : DD/MM/YYYY <br/> 
                 <br/> 
                 <label>Numero de s&eacute;curit&eacute; sociale</label>
                 <input type="text" name="secu" id="secu" placeholder="Numero de sécurité sociale"
@@ -71,13 +54,8 @@
                 <input type="text" name="codePostal" id="codePostal" placeholder="Code Postal"
                        value="{% if patient is not null %}{{patient.adresse.codePostal}}{%endif %}"/>
                 <br/>
-
             </fieldset>
-            
+            (*)Champs obligatoires <br/>
             <input type="submit" value="Valider"/>
         </form>
-</div>
-{% endblock %}
-{% block footer %}
-{{parent()}}
 {% endblock %}
