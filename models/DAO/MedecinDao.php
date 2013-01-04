@@ -79,7 +79,7 @@ class MedecinDao extends AbstractDao {
         $statement->execute(array(
             'login' => $entity->getLogin(),
             'motDePasse' => $entity->getMotDePasse(),
-            'role' => "medecin",
+            'role' => "MEDECIN",
             'nom' => $entity->getNom(),
             'prenom' => $entity->getPrenom(),
             'telephone' => $entity->getTelephone(),

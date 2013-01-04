@@ -33,11 +33,24 @@ table.zebra thead th{
     padding: 15px 10px 10px;
 }
 table.zebra tbody {
-    background: #E8EDFF;
+    background: #C9D0D5;
 }
 
 table.zebra tbody td{
-    color: #669;
+    color: black;
     border-top: 1px dashed white;
     padding: 10px;
+}
+
+.click {
+    cursor: pointer;
+}
+
+tr.click:hover td  {
+    background-color: #4099FF;
+    color: white;
+}
+
+tr.click td img:hover {
+    box-shadow: 2px 2px 2px 2px black;   
 }

@@ -9,6 +9,10 @@ nav ul {
     background-color: white;
 }
 
+td > a {
+    text-decoration: none;
+}
+
 nav ul ul {
     padding: 0;
     margin: 0;
@@ -60,13 +64,4 @@ nav li a:hover {
     float:right;
     text-align: right;
     margin-right : 10px;
-}
-
-footer{
-    width:100%;
-    position: absolute;
-    bottom: 0;
-    text-align: center;
-    padding-bottom: 20px;
-    background-color: #ABC8E2;
 }

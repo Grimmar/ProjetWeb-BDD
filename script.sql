@@ -9,7 +9,9 @@ DROP SEQUENCE SEQUENCE_PATIENT;
 DROP SEQUENCE SEQUENCE_MEDECIN;
 DROP SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_CH;
 DROP SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_PH;
+DROP SEQUENCE SEQUENCE_SURVEILLANCE;
 
+DROP TABLE Surveillance;
 DROP TABLE Laboratoires_Medicaments;
 DROP TABLE Medecins_Medicaments;
 DROP TABLE Traitement_Recommendations;
@@ -22,6 +24,8 @@ DROP TABLE Symptomes_Maladies;
 DROP TABLE Correspondance_Substances;
 DROP TABLE Interactions_Substances;
 DROP TABLE Correspondance_EI_OMS_FR;
+DROP TABLE Effet_Indesirable_Classe_Chim;
+DROP TABLE Effet_Indesirable_Classe_Phar;
 DROP TABLE Effet_Indesirable_Substance_FR;
 DROP TABLE Medecins_Laboratoires;
 DROP TABLE Patients_Caracteristiques;
@@ -29,6 +33,8 @@ DROP TABLE Patients_MaladieChronique;
 DROP TABLE Caracteristiques;
 DROP TABLE Maladies_Chroniques;
 DROP TABLE Traitements;
+DROP TABLE SubsActClasseChimique;
+DROP TABLE SubsActClassePharmaco;
 DROP TABLE Consultations;
 DROP TABLE Symptomes;
 DROP TABLE Patients;
@@ -100,6 +106,11 @@ CREATE SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_CH
 	MAXVALUE 99999;
 
 CREATE SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_PH
+	START WITH 1
+	INCREMENT BY 1
+	MAXVALUE 99999;
+
+CREATE SEQUENCE SEQUENCE_SURVEILLANCE
 	START WITH 1
 	INCREMENT BY 1
 	MAXVALUE 99999;
@@ -189,6 +200,7 @@ CREATE TABLE Correspondance_Substances (
 CREATE TABLE Interactions_Substances (
     idSubstance1   VARCHAR2(5),
     idSubstance2   VARCHAR2(5),
+    risque         VARCHAR2(250 BYTE), 
     CONSTRAINT PKInteraction_Substances PRIMARY KEY(idSubstance1, idSubstance2)
 );
 
@@ -211,6 +223,22 @@ CREATE TABLE Correspondance_EI_OMS_FR (
     EI_FR     VARCHAR2(4),
     FOREIGN KEY (EI_FR) REFERENCES Effets_Indesirables_FR(identifiant),
     FOREIGN KEY (EI_OMS) REFERENCES Effets_Indesirables_OMS(identifiant)
+);
+
+CREATE TABLE Effet_Indesirable_Classe_Chim (
+    identifiant        NUMBER(6) PRIMARY KEY,
+    classe             VARCHAR2(5),
+    idEffetIndesirable VARCHAR2(4),
+    FOREIGN KEY (classe) REFERENCES Classes_Chimiques(identifiant),
+    FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_FR(identifiant)
+);
+
+CREATE TABLE Effet_Indesirable_Classe_Phar (
+    identifiant        NUMBER(6) PRIMARY KEY,
+    classe             VARCHAR2(5),
+    idEffetIndesirable VARCHAR2(4),
+    FOREIGN KEY (classe) REFERENCES Classes_Pharmacologiques(identifiant),
+    FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_FR(identifiant)
 );
 
 CREATE TABLE Effet_Indesirable_Substance_FR (
@@ -286,7 +314,7 @@ CREATE TABLE Patients_MaladieChronique (
 );
 
 CREATE TABLE Medecins OF Medecin (  
-    CONSTRAINT PKMedecins PRIMARY KEY(matricule, login)
+    CONSTRAINT PKMedecins PRIMARY KEY(matricule)
 );
 
 CREATE TABLE Laboratoires (
@@ -419,17 +447,6 @@ END;
 /
 
 --------------------------------------------------------
---  DDL for Trigger INSERT_ON_TRAITEMENTS 
---------------------------------------------------------
-CREATE OR REPLACE TRIGGER INSERT_ON_TRAITEMENTS 
-BEFORE INSERT ON TRAITEMENTS 
-FOR EACH ROW 
-BEGIN
-  SELECT SEQUENCE_TRAITEMENT.NEXTVAL INTO :new.identifiant FROM DUAL;
-END;
-/
-
---------------------------------------------------------
 --  DDL for Trigger INSERT_ON_RECOMMENDATIONS 
 --------------------------------------------------------
 CREATE OR REPLACE TRIGGER INSERT_ON_RECOMMENDATIONS 
@@ -437,17 +454,6 @@ BEFORE INSERT ON TRAITEMENT_RECOMMENDATIONS
 FOR EACH ROW 
 BEGIN
   SELECT SEQUENCE_RECOMMENDATION.NEXTVAL INTO :new.identifiant FROM DUAL;
-END;
-/
-
---------------------------------------------------------
---  DDL for Trigger INSERT_ON_TRAITEMENT_MEDICAMENTS 
---------------------------------------------------------
-CREATE OR REPLACE TRIGGER INSERT_ON_TRAIT_MEDIC
-BEFORE INSERT ON TRAITEMENT_MEDICAMENTS 
-FOR EACH ROW 
-BEGIN
-  SELECT SEQUENCE_TRAITEMENT_MEDICAMENT.NEXTVAL INTO :new.identifiant FROM DUAL;
 END;
 /
 
@@ -607,82 +613,275 @@ END;
 /
 
 --------------------------------------------------------
---  DDL for Function 4 DETERMINER_MED_EI
+--  DDL for Function 4 DETERMINER_MEDICAMENT_EI
 --------------------------------------------------------
-CREATE OR REPLACE FUNCTION DETERMINER_MED_EI (codeCis Medicaments.codeCIS%TYPE,
-codeSubOMS Medicaments_Substances_OMS.codeSubstanceOMS%TYPE ) RETURN VARCHAR2 IS
-
-EI_fr varchar2(4);
-Nom_Medicament VARCHAR2(100);
-Effets_Indésirables varchar2(4);
-
+CREATE OR REPLACE FUNCTION DETERMINER_MEDICAMENT_EI (
+    codeCis Medicaments.codeCIS%TYPE) RETURN SYS_REFCURSOR IS 
+curseur SYS_REFCURSOR;
 BEGIN
-
-  SELECT  libelleMedicament INTO Nom_Medicament,EI_fr INTO Effets_Indésirables--etape2:afficher le medicament
-  FROM    Medicaments,Effet_Indesirable_Substance_FR,Correspondance_Substances;-- et sont effet indésirable en question
-  WHERE   (ID_MED=codeCIS.Medicaments_Substances_OMS 
-           AND 
-           EI_fr IN 
-          (SELECT  idEffetIndesirable INTO EI_fr  --etape1:selectionner l'effet indésirable concerné
-          FROM    Effet_Indesirable_Substance_FR,Correspondance_Substances
-          WHERE   idSubstance  =  (SELECT identifiantFR
-                           FROM   Correspondance_Substances
-                           codeSubOMS = identifiantOMS.Correspondance_Substances; ))
-
-          )
- 	RETURN(Nom_Medicament,Effets_Indésirables);
-	-- je ne sais pas si l'information récupérée "c-à-d -> l'effet indésirable" doit être inserée dans la table médicament,
-	-- Où alors son affichage doit être suffisant?
-
-END DETERMINER_MED_EI;
+    OPEN curseur FOR
+    SELECT * FROM Effets_Indesirables_FR
+    WHERE identifiant IN (
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
+        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
+        JOIN SubsActClasseChimique cl ON s.identifiant = cl.substance
+        JOIN Classes_Chimiques cc ON cc.identifiant = cl.classe
+        CONNECT BY PRIOR cc.identifiant = cc.idPere
+    )  OR identifiant IN (
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
+        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
+        JOIN SubsActClassePharmaco cl ON s.identifiant = cl.substance
+        JOIN Classes_Pharmacologiques cc ON cc.identifiant = cl.classe
+        CONNECT BY cc.idPere = PRIOR cc.identifiant
+    );
+    RETURN CURSEUR;
+END DETERMINER_MEDICAMENT_EI;
+/
 
 --------------------------------------------------------
---  DDL for Function 5 Medicament_Medecin_Developpeur
+--  DDL for Function 5 IS_DEVELOPPEUR_ONLY_PRESC
 --------------------------------------------------------
-CREATE OR REPLACE FUNCTION Medicament_Medecin_Developpeur( code_medicament medicaments.codecis%TYPE) 
-RETURN BOOLEAN IS
-traitement NUMBER(9);
-consultation NUMBER(9);
-medecin_traitant  Medecins_Medicaments.matricule%TYPE;
-medecin_medicament Medecins_Medicaments.matricule%TYPE;
---récuperer le traitement du médicament en question(utiliser un curseur)
+CREATE OR REPLACE FUNCTION IS_DEVELOPPEUR_ONLY_PRESC(
+    code Medicaments.codecis%TYPE) RETURN INTEGER IS
+trait NUMBER(9);
+consult NUMBER(9);
+medecin_traitant  Medecins.matricule%TYPE;
+medecin_medicament Medecins.matricule%TYPE;
+--récuperer le traitement du médicament en question
 CURSOR C1 IS
     SELECT idTraitement 
     FROM Traitement_Medicaments 
-    WHERE code_medicament = codeCIS;
---récuperer les medecins qui ont contribué à la fabrication du médicament.
-CURSOR C2 IS
-    SELECT matricule INTO medecin_medicament
-    FROM Medecins_Medicaments
-    WHERE code_medicament = codeCIS ;
+    WHERE codeCIS = code;
 
 BEGIN
 --récuperer la consultation du traitement en question
-OPEN C1 FOR
-FETCH C1 INTO Traitement; 
-    SELECT idConsultation INTO consultation
-    FROM   Traitements
-    WHERE  Traitement=identifiant;
-CLOSE C1; 
---récuperer les medecins qui ont préscrit le medicament lors d'une consultation
-    SELECT matriculeMedecin INTO medecin_traitant
-    FROM   Consultations
-    WHERE  consultation = identifiant ;
---faire la comparaison entre le medecin traitant et chaque medecin du 
+    OPEN C1;
+    LOOP
+        FETCH C1 INTO trait; 
+        EXIT WHEN C1%NOTFOUND;
+        SELECT idConsultation INTO consult
+        FROM   Traitements
+        WHERE  identifiant = trait; 
+        --récuperer les medecins qui ont prescrit le medicament lors d'une consultation
+        SELECT matriculeMedecin INTO medecin_traitant
+        FROM   Consultations
+        WHERE  identifiant = consult;
+        --faire la comparaison entre le medecin traitant et chaque medecin du 
+        SELECT matricule INTO medecin_medicament
+        FROM Medecins_Medicaments
+        WHERE codeCIS = code AND matricule = medecin_traitant;
+
+        IF medecin_medicament == NULL THEN
+            RETURN 0;
+        END IF;
+    END LOOP;
+    CLOSE C1;
+    RETURN 1;
 
 EXCEPTION
-
+WHEN no_data_found THEN
+    RETURN 0;
 END;
+/
 
 --------------------------------------------------------
---  DDL for Function 7 IDENTIFIER_MALADIES
+--  DDL for Function 5 LISTE_MEDOC_PRESCR_DEVELOPPEUR
 --------------------------------------------------------
-CREATE OR REPLACE FUNCTION IDENTIFIER_MALADIES (
-  idPatient Patients.matricule%TYPE) RETURN SYS_REFCURSOR IS
+CREATE OR REPLACE FUNCTION LISTE_MEDOC_PRESCR_DEVELOPPEUR RETURN SYS_REFCURSOR IS 
 curseur SYS_REFCURSOR;
 BEGIN
 
-
+    OPEN curseur FOR
+    SELECT * FROM Medicaments m
+    WHERE IS_DEVELOPPEUR_ONLY_PRESC(m.codeCis) = 1;
+    
     RETURN curseur;
-END IDENTIFIER_MALADIES;
+END LISTE_MEDOC_PRESCR_DEVELOPPEUR;
 /
+
+--------------------------------------------------------
+--  DDL for Function 6 IS_DEVELOPPEUR_LAB_PRESC
+--------------------------------------------------------
+CREATE OR REPLACE FUNCTION IS_DEVELOPPEUR_LAB_PRESC(
+    code Medicaments.codecis%TYPE) RETURN INTEGER IS
+trait              NUMBER(9);
+consult            NUMBER(9);
+medecin_traitant   Medecins.matricule%TYPE;
+medecin_medicament Medecins.matricule%TYPE;
+lab                Laboratoires.identifiant%TYPE;
+--récuperer le traitement du médicament en question
+CURSOR C1 IS
+    SELECT idTraitement 
+    FROM Traitement_Medicaments 
+    WHERE codeCIS = code;
+
+BEGIN
+    OPEN C1;
+    LOOP
+        FETCH C1 INTO trait; 
+        EXIT WHEN C1%NOTFOUND;
+
+        --récuperer la consultation du traitement en question
+        SELECT idConsultation INTO consult
+        FROM   Traitements
+        WHERE  identifiant = trait;
+        
+        --récuperer le medecin qui a prescrit le medicament lors d'une consultation
+        SELECT matriculeMedecin INTO medecin_traitant
+        FROM   Consultations
+        WHERE  identifiant = consult;
+        
+        --récupérer le laboratoire 
+        SELECT idLab INTO lab
+        FROM Laboratoires_Medicaments
+        WHERE codeCIS = code;
+        
+        --Comparer le medecin avec ceux travaillant dans le laboratoire 
+        SELECT matricule INTO medecin_medicament
+        FROM Medecins_Laboratoires
+        WHERE matricule = medecin_traitant and dateSortie IS NULL;
+
+        IF medecin_medicament = NULL THEN
+            RETURN 0;
+        END IF;
+    END LOOP;
+    CLOSE C1;
+    RETURN 1;
+
+EXCEPTION
+WHEN no_data_found THEN
+    RETURN 0;
+END;
+/
+
+--------------------------------------------------------
+--  DDL for Function 6 LISTE_MEDOC_PRESCR_LAB
+--------------------------------------------------------
+CREATE OR REPLACE FUNCTION LISTE_MEDOC_PRESCR_LAB 
+    RETURN SYS_REFCURSOR IS 
+curseur SYS_REFCURSOR;
+BEGIN
+    OPEN curseur FOR
+    SELECT * FROM Medicaments m
+    WHERE IS_DEVELOPPEUR_LAB_PRESC(m.codeCis) = 1;
+    
+    RETURN curseur;
+END LISTE_MEDOC_PRESCR_LAB;
+/
+
+--------------------------------------------------------
+--  DDL for Function 7 PROPOSER_TRAITEMENTS
+--------------------------------------------------------
+--Trier par effet indésirable
+CREATE OR REPLACE FUNCTION PROPOSER_TRAITEMENTS (
+  mat Patients.matricule%TYPE) RETURN SYS_REFCURSOR IS
+maladie  Maladies.idMaladie%TYPE;
+
+curseur SYS_REFCURSOR;
+traitements SYS_REFCURSOR;
+BEGIN
+    
+    OPEN curseur FOR 
+    SELECT DISTINCT * FROM Medicaments m
+    JOIN Maladie_Medicament mm ON mm.codeCIS = m.codeCIS
+    WHERE mm.idMaladie IN (
+        SELECT sm.idMaladie FROM Symptomes_Maladies sm
+        JOIN Symptomes_Consultation sc ON sm.codeSymptome = sc.codeSymptome
+        JOIN Consultations cc ON cc.identifiant = sc.idConsultation
+        WHERE cc.matriculePatient = mat
+    );
+    RETURN curseur;
+END PROPOSER_TRAITEMENTS;
+/
+
+--------------------------------------------------------
+--  DDL for 8 Surveillance
+--------------------------------------------------------
+CREATE TABLE SURVEILLANCE (
+    identifiant               NUMBER(9),
+    medecin                   NUMBER(9),  
+    nombreMedicamentDeveloppe NUMBER(5),
+    nombreLabTravaille        NUMBER(5),
+    nombreMedicamentPrescrit  NUMBER(5),
+    rapport                   NUMBER(5),
+    CONSTRAINT PKSurveillance PRIMARY KEY(identifiant),
+    FOREIGN KEY (medecin) REFERENCES Medecins(matricule)
+);
+
+--------------------------------------------------------
+--  DDL for Trigger INSERTUPDATE_ON_SURVEILLANCE 
+--------------------------------------------------------
+CREATE OR REPLACE TRIGGER INSERT_ON_SURVEILLANCE 
+BEFORE INSERT OR UPDATE ON SURVEILLANCE 
+FOR EACH ROW 
+BEGIN
+  SELECT (:new.nombreMedicamentPrescrit + :new.nombreMedicamentDeveloppe 
+    + :new.nombreLabTravaille) / :new.nombreMedicamentDeveloppe 
+    + :new.nombreLabTravaille INTO :new.rapport FROM DUAL;
+END;
+/
+
+--------------------------------------------------------
+--  DDL for Trigger INSERT_ON_TRAITEMENT_Medicaments
+--------------------------------------------------------
+CREATE OR REPLACE TRIGGER INSERT_ON_TRAIT_MEDIC
+BEFORE INSERT ON Traitement_Medicaments
+FOR EACH ROW
+DECLARE
+  matricule  NUMBER(9);
+  count_surveillance  NUMBER(9);
+  val NUMBER(9);
+BEGIN
+    SELECT SEQUENCE_TRAITEMENT_MEDICAMENT.NEXTVAL INTO :new.identifiant FROM DUAL;
+    SELECT matriculeMedecin INTO matricule FROM Consultations c
+    JOIN Traitements t ON idConsult = c.identifiant
+    WHERE t.identifiant = :new.idTraitement;
+    
+    SELECT COUNT(*) INTO count_surveillance FROM SURVEILLANCE WHERE medecin = matricule;
+    IF count_surveillance = 0 THEN
+        IF IS_DEVELOPPEUR_ONLY_PRESC(:new.codeCis) = 1 THEN
+            INSERT INTO Surveillance VALUES (SEQUENCE_SURVEILLANCE.NEXTVAL, matricule, 1, 0, 0, 0);
+        ELSIF IS_DEVELOPPEUR_LAB_PRESC(:new.codeCis) = 1 THEN
+            INSERT INTO Surveillance VALUES (SEQUENCE_SURVEILLANCE.NEXTVAL, matricule, 0, 1, 0, 0);
+        ELSE
+            INSERT INTO Surveillance VALUES (SEQUENCE_SURVEILLANCE.NEXTVAL, matricule, 0, 0, 1, 0);
+        END IF;
+    ELSE 
+        IF IS_DEVELOPPEUR_ONLY_PRESC(:new.codeCis) = 1 THEN
+            SELECT nombreMedicamentDeveloppe INTO val
+            FROM Surveillance  WHERE medecin = matricule;
+            
+            UPDATE Surveillance SET nombreMedicamentDeveloppe = val + 1
+            WHERE medecin = matricule;
+            
+        ELSIF IS_DEVELOPPEUR_LAB_PRESC(:new.codeCis) = 1 THEN
+            SELECT nombreLabTravaille INTO val
+            FROM Surveillance  WHERE medecin = matricule;
+            
+            UPDATE Surveillance SET nombreLabTravaille = val + 1
+            WHERE medecin = matricule;
+        ELSE
+            SELECT nombreMedicamentPrescrit INTO val
+            FROM Surveillance  WHERE medecin = matricule;
+            
+            UPDATE Surveillance SET nombreMedicamentPrescrit = val + 1
+            WHERE medecin = matricule;
+        END IF;
+    END IF;
+END;
+/
+
+--------------------------------------------------------
+--  DDL for 9
+--------------------------------------------------------
+
+
+/*9. une fonction permettant d’alerter en temps réel le médecin prescrivant si le traitement envisagé, risque d’interagir
+avec un traitement ’en cours’ et proposer le cas échéant un autre traitement ;*/
+
+/*10. une fonction qui recherche s’il existe des traitements communs à deux maladies ;*/
+
+/*11. un patient peut consulter un médecin pour lui déclarer des eﬀets secondaires dus à son traitement. Une fonction
+vériﬁera si ces eﬀets indésirables sont connus ou pas (grâce aux hiérarchies des classes chimiques et pharmaco-
+logiques des substances actives, mais également des eﬀets indésirables eux-mêmes). Dans ce cas l’ajout de ces
+eﬀets indésirables déclenchera une forme d’alerte dans laquelle seront regroupés tous les patients traités avec ces médicaments*/

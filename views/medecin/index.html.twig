@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block body %}
-    
+
 {% block menu %}
 {{ parent() }}
 {% endblock %}
@@ -38,20 +38,30 @@
                     <th>Identifiant</th>
                     <th>Nom</th>
                     <th>Prenom</th>
-                    <th>Actions</th>
+                    <th>Téléphone</th>
+                    <th>Date de naissance</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
 
             <tbody id="itemContainer">
         {% for m in medecins %}
-                    <tr>
+                    <tr class="click" onclick="document.location.href='{{WEBROOT}}medecin/view/{{m.matricule}}'">
                         <td>{{m.login}}</td>
                         <td>{{m.nom}}</td>
                         <td>{{m.prenom}}</td>
+                        <td>{{m.telephone}}</td>
+                        <td>{{m.dateNaissance}}</td>
                         <td>
-                            <a href="{{WEBROOT}}medecin/view/{{m.matricule}}">D&eacute;tails</a>
-                            <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">Modifier</a>
-                            <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">Supprimer</a>
+                            <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">
+                                <img width="32px" src="{{WEBROOT}}templates/img/edit.png" alt="Modifier"/>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">
+                                <img width="32px" src="{{WEBROOT}}templates/img/delete.png" alt="Supprimer"/>
+                            </a>
                         </td>
                     </tr>
         {% endfor %}
