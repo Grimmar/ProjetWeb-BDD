@@ -999,8 +999,57 @@ WHEN no_data_found THEN
 END;
 /
 /*10. une fonction qui recherche s’il existe des traitements communs à deux maladies ;*/
+CREATE OR REPLACE FUNCTION GET_TRAITEMENTS_COMMUNS (
+    idM1 Maladies.idMaladie%TYPE,
+    idM2 Maladies.idMaladie%TYPE
+    ) RETURN SYS_REFCURSOR IS 
+CURSOR maladies1 IS SELECT idMaladie FROM Maladies;
+CURSOR maladies2 IS SELECT idMaladie FROM Maladies;
+curseur SYS_REFCURSOR;
+BEGIN
+    
+MEDICAMENTS_FROM_MALADIE()
+    OPEN curseur FOR
+    SELECT codeSubstanceOMS FROM Medicaments_Substances_OMS
+    WHERE codeCis = cis;
+    RETURN CURSEUR;
+END GET_SUBSTANCES_MEDICAMENT;
+/
+
 
 /*11. un patient peut consulter un médecin pour lui déclarer des eﬀets secondaires dus à son traitement. Une fonction
 vériﬁera si ces eﬀets indésirables sont connus ou pas (grâce aux hiérarchies des classes chimiques et pharmaco-
 logiques des substances actives, mais également des eﬀets indésirables eux-mêmes). Dans ce cas l’ajout de ces
 eﬀets indésirables déclenchera une forme d’alerte dans laquelle seront regroupés tous les patients traités avec ces médicaments*/
+CREATE OR REPLACE FUNCTION IS_EFFET_CONNU()
+CREATE OR REPLACE FUNCTION DETERMINER_PATIENT_EI(
+    mat Patients.matricule%TYPE, ei EFFETS_INDESIRABLES_FR.LIBELLE%TYPE) RETURN SYS_REFCURSOR IS 
+curseur SYS_REFCURSOR;
+ei_exist  NUMBER(9);
+BEGIN
+ INTO ei_exist
+    SELECT count(identifiant) INTO ei_exist FROM EFFETS_INDESIRABLES_FR
+    WHERE identifiant IN (
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
+        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
+        JOIN SubsActClasseChimique cl ON s.identifiant = cl.substance
+        JOIN Classes_Chimiques cc ON cc.identifiant = cl.classe
+        CONNECT BY PRIOR cc.identifiant = cc.idPere
+    )  OR identifiant IN (
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
+        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
+        JOIN SubsActClassePharmaco cl ON s.identifiant = cl.substance
+        JOIN Classes_Pharmacologiques cc ON cc.identifiant = cl.classe
+        CONNECT BY cc.idPere = PRIOR cc.identifiant
+    );
+ IF ei_exist == 0 THEN
+  INSERT INTO EFFETS_INDESIRABLES_FR(IDENTIFIANT,LIBELLE,IDPERE) VALUES(SEQUENCE_EI_FR.NEXTVAL,ei,NULL);
+  OPEN curseur FOR
+  SELECT p.MATRICULE FROM PATIENTS p, Consultation c, Traitement t
+  WHERE p.MATRICULE = c.MATRICULEPATIENT and
+   c.IDENTIFIANT = t.IDCONSULTATION and
+   p.MATRICULE = mat;
+ END IF;
+    RETURN CURSEUR;
+END DETERMINER_PATIENT_EI;
+/

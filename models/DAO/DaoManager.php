@@ -11,7 +11,6 @@ class DaoManager {
 
     private function __construct() {
         $this->createConnexion();
-        $this->createOracleConnexion();
     }
 
     public static function getInstance() {
