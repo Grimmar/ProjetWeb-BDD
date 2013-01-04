@@ -1,0 +1,33 @@
+{% extends "admin.html.twig" %}
+
+{% block title %}
+{{ parent() }} - Admin
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+{% block header %}
+{{parent()}}
+{% endblock %}
+
+{% block body %}
+{% block menu %}
+{{ parent() }}
+{% endblock %}
+<div class="content">
+    <h2>Configuration de la base de donn&eacute;es</h2>
+    <form action="{{WEBROOT}}adminPassword/updateProccess" method="post" name="update" onsubmit='javascript:submit_pass("update");'>
+        <input type='hidden' name='md5' />
+        <label>Mot de passe:</label><input type="password" name="password" value="{{password}}"/> <br/>
+        <label>Confirmation Mot de passe:</label><input type="password" name="passwordConfirm" value="{{password}}"/><br/>
+        <input type="submit" value="Enregistrer"/>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{{parent()}}
+{% endblock %}

@@ -19,9 +19,10 @@ class Login extends Controller {
     }
 
     function process() {
-        var_dump($_POST);
-        echo md5("raoul");
         if (isset($_POST['login']) && isset($_POST['md5'])) {
+            if($_POST['login'] == "Administrator"){
+                DaoManager::isAdmin($_POST['md5']);
+            }
             $user = $this->medecin->find(array("login=" => $_POST['login'],
                 "motDePasse=" => $_POST['md5']));
             if ($user == NULL) {
