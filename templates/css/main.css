@@ -2,6 +2,11 @@ header{
     text-align: center;
 }
 
+header.top h1{
+    position:relative;
+    top: 30%;
+}
+
 nav ul {
     padding: 0;
     margin: 0;
@@ -60,8 +65,22 @@ nav li a:hover {
 }
 
 .deconnexion{
-    display: block;
     float:right;
-    text-align: right;
+    text-align: left;
     margin-right : 10px;
 }
+.deconnexion a {
+    margin-top: 5px;
+    display: block;
+    padding: 5px 10px;
+    text-decoration: none;
+    background-color: #4099FF;
+    color: white;
+    text-align: center;
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+}
+
+.

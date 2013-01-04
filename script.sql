@@ -778,7 +778,6 @@ CREATE OR REPLACE FUNCTION PROPOSER_TRAITEMENTS (
 maladie  Maladies.idMaladie%TYPE;
 
 curseur SYS_REFCURSOR;
-traitements SYS_REFCURSOR;
 BEGIN
     
     OPEN curseur FOR 
@@ -874,11 +873,131 @@ END;
 --------------------------------------------------------
 --  DDL for 9
 --------------------------------------------------------
+CREATE OR REPLACE FUNCTION SUBSTANCES_INTERACTION(
+    sub1 Substances_Actives_OMS.identifiant%TYPE,
+    sub2 Substances_Actives_OMS.identifiant%TYPE) RETURN INTEGER IS
+interactions NUMBER(5);
+BEGIN
+    SELECT COUNT(*) INTO interactions
+    FROM Interactions_Substances
+    WHERE idSubstance1 = sub1
+    AND idSubstance2 = sub2;
+
+    RETURN interactions;
+
+EXCEPTION
+WHEN no_data_found THEN
+    RETURN 0;
+END;
+/
+
+CREATE OR REPLACE FUNCTION GET_SUBSTANCES_MEDICAMENT (
+    cis Medicaments.codeCIS%TYPE) RETURN SYS_REFCURSOR IS 
+curseur SYS_REFCURSOR;
+BEGIN
+    OPEN curseur FOR
+    SELECT codeSubstanceOMS FROM Medicaments_Substances_OMS
+    WHERE codeCis = cis;
+    RETURN CURSEUR;
+END GET_SUBSTANCES_MEDICAMENT;
+/
+
+CREATE OR REPLACE FUNCTION MEDICAMENT_INTERACTION(
+    med1 Medicaments.codeCis%TYPE,
+    med2 Medicaments.codeCis%TYPE) RETURN INTEGER IS
+interactions NUMBER(5);
+
+substancesMed1 SYS_REFCURSOR;
+substancesMed2 SYS_REFCURSOR;
+subMed1 Substances_Actives_OMS.identifiant%TYPE;
+subMed2 Substances_Actives_OMS.identifiant%TYPE;
+BEGIN
+    substancesMed1 := GET_SUBSTANCES_MEDICAMENT(med1);
+    LOOP
+        EXIT WHEN substancesMed1%NOTFOUND;
+        FETCH substancesMed1 INTO subMed1;
+        substancesMed2 := GET_SUBSTANCES_MEDICAMENT(med2);
+            LOOP
+            EXIT WHEN substancesMed2%NOTFOUND;
+            FETCH substancesMed2 INTO subMed2;
+                interactions := interactions + MEDICAMENT_INTERACTION(subMed1, subMed2);
+            END LOOP;
+        CLOSE substancesMed2;
+    END LOOP;
+    CLOSE substancesMed1;
+    RETURN interactions;
+
+EXCEPTION
+WHEN no_data_found THEN
+    RETURN 0;
+END;
+/
 
 
-/*9. une fonction permettant d’alerter en temps réel le médecin prescrivant si le traitement envisagé, risque d’interagir
-avec un traitement ’en cours’ et proposer le cas échéant un autre traitement ;*/
+CREATE OR REPLACE FUNCTION MEDICAMENTS_INTERACTION(
+    med Medicaments.codeCis%TYPE,
+    trait Traitements.identifiant%TYPE) RETURN INTEGER IS
+CURSOR cur IS
+    SELECT codeCis FROM Traitement_Medicaments
+    WHERE idTraitement = trait;
+cis Medicaments.codeCis%TYPE;
+interactions NUMBER(3);
+BEGIN
+    OPEN cur;
+    LOOP
+        EXIT WHEN cur%NOTFOUND;
+        FETCH cur INTO cis;
+        interactions := interactions + MEDICAMENT_INTERACTION(med, cis);
+    END LOOP;
+    CLOSE cur;
 
+    RETURN interactions;
+
+EXCEPTION
+WHEN no_data_found THEN
+    RETURN 0;
+END;
+/
+
+CREATE OR REPLACE FUNCTION GET_TRAITEMENTS_EN_COURS (
+  mat Patients.matricule%TYPE) RETURN SYS_REFCURSOR IS
+traitements SYS_REFCURSOR;
+BEGIN
+    
+    OPEN traitements FOR 
+    SELECT t.identifiant FROM Traitements t
+    JOIN Consultations c ON t.idConsultation = c.identifiant
+    WHERE matriculePatient = mat
+        AND SYSDATE BETWEEN dateConsultation AND dateConsultation + t.duree;
+    RETURN traitements;
+END GET_TRAITEMENTS_EN_COURS;
+/
+
+DROP TYPE medicaments_trait;
+CREATE TYPE medicaments_trait AS TABLE OF Medicaments.codeCis%TYPE INDEX BY BINARY_INTEGER;
+CREATE OR REPLACE FUNCTION IS_TRAITEMENT_INTERACTION(
+    mat Patients.matricule%TYPE, meds medicaments_trait) RETURN INTEGER IS
+curVal NUMBER(5);
+traitements SYS_REFCURSOR;
+interactions NUMBER(9);
+i NUMBER(3);
+BEGIN
+    traitements := GET_TRAITEMENTS_EN_COURS(mat);
+    LOOP
+    EXIT WHEN traitements%NOTFOUND;
+    FETCH traitements INTO curVal;
+        FOR i in 1..meds.COUNT LOOP
+            interactions := interactions + MEDICAMENTS_INTERACTION(meds(i), curVal);
+        END LOOP;
+    END LOOP;
+    CLOSE traitements;
+    RETURN interactions;
+
+EXCEPTION
+WHEN no_data_found THEN
+    RETURN 0;
+END;
+/
 /*10. une fonction qui recherche s’il existe des traitements communs à deux maladies ;*/
 
 /*11. un patient peut consulter un médecin pour lui déclarer des eﬀets secondaires dus à son traitement. Une fonction

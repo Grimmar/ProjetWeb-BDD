@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <dbConf>
-    <dbname>121221</dbname>
-    <dbport></dbport>
+    <dbname>localhost</dbname>
+    <dbport>1521</dbport>
     <user>
-        <name></name>
-        <password></password>
+        <name>appweb</name>
+        <password>appweb</password>
     </user>
 </dbConf>

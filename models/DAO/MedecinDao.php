@@ -35,12 +35,12 @@ class MedecinDao extends AbstractDao {
             m.adresse.numero \"numero\", m.adresse.adresse \"adresse\",
             m.adresse.ville \"ville\", m.adresse.codepostal \"codePostal\" 
             FROM Medecins m ";
-
         if ($a != null && is_array($a)) {
             $sql .= $this->getWhereArray($a);
         }
         $statement = $this->bdd->prepare($sql);
         if (!$statement->execute()) {
+            echo 'null';
             return null;
         }
         $statement->setFetchMode(PDO::FETCH_OBJ);
@@ -52,6 +52,7 @@ class MedecinDao extends AbstractDao {
                             $d->motdepasse, $d->role, $d->matricule,
                             $d->nom, $d->prenom, $d->telephone,
                             $d->numerosecu, $d->datenaissance, $adress);
+
             array_push($result, $m);
             unset($adress);
             unset($m);
@@ -66,7 +67,8 @@ class MedecinDao extends AbstractDao {
         }
         $statement = $this->bdd->prepare($sql);
         $statement->execute();
-        return $statement->fetchColumn();;
+        return $statement->fetchColumn();
+        ;
     }
 
     public function insert($entity) {

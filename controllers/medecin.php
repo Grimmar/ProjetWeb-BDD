@@ -76,7 +76,7 @@ class Medecin extends AdministrationController {
                         $this->data['adresse'], $this->data['ville'],
                         $this->data['codePostal']);
         $medecin = new MedecinEntity($this->data['login'],
-                        $this->data['md5'], $this->role,
+                        $this->data['md5'], NULL,
                         $matricule, $this->data['nom'], $this->data['prenom'],
                         $this->data['telephone'], $this->data['secu'],
                         $this->data['dtns'], $adresse);

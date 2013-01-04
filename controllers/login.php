@@ -24,7 +24,7 @@ class Login extends Controller {
             if ($_POST['login'] == "Administrator") {
                 if (DaoManager::isAdmin($_POST['md5'])) {
                     $user = array(new MedecinEntity("Administrator", $_POST['md5'], "ADMIN", null, null, null, null, null, null, null));
-                } 
+                }
             } else {
                 if (!property_exists($this, 'medecin')) {
                     $this->set(array("erreur" => "Veuillez contacter l'administrateur"));
@@ -49,13 +49,9 @@ class Login extends Controller {
         if ($user->getRole() == "ADMIN") {
             $_SESSION['user'] = serialize($user);
             $this->forward("admin");
-        } else if ($user->getRole() == "MEDECIN") {
+        } else {
             $_SESSION['user'] = serialize($user);
             $this->forward("accueil");
-        } else {
-            $_SESSION['user'] = null;
-            session_destroy();
-            $this->render("index");
         }
     }
 

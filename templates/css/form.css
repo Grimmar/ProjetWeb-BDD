@@ -54,3 +54,7 @@ tr.click:hover td  {
 tr.click td img:hover {
     box-shadow: 2px 2px 2px 2px black;   
 }
+
+input, select {
+    margin-bottom:5px;
+}

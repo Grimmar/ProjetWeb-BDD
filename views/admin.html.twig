@@ -4,21 +4,6 @@
 Administration
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-<link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/admin.css"/>
-<link rel="stylesheet" type="text/css" href="{{WEBROOT}}templates/css/content.css"/>
-<script>
-    $(function() {
-        $( "#accordion" ).accordion({
-            heightStyle: "content",
-            autoHeight: false,
-            navigation: true
-        });
-    });
-    </script>
-{% endblock %}
-
 {% block sectionTitle %}
     Administration
 {% endblock %}

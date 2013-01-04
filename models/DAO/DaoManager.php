@@ -25,6 +25,7 @@ class DaoManager {
             $this->connexion = new PDO("oci:dbname=//" . $param->getDbLocalisation(), $param->getUserName(), $param->getUserPassword());
             $this->connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connexion->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+            $this->connexion->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
         } catch (PDOException $e) {
             throw $e;
         }
