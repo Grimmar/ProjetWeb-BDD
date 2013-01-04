@@ -12,6 +12,10 @@ class Medecin extends AdministrationController {
 
     protected $models = array("medecin");
 
+    function __construct() {
+        parent::__construct();
+    }
+
     function index() {
         $medecins = $this->medecin->find(array("order by" => "nom"));
         $this->set(array("medecins" => $medecins));

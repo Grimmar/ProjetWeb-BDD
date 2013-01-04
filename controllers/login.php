@@ -19,12 +19,20 @@ class Login extends Controller {
     }
 
     function process() {
+        $user = null;
         if (isset($_POST['login']) && isset($_POST['md5'])) {
-            if($_POST['login'] == "Administrator"){
-                DaoManager::isAdmin($_POST['md5']);
+            if ($_POST['login'] == "Administrator") {
+                if (DaoManager::isAdmin($_POST['md5'])) {
+                    $user = array(new MedecinEntity("Administrator", $_POST['md5'], "ADMIN", null, null, null, null, null, null, null));
+                } 
+            } else {
+                if (!property_exists($this, 'medecin')) {
+                    $this->set(array("erreur" => "Veuillez contacter l'administrateur"));
+                } else {
+                    $user = $this->medecin->find(array("login=" => $_POST['login'],
+                        "motDePasse=" => $_POST['md5']));
+                }
             }
-            $user = $this->medecin->find(array("login=" => $_POST['login'],
-                "motDePasse=" => $_POST['md5']));
             if ($user == NULL) {
                 $this->render('index');
             } else {

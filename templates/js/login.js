@@ -13,6 +13,21 @@ function submit_pass(nomForm)
     return true;
 }
 
+function submit_passConfirm(nomForm)
+{
+    pass=document.forms[nomForm].password.value;
+    document.forms[nomForm].password.value="";
+    buf=MD5(pass);
+    document.forms[nomForm].md5.value=buf;
+    
+    pass=document.forms[nomForm].passwordConfirm.value;
+    document.forms[nomForm].passwordConfirm.value="";
+    buf=MD5(pass);
+    document.forms[nomForm].md5Confirm.value=buf;
+
+    return true;
+}
+
 
 function MD5(string) {
  

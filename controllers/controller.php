@@ -25,11 +25,15 @@ class Controller {
         if (isset($_POST)) {
             $this->data = $_POST;
         }
-
-        if (isset($this->models)) {
-            foreach ($this->models as $m) {
-                $this->loadModel($m);
+        try {
+            if (isset($this->models)) {
+                foreach ($this->models as $m) {
+                    $this->loadModel($m);
+                }
             }
+        } catch (Exception $e) {
+            if(isset($_SESSION['user']))
+                $this->forward("configurationBDD");
         }
     }
 
@@ -58,7 +62,7 @@ class Controller {
     }
 
     function error($code, $message) {
-        $this->set(array('code'  => $code, 'message' => $message));
+        $this->set(array('code' => $code, 'message' => $message));
         header("HTTP/1.0 ", $code);
         $template = $this->twig->loadTemplate('error/error.html.twig');
         echo $template->render($this->vars);

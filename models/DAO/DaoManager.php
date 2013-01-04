@@ -33,17 +33,17 @@ class DaoManager {
     public function getConnexion() {
         return $this->connexion;
     }
-    
-    public static function testConnexion(){
+
+    public static function testConnexion() {
         self::$dao = null;
         self::getInstance();
     }
-    
-    public static function isAdmin($pass){
+
+    public static function isAdmin($pass) {
         $document_xml = new DomDocument();
         $document_xml->load(ROOT . "models/admin.xml");
         $password = $document_xml->getElementsByTagName('password');
-        if($password->item(0)->nodeValue == $pass){
+        if ($password->item(0)->nodeValue == $pass) {
             return true;
         }
         return false;

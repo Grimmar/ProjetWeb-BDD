@@ -13,7 +13,7 @@
 require_once(ROOT . 'controllers\administrationController.php');
 require_once(ROOT . 'models\DAO\DaoManager.php');
 
-class ConfigurationBDD extends Controller {
+class ConfigurationBDD extends AdministrationController {
 
     private $fichier;
     

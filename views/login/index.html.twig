@@ -21,6 +21,7 @@
 
 {% block body %}
     <h1 id="connexion">Connexion</h1>
+    <h3 class="erreur">{{erreur}}</h3>
     <form action="{{WEBROOT}}login/process" method="post" id="formLogin" onsubmit='javascript:submit_pass("formLogin");'>
         <input type='hidden' name='md5' />
         <input type="text" name="login" id="login" placeholder="Login" autofocus 
