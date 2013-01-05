@@ -3,7 +3,7 @@
 {% block header %}
 <h1>{% block sectionTitle %}{% endblock %}</h1>
 <div class="deconnexion">
-    Bonjour {{user.prenom}} {{user.nom}}<br />
+    Bonjour {{user.login}}<br />
     <a href="{{WEBROOT}}deconnexion">D&eacute;connexion</a>
 </div>
 {% endblock %}
