@@ -1,0 +1,37 @@
+.patient{
+    float: left;
+}
+.menu{
+    display: none;
+}
+.top{
+    display : none;
+}
+.medicaments{
+    width :100%;
+    height :100%;
+}
+
+footer{
+    display : none;
+}
+
+.signature:before{
+    content:"Signature :";
+}
+.signature{
+    float:right;
+}
+
+.title-ord{
+    font-size: 50px;
+    text-align: center;
+}
+
+.entete{
+    display: inherit;
+    text-align: center;
+}
+.print{
+    display: none;
+}

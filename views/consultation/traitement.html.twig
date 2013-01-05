@@ -1,0 +1,57 @@
+{% extends "user.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{WEBROOT}}templates/css/ordonnance.css" />
+<link rel="stylesheet" href="{{WEBROOT}}templates/css/impress.css" media="print"/>
+{% endblock %}
+
+{% block contentTitle %}Consultation{% endblock %}    
+
+{% block content %}
+<div class="print">
+    <a href="javascript:window.print()">Imprimer l'ordonnance</a>
+</div>
+<div class="ordonnance">
+    <div class="entete">
+        {{entete|raw}}
+    </div>
+    <h3 class="title-ord">Ordonnance</h3>
+    {%if medicaments != NULL %}
+    <div class="patient">
+        <fieldset>
+            <legend>Patient</legend>    
+            Nom: {{patient.getNom()}}<br/>
+            Prenom: {{patient.getPrenom()}}<br/>
+        </fieldset>
+    </div>
+    <div class="medecin">
+        <fieldset>
+            <legend>Medecin</legend> 
+            Nom: {{medecin.getNom()}}<br/>
+            Prenom: {{medecin.getPrenom()}}<br/>
+        </fieldset>
+    </div>
+    <table class="medicaments">
+        <thead>
+            <tr>
+                <th height="50px" width="500px">Liste de medicaments</th>
+                <th height="50px" width="200px">Frequence</th>
+                <th height="50px" width="200px">Dur&eacute;e</th>
+            </tr>
+        </thead>
+        <tbody id="itemContainer">
+            {% for m in medicaments %}
+                <tr>
+                    <td height="50px">{{m.libelle}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+        <div class="signature"></div>
+
+    {% endif %}
+    </div>
+
+{% endblock %}

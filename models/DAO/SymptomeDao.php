@@ -55,9 +55,8 @@ class SymptomeDao extends AbstractDao {
 
     public function insert($entity) {
         $statement = $this->bdd->prepare('INSERT INTO Symptomes (code, libelle) 
-            VALUES (:code, :libelle)');
+            VALUES(SEQUENCE_SYMPTOME.nextval, :libelle)');
         $statement->execute(array(
-            'code' => $entity->getCode(),
             'libelle' => $entity->getLibelle()));
     }
 
@@ -70,6 +69,13 @@ class SymptomeDao extends AbstractDao {
         return $count;
     }
 
+    public function insertIntoSymptome_Consultation($idConsult, $codeSympto){
+         $statement = $this->bdd->prepare('INSERT INTO SYMPTOMES_CONSULTATION (IDCONSULTATION, CODESYMPTOME) 
+            VALUES()');
+        $statement->execute(array(
+            'IDCONSULTATION' =>  $idConsult,
+            'CODESYMPTOME' =>  $codeSympto));
+    }
 }
 
 ?>
