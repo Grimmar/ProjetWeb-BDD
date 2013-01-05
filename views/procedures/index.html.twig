@@ -1,1 +1,44 @@
 {% extends "admin.html.twig" %}
+
+{% block contentTitle %}Liste des procédures possibles{% endblock %}    
+
+{% block content %}
+<ul>
+    <li>
+        <a href="{{WEBROOT}}procedures/maladieToPatient">Affecter une maladie</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/medicamentsFromMaladie">Médicaments pour maladie</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/prescrireMedicament">Prescrire un médicament</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/prescrireRecommendation">Prescrire recommendation</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/effetsMedicaments">Effets d'un médicament</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/listprescriptiondev">Prescriptions développeurs</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/listPrescriptionLab">Prescriptions laborantins</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/possibleTraitment">Proposer un traitement</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/watchDoctor">Surveiller un médecin</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/interactionTraitement">Intéractions du traitement</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/traitementCommuns">Traitements communs</a>
+    </li>
+    <li>
+        <a href="{{WEBROOT}}procedures/nouvelEffet">Insérer un effet</a>
+    </li>
+</ul>
+{% endblock %}

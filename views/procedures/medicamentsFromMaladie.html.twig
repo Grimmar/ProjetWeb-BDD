@@ -1,0 +1,49 @@
+{% extends "admin.html.twig" %}
+{% block stylesheets %}
+{{parent()}}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block contentTitle %}Traitements possibles pour une maladie{% endblock %}    
+
+{% block content %}
+{%if maladies != NULL %}
+    <div class="holder"></div>
+    <table class="zebra">
+        <thead>
+            <tr>
+                <th>Identifiant</th>
+                <th>Libellé de la maladie</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="itemContainer">
+            {% for m in maladies %}
+                <tr>
+                    <td>{{m.idMaladie}}</td>
+                    <td>{{m.libelle}}</td>
+                    <td>
+                        <a href="{{WEBROOT}}procedures/medicamentsFromMaladie/{{m.idMaladie}}">
+                            <img width="32px" src="{{WEBROOT}}templates/img/screen.png" alt="Afficher les médicaments"/>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    {% else %}
+        Il n'y a aucune maladie enregistr&eacutee.
+    {% endif %}
+{% endblock %}

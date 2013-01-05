@@ -1,43 +1,84 @@
 {% extends "connected.html.twig" %}
 
 {% block title %}
-    Administration
+Administration
 {% endblock %}
 
 {% block sectionTitle %}
-    Administration
+Administration
 {% endblock %}
 
 {% block menu %}
-    <aside class="menu">
-        <nav>
-            <ul id="accordion">
-                <li>
-                    <a href="{{WEBROOT}}admin">Administration générale</a>
-                    <ul>
-                        <li>
-                            <a href="{{WEBROOT}}entete">Modifier l'entête</a>
-                        </li>
-                        <li>
-                            <a href="{{WEBROOT}}configurationBDD">Configuration la base de donn&eacute;e</a>
-                        </li>
-                         <li>
-                            <a href="{{WEBROOT}}adminPassword">Mot de passe administration</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Gestion des médecins</a>
-                    <ul>
-                        <li>
-                            <a href="{{WEBROOT}}medecin">Consulter les médecins</a>
-                        </li>
-                        <li>
-                            <a href="{{WEBROOT}}medecin/add">Ajouter un médecin</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </aside>
+<aside class="menu">
+    <nav>
+        <ul id="accordion">
+            <li>
+                <a href="{{WEBROOT}}admin">Administration générale</a>
+                <ul>
+                    <li>
+                        <a href="{{WEBROOT}}entete">Modifier l'entête</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}configurationBDD">Configurer la connexion</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}adminPassword">Mot de passe admin</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Gestion des médecins</a>
+                <ul>
+                    <li>
+                        <a href="{{WEBROOT}}medecin">Consulter les médecins</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}medecin/add">Ajouter un médecin</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Tests des procédures</a>
+                <ul>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/maladieToPatient">Affecter une maladie</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/medicamentsFromMaladie">Médicaments pour maladie</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/prescrireMedicament">Prescrire un médicament</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/prescrireRecommendation">Prescrire recommendation</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/effetsMedicaments">Effets d'un médicament</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/listprescriptiondev">Prescriptions développeurs</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/listPrescriptionLab">Prescriptions laborantins</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/possibleTraitement">Proposer un traitement</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/watchDoctor">Surveiller un médecin</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/interactionTraitement">Intéractions du traitement</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/traitementCommuns">Traitements communs</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}procedures/nouvelEffet">Insérer un effet</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
 {% endblock %}

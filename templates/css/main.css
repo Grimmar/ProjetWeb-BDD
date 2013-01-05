@@ -10,7 +10,7 @@ header.top h1{
 nav ul {
     padding: 0;
     margin: 0;
-    width: 185px;
+    width: 200px;
     background-color: white;
 }
 
@@ -21,7 +21,7 @@ td > a {
 nav ul ul {
     padding: 0;
     margin: 0;
-    width: 185px;
+    width: 200px;
 }
 .ui-accordion-header {
     background: white url("../img/fleche-droite.png") 95% 50% no-repeat;
@@ -60,7 +60,7 @@ nav li a:hover {
 
 .menu {
     float: left;
-    width: 185px;
+    width: 200px;
     box-shadow: 2px 2px 2px 2px #999;
 }
 

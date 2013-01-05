@@ -10,6 +10,8 @@ DROP SEQUENCE SEQUENCE_MEDECIN;
 DROP SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_CH;
 DROP SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_PH;
 DROP SEQUENCE SEQUENCE_SURVEILLANCE;
+DROP SEQUENCE SEQUENCE_EI_FR;
+DROP SEQUENCE SEQUENCE_EI_OMS;
 
 DROP TABLE Surveillance;
 DROP TABLE Laboratoires_Medicaments;
@@ -69,7 +71,17 @@ CREATE SEQUENCE SEQUENCE_TRAITEMENT_MEDICAMENT
 	START WITH 1
 	INCREMENT BY 1
 	MAXVALUE 99999;
-  
+ 
+CREATE SEQUENCE SEQUENCE_EI_FR
+	START WITH 1
+	INCREMENT BY 1
+	MAXVALUE 99999;
+
+CREATE SEQUENCE SEQUENCE_EI_OMS
+	START WITH 1
+	INCREMENT BY 1
+	MAXVALUE 99999;
+ 
 CREATE SEQUENCE SEQUENCE_RECOMMENDATION
 	START WITH 1
 	INCREMENT BY 1
@@ -228,17 +240,17 @@ CREATE TABLE Correspondance_EI_OMS_FR (
 CREATE TABLE Effet_Indesirable_Classe_Chim (
     identifiant        NUMBER(6) PRIMARY KEY,
     classe             VARCHAR2(5),
-    idEffetIndesirable VARCHAR2(4),
+    idEffetIndesirable NUMBER(8),
     FOREIGN KEY (classe) REFERENCES Classes_Chimiques(identifiant),
-    FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_FR(identifiant)
+    FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_OMS(identifiant)
 );
 
 CREATE TABLE Effet_Indesirable_Classe_Phar (
     identifiant        NUMBER(6) PRIMARY KEY,
     classe             VARCHAR2(5),
-    idEffetIndesirable VARCHAR2(4),
+    idEffetIndesirable NUMBER(8),
     FOREIGN KEY (classe) REFERENCES Classes_Pharmacologiques(identifiant),
-    FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_FR(identifiant)
+    FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_OMS(identifiant)
 );
 
 CREATE TABLE Effet_Indesirable_Substance_FR (
@@ -513,9 +525,31 @@ END;
 /
 
 --------------------------------------------------------
+--  DDL for Trigger INSERT_ON_EI_FR 
+--------------------------------------------------------
+CREATE OR REPLACE TRIGGER INSERT_ON_EI_FR
+BEFORE INSERT ON EFFETS_INDESIRABLES_FR 
+FOR EACH ROW 
+BEGIN
+  SELECT SEQUENCE_EI_FR.NEXTVAL INTO :new.identifiant FROM DUAL;
+END;
+/
+
+--------------------------------------------------------
+--  DDL for Trigger INSERT_ON_EI_OMS 
+--------------------------------------------------------
+CREATE OR REPLACE TRIGGER INSERT_ON_EI_OMS
+BEFORE INSERT ON EFFETS_INDESIRABLES_OMS 
+FOR EACH ROW 
+BEGIN
+  SELECT SEQUENCE_EI_OMS.NEXTVAL INTO :new.identifiant FROM DUAL;
+END;
+/
+
+--------------------------------------------------------
 --  DDL for Function AFFECTER_MALADIE_PATIENT
 --------------------------------------------------------
-CREATE OR REPLACE FUNCTION AFFECTER_MALADIE_PATIENT (idPatient Consultations.matriculePatient%TYPE,
+CREATE OR REPLACE FUNCTION AFFECTER_MALADIE_PATIENT(idPatient Consultations.matriculePatient%TYPE,
   idMedecin Consultations.matriculeMedecin%TYPE,
   idMaladie Maladies.idMaladie%TYPE) RETURN BOOLEAN IS
 
@@ -543,19 +577,18 @@ END;
 --------------------------------------------------------
 --  DDL for Function MEDICAMENTS_FROM_MALADIE
 --------------------------------------------------------
-CREATE OR REPLACE FUNCTION MEDICAMENTS_FROM_MALADIE (
+CREATE OR REPLACE  FUNCTION MEDICAMENTS_FROM_MALADIE (
 idMal Maladies.idMaladie%TYPE) RETURN SYS_REFCURSOR IS 
 curseur SYS_REFCURSOR;
 BEGIN
     OPEN curseur FOR
     SELECT mm.codeCis FROM Maladie_Medicament mm
-    JOIN Maladies ON maladies.idmaladie = mm.idmaladie
+    JOIN Maladies mal ON mal.idmaladie = mm.idmaladie
     WHERE mm.idMaladie = idMal
-    CONNECT BY idpere = PRIOR maladies.idmaladie;
+    CONNECT BY mal.idpere = PRIOR mal.idmaladie;
     RETURN curseur;
     
 END MEDICAMENTS_FROM_MALADIE;
-/
 --------------------------------------------------------
 --  DDL for Function PRESCRIRE_MEDICAMENT
 --------------------------------------------------------
@@ -620,16 +653,16 @@ CREATE OR REPLACE FUNCTION DETERMINER_MEDICAMENT_EI (
 curseur SYS_REFCURSOR;
 BEGIN
     OPEN curseur FOR
-    SELECT * FROM Effets_Indesirables_FR
+    SELECT identifiant, libelle FROM Effets_Indesirables_OMS
     WHERE identifiant IN (
-        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
-        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_OMS e
+        JOIN Substances_Actives_OMS s ON e.idSubstance = s.identifiant
         JOIN SubsActClasseChimique cl ON s.identifiant = cl.substance
         JOIN Classes_Chimiques cc ON cc.identifiant = cl.classe
         CONNECT BY PRIOR cc.identifiant = cc.idPere
     )  OR identifiant IN (
-        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
-        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_OMS e
+        JOIN Substances_Actives_OMS s ON e.idSubstance = s.identifiant
         JOIN SubsActClassePharmaco cl ON s.identifiant = cl.substance
         JOIN Classes_Pharmacologiques cc ON cc.identifiant = cl.classe
         CONNECT BY cc.idPere = PRIOR cc.identifiant
@@ -763,7 +796,7 @@ curseur SYS_REFCURSOR;
 BEGIN
     OPEN curseur FOR
     SELECT * FROM Medicaments m
-    WHERE IS_DEVELOPPEUR_LAB_PRESC(m.codeCis) = 1;
+    WHERE IS_DEVELOPPEUR_LAB_PRESC(m.codeCis) != 0;
     
     RETURN curseur;
 END LISTE_MEDOC_PRESCR_LAB;
@@ -772,7 +805,6 @@ END LISTE_MEDOC_PRESCR_LAB;
 --------------------------------------------------------
 --  DDL for Function 7 PROPOSER_TRAITEMENTS
 --------------------------------------------------------
---Trier par effet indésirable
 CREATE OR REPLACE FUNCTION PROPOSER_TRAITEMENTS (
   mat Patients.matricule%TYPE) RETURN SYS_REFCURSOR IS
 maladie  Maladies.idMaladie%TYPE;
@@ -974,7 +1006,7 @@ END GET_TRAITEMENTS_EN_COURS;
 /
 
 DROP TYPE medicaments_trait;
-CREATE TYPE medicaments_trait AS TABLE OF Medicaments.codeCis%TYPE INDEX BY BINARY_INTEGER;
+CREATE TYPE medicaments_trait AS TABLE OF VARCHAR(10) INDEX BY BINARY_INTEGER;
 CREATE OR REPLACE FUNCTION IS_TRAITEMENT_INTERACTION(
     mat Patients.matricule%TYPE, meds medicaments_trait) RETURN INTEGER IS
 curVal NUMBER(5);
@@ -998,58 +1030,97 @@ WHEN no_data_found THEN
     RETURN 0;
 END;
 /
+
+
 /*10. une fonction qui recherche s’il existe des traitements communs à deux maladies ;*/
 CREATE OR REPLACE FUNCTION GET_TRAITEMENTS_COMMUNS (
     idM1 Maladies.idMaladie%TYPE,
     idM2 Maladies.idMaladie%TYPE
-    ) RETURN SYS_REFCURSOR IS 
-CURSOR maladies1 IS SELECT idMaladie FROM Maladies;
-CURSOR maladies2 IS SELECT idMaladie FROM Maladies;
-curseur SYS_REFCURSOR;
+    ) RETURN medicaments_trait IS 
+meds1 SYS_REFCURSOR;
+meds2 SYS_REFCURSOR;
+med1 Medicaments.codeCis%TYPE;
+med2 Medicaments.codeCis%TYPE;
+medsCommuns medicaments_trait;
+i NUMBER(2);
 BEGIN
-    
-MEDICAMENTS_FROM_MALADIE()
-    OPEN curseur FOR
-    SELECT codeSubstanceOMS FROM Medicaments_Substances_OMS
-    WHERE codeCis = cis;
-    RETURN CURSEUR;
-END GET_SUBSTANCES_MEDICAMENT;
+    i := 0;
+    meds1 := MEDICAMENTS_FROM_MALADIE(idM1);
+    LOOP
+      EXIT WHEN meds1%NOTFOUND;
+      FETCH meds1 INTO med1;
+     meds2 := MEDICAMENTS_FROM_MALADIE(idM2);
+      LOOP
+        EXIT WHEN meds2%NOTFOUND;
+        FETCH meds2 INTO med2;
+            IF med1 = med2 THEN
+                medsCommuns(i) := med1;
+                i := i + 1;
+            END IF;
+        END LOOP;
+        CLOSE meds2;
+    END LOOP;
+    CLOSE meds1;
+    RETURN medsCommuns;
+END GET_TRAITEMENTS_COMMUNS;
 /
-
 
 /*11. un patient peut consulter un médecin pour lui déclarer des eﬀets secondaires dus à son traitement. Une fonction
 vériﬁera si ces eﬀets indésirables sont connus ou pas (grâce aux hiérarchies des classes chimiques et pharmaco-
 logiques des substances actives, mais également des eﬀets indésirables eux-mêmes). Dans ce cas l’ajout de ces
 eﬀets indésirables déclenchera une forme d’alerte dans laquelle seront regroupés tous les patients traités avec ces médicaments*/
-CREATE OR REPLACE FUNCTION IS_EFFET_CONNU()
-CREATE OR REPLACE FUNCTION DETERMINER_PATIENT_EI(
-    mat Patients.matricule%TYPE, ei EFFETS_INDESIRABLES_FR.LIBELLE%TYPE) RETURN SYS_REFCURSOR IS 
-curseur SYS_REFCURSOR;
-ei_exist  NUMBER(9);
+CREATE OR REPLACE FUNCTION IS_EFFET_CONNU(
+med Medicaments.codeCis%TYPE, effet Effets_Indesirables_OMS.libelle%TYPE) RETURN INTEGER IS 
+cur SYS_REFCURSOR;
+identifiant NUMBER(9);
+libelle Effets_Indesirables_OMS.libelle%TYPE;
 BEGIN
- INTO ei_exist
-    SELECT count(identifiant) INTO ei_exist FROM EFFETS_INDESIRABLES_FR
-    WHERE identifiant IN (
-        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
-        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
-        JOIN SubsActClasseChimique cl ON s.identifiant = cl.substance
-        JOIN Classes_Chimiques cc ON cc.identifiant = cl.classe
-        CONNECT BY PRIOR cc.identifiant = cc.idPere
-    )  OR identifiant IN (
-        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
-        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
-        JOIN SubsActClassePharmaco cl ON s.identifiant = cl.substance
-        JOIN Classes_Pharmacologiques cc ON cc.identifiant = cl.classe
-        CONNECT BY cc.idPere = PRIOR cc.identifiant
-    );
- IF ei_exist == 0 THEN
-  INSERT INTO EFFETS_INDESIRABLES_FR(IDENTIFIANT,LIBELLE,IDPERE) VALUES(SEQUENCE_EI_FR.NEXTVAL,ei,NULL);
-  OPEN curseur FOR
-  SELECT p.MATRICULE FROM PATIENTS p, Consultation c, Traitement t
-  WHERE p.MATRICULE = c.MATRICULEPATIENT and
-   c.IDENTIFIANT = t.IDCONSULTATION and
-   p.MATRICULE = mat;
- END IF;
-    RETURN CURSEUR;
-END DETERMINER_PATIENT_EI;
+    cur := DETERMINER_MEDICAMENT_EI(med);
+    LOOP
+        EXIT WHEN cur%NOTFOUND;
+        FETCH cur INTO identifiant, libelle;
+            IF libelle = effet THEN
+                RETURN 1;
+            END IF;
+    END LOOP;
+    CLOSE cur;
+    RETURN 0;
+END;
+/
+
+CREATE OR REPLACE FUNCTION GET_PATIENTS_FROM_MED(med Medicaments.codeCis%TYPE) 
+    RETURN SYS_REFCURSOR IS 
+    cur SYS_REFCURSOR;
+    CURSOR cur2 IS 
+    SELECT matricule FROM Patients;
+
+BEGIN
+    OPEN cur FOR 
+    SELECT c.matriculePatient FROM Traitements t
+    JOIN Consultations c ON t.idConsultation = c.identifiant
+        AND SYSDATE BETWEEN dateConsultation AND dateConsultation + t.duree
+        AND med IN(
+            SELECT codeCis FROM Traitement_Medicaments tm
+            JOIN Traitements t2 ON t2.identifiant = tm.idTraitement
+            JOIN Consultations c2 ON t2.idConsultation = c2.identifiant
+            WHERE c2.matriculePatient = c.matriculePatient
+        );
+    RETURN cur;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERER_NOUVEL_EI(med Medicaments.codeCis%TYPE, 
+    effet Effets_Indesirables_OMS.libelle%TYPE) IS 
+    patients SYS_REFCURSOR;
+
+    val INTEGER;
+    BEGIN
+    
+    val := IS_EFFET_CONNU(med, effet);
+    IF val == 0 THEN 
+        INSERT INTO EFFETS_INDESIRABLES_FR VALUES(SEQUENCE_EI_FR.NEXTVAL, effet, NULL);
+        RETURN GET_PATIENTS_FROM_MED(med);
+    END IF;
+    RETURN NULL;
+END;
 /

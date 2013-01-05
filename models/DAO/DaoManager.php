@@ -27,10 +27,10 @@ class DaoManager {
             $this->connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connexion->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
             $this->connexion->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
-            if (!function_exists('oci_pconnect')) {
-                $oracleConnexion = oci_pconnect($param->getUserName(), $param->getUserPassword(), $param->getDbLocalisation());
+            if (function_exists('oci_pconnect')) {
+                $this->oracleConnexion = oci_pconnect($param->getUserName(), $param->getUserPassword(), $param->getDbLocalisation());
             } else {
-                $oracleConnexion = null;
+                $this->oracleConnexion = null;
             }
         } catch (PDOException $e) {
             throw $e;
