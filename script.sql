@@ -1005,8 +1005,7 @@ BEGIN
 END GET_TRAITEMENTS_EN_COURS;
 /
 
-DROP TYPE medicaments_trait;
-CREATE TYPE medicaments_trait AS TABLE OF VARCHAR(10) INDEX BY BINARY_INTEGER;
+CREATE or replace TYPE medicaments_trait IS TABLE OF VARCHAR(50);
 CREATE OR REPLACE FUNCTION IS_TRAITEMENT_INTERACTION(
     mat Patients.matricule%TYPE, meds medicaments_trait) RETURN INTEGER IS
 curVal NUMBER(5);
@@ -1044,7 +1043,8 @@ med2 Medicaments.codeCis%TYPE;
 medsCommuns medicaments_trait;
 i NUMBER(2);
 BEGIN
-    i := 0;
+    i := 1;
+    medsCommuns := medicaments_trait();
     meds1 := MEDICAMENTS_FROM_MALADIE(idM1);
     LOOP
       EXIT WHEN meds1%NOTFOUND;
@@ -1054,6 +1054,7 @@ BEGIN
         EXIT WHEN meds2%NOTFOUND;
         FETCH meds2 INTO med2;
             IF med1 = med2 THEN
+                medsCommuns.EXTEND;
                 medsCommuns(i) := med1;
                 i := i + 1;
             END IF;

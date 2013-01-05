@@ -61,6 +61,7 @@ class Procedures extends AdministrationController {
     }
 
     function traitementCommuns() {
+        $this->procedure->getTraitementsCommuns('MSH_D_001424', 'MSH_D_001424');
         $this->render('traitementCommuns');
     }
 
