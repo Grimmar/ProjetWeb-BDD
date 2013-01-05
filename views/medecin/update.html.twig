@@ -47,7 +47,7 @@
                     <br/>
                     <label>Date de naissance</label>
                     <input type="date" name="dtns" id="dtns" placeholder="Date de naissance" 
-                           value="{% if medecin is not null %}{{medecin.dateNaissance}}{%endif %}"/>
+                           value="{% if medecin is not null %}{{medecin.dateNaissance|date("m/d/Y")}}{%endif %}"/>
                     Format : DD/MM/YYYY <br/> 
                     <label>Numero de s&eacute;curit&eacute; sociale</label>
                     <input type="text" name="secu" id="secu" placeholder="Numero de securité sociale"

@@ -16,7 +16,7 @@
     <tr><td width="250px">Nom</td><td>{{medecin.nom}}</td></tr>
     <tr><td>Pr&eacute;nom</td><td>{{medecin.prenom}}</td></tr>
     <tr><td>T&eacute;l&eacute;phone</td><td>{{medecin.telephone}}</td></tr>
-    <tr><td>Date de Naissance</td><td>{{medecin.dateNaissance}}</td></tr>
+    <tr><td>Date de Naissance</td><td>{{medecin.dateNaissance|date("m/d/Y")}}</td></tr>
     <tr><td>Numero de s&eacute;curit&eacute; sociale</td><td>{{medecin.numeroSecu}}</td></tr>
     <tr><td colspan="2"><b>Adresse</b></td></tr>
     <tr><td>Numero</td><td>{{medecin.adresse.numero}}</td></tr>
