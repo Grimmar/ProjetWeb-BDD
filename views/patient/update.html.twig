@@ -1,4 +1,4 @@
-{% extends "admin.html.twig" %}
+{% extends "user.html.twig" %}
 
 {% block contentTitle %}{% if patient is not null %}
         Modifier un patient 
@@ -29,7 +29,7 @@
                 <label>Date de naissance</label>
                 <input type="text" name="dtns" id="dtns" placeholder="Date de naissance" 
                        value="{% if patient is not null %}{{patient.dateNaissance}}{%endif %}"/>
-                Format : DD/MM/YYYY <br/> 
+                Format : DD/MM/YYYY 
                 <br/> 
                 <label>Numero de s&eacute;curit&eacute; sociale</label>
                 <input type="text" name="secu" id="secu" placeholder="Numero de sécurité sociale"

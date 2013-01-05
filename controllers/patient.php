@@ -50,7 +50,7 @@ class Patient extends UserController {
         } else {
             $patient = $this->patient->get($matricule);
             $this->patient->delete($matricule);
-            $this->set(array("patient" => $medecin));
+            $this->set(array("patient" => $patient));
             $this->render('delete');
         }
     }

@@ -1,4 +1,4 @@
-{% extends "admin.html.twig" %}
+{% extends "user.html.twig" %}
 
 {% block stylesheets %}
 {{ parent() }}
@@ -34,7 +34,7 @@
         </thead>
         <tbody id="itemContainer">
             {% for m in patients %}
-                <tr>
+                <tr class="click" onclick="document.location.href='{{WEBROOT}}patient/view/{{m.matricule}}'">
                     <td>{{m.nom}}</td>
                     <td>{{m.prenom}}</td>
                     <td>{{m.telephone}}</td>
