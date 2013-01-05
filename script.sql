@@ -735,7 +735,8 @@ END LISTE_MEDOC_PRESCR_DEVELOPPEUR;
 --------------------------------------------------------
 --  DDL for Function 6 IS_DEVELOPPEUR_LAB_PRESC
 --------------------------------------------------------
-CREATE OR REPLACE FUNCTION IS_DEVELOPPEUR_LAB_PRESC(
+create or replace 
+FUNCTION IS_DEVELOPPEUR_LAB_PRESC(
     code Medicaments.codecis%TYPE) RETURN INTEGER IS
 trait              NUMBER(9);
 consult            NUMBER(9);
@@ -772,14 +773,15 @@ BEGIN
         --Comparer le medecin avec ceux travaillant dans le laboratoire 
         SELECT matricule INTO medecin_medicament
         FROM Medecins_Laboratoires
-        WHERE matricule = medecin_traitant and dateSortie IS NULL;
+        WHERE matricule = medecin_traitant AND dateSortie IS NULL
+        AND idLab = lab;
 
-        IF medecin_medicament = NULL THEN
-            RETURN 0;
+        IF medecin_medicament != NULL THEN
+            RETURN 1;
         END IF;
     END LOOP;
     CLOSE C1;
-    RETURN 1;
+    RETURN 0;
 
 EXCEPTION
 WHEN no_data_found THEN

@@ -1,6 +1,51 @@
 {% extends "admin.html.twig" %}
-
+{% block stylesheets %}
+{{parent()}}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
+{% endblock %}
 {% block contentTitle %}Surveillance des prescriptions{% endblock %}    
 
 {% block content %}
+{%if medecins != NULL %}
+    <div class="holder"></div>
+    <table class="zebra">
+        <thead>
+            <tr>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+            </tr>
+        </thead>
+        <tbody id="itemContainer">
+            {% for m in medecins %}
+                <tr>
+                    <td>{{m.matricule}}</td>
+                    <td>{{m.nom}}</td>
+                    <td>{{m.prenom}}</td>
+                    <td>
+                        <a href="{{WEBROOT}}procedures/watchDoctor/{{m.matricule}}">
+                            <img width="32px" src="{{WEBROOT}}templates/img/screen.png" alt="Surveiller le médecin"/>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% elseif patients == NULL and surveillance != null %}
+        ""rgerg
+    {% else %}
+            Le médecin que vous tentez de surveiller n'existe pas ou n'a encore effectué aucune consultation.<br />
+            Il ne peut être surveillé.
+    {% endif %}
 {% endblock %}

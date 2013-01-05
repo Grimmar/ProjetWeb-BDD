@@ -23,14 +23,16 @@ table.zebra {
     text-align: left;
     border-collapse: collapse;
     border: 1px solid #69C;
-    margin: 20px;
+    margin: 10px;
+    width: 50%;
 }
 
 table.zebra thead th{
     font-weight: normal;
     font-size: 14px;
     color: #039;
-    padding: 15px 10px 10px;
+    padding: 10px;
+    
 }
 table.zebra tbody {
     background: #C9D0D5;
@@ -39,7 +41,7 @@ table.zebra tbody {
 table.zebra tbody td{
     color: black;
     border-top: 1px dashed white;
-    padding: 10px;
+    padding: 5px;
 }
 .click {
     cursor: pointer;

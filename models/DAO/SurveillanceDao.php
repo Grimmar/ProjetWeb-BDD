@@ -53,7 +53,7 @@ class SurveillanceDao extends AbstractDao {
 
     public function get($id) {
         $sql = "SELECT * FROM Surveillance m 
-            WHERE matricule = :id";
+            WHERE medecin = :id";
 
         $statement = $this->bdd->prepare($sql);
         $statement->execute(array(":id" => $id));

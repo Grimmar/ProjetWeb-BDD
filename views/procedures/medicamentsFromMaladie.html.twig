@@ -43,7 +43,26 @@
             </tbody>
 
         </table>
+    {% elseif maladies == NULL and medicaments != null %}
+        <div class="holder"></div>
+        <table class="zebra">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Libelle</th>
+                </tr>
+            </thead>
+            <tbody id="itemContainer">
+            {% for m in medicaments %}
+                    <tr>
+                        <td>{{m.codeCis}}</td>
+                        <td>{{m.libelle}}</td>
+                    </tr>
+            {% endfor %}
+                </tbody>
+
+            </table>
     {% else %}
-        Il n'y a aucune maladie enregistr&eacutee.
+            Il n'y a aucune maladie enregistr&eacutee.
     {% endif %}
 {% endblock %}

@@ -1,6 +1,41 @@
 {% extends "admin.html.twig" %}
-
+{% block stylesheets %}
+{{parent()}}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
+{% endblock %}
 {% block contentTitle %}Liste des médicaments prescrits uniquement par leurs développeurs{% endblock %}    
 
 {% block content %}
+{%if medicaments != NULL %}
+    <div class="holder"></div>
+    <table class="zebra">
+        <thead>
+            <tr>
+                <th>Code Cis</th>
+                <th>Libellé du médicament</th>
+            </tr>
+        </thead>
+        <tbody id="itemContainer">
+            {% for m in medicaments %}
+                <tr>
+                    <td>{{m.codecis}}</td>
+                    <td>{{m.libelle}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+            Il n'y a aucun médicament étant prescrit uniquement par les personnes travaillant dans le laboratoire des fabricants.
+    {% endif %}
 {% endblock %}
