@@ -1,0 +1,91 @@
+{% extends "user.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block contentTitle %}Consultation{% endblock %}    
+
+{% block content %}
+    <div style="float:left;">
+        <h4>Selection des symtpomes</h4>
+
+{%if symptome != NULL %}
+        <div class="holder"></div>
+        <table class="zebra">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="itemContainer">
+            {% for m in symptome %}
+                    <tr>
+                        <td>{{m.libelle}}</td>
+                        <td>
+                            <a href="{{WEBROOT}}consultation/selectSymptome/{{m.code}}">Selection</a>
+                        </td>
+                    </tr>
+            {% endfor %}
+                </tbody>
+
+            </table>
+    {% else %}
+            Il n'y a aucun symptomes enregistr&eacute;
+    {% endif %}
+        </div> 
+        <div style="float:left;">
+
+            <h4>Symptome du patient</h4>
+
+    {%if symptomepatient != NULL %}
+            <div class="holder"></div>
+
+            <table class="zebra">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="itemContainer">
+            {% for m in symptomepatient %}
+                        <tr>
+                            <td>{{m.libelle}}</td>
+                            <td>
+                                <a href="{{WEBROOT}}consultation/removeSymptome/{{m.code}}">Retirer</a>
+                            </td>
+                        </tr>
+            {% endfor %}
+                    </tbody>
+
+                </table>
+    {% else %}
+                Le patient n'a aucun symptome.
+    {% endif %}
+            </div>
+            <div style="float:right;">
+                <fieldset>
+                    <legend>Ajout d'un symptome</legend>
+                    <form action="{{WEBROOT}}consultation/addSymptome" method="post" name="ajout_symptome">
+                        <label>Libelle du symptome</label><input type="text" name="lib_symptome"/>
+                        <input type="submit" value="Enrergistrer"/>   
+                    </form>
+                </fieldset>
+                    
+                    <a href="{{WEBROOT}}consultation/maladie"><h3>Determination de la maladie</h3></a>
+            </div>
+{% endblock %}

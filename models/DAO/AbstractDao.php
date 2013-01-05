@@ -29,9 +29,8 @@ abstract class AbstractDao implements Dao {
             if (strpos($key, "order") !== FALSE || strpos($key, "limit") !== FALSE) {
                 $finReq .= $key . " " . $value . " ";
             } else {
-
                 if ($first_key === TRUE) {
-                    $where .= " where " . $key . "'" . $value . "' and ";
+                    $where .= " where ";
                     $first_key = FALSE;
                 }
                 $where .= $key . "'" . $value . "'";

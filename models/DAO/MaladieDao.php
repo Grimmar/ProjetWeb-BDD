@@ -79,6 +79,43 @@ class MaladieDao extends AbstractDao {
         return $count;
     }
 
+    public function findMaladieWithSymptome($symptomes) {
+        //var_dump($symptomes);
+        $sym = array();
+        $i = 0;
+        $where = "(";
+        $taille = count($symptomes);
+        foreach ($symptomes as $data) {
+            $sym["code" . $i] = $data->getCode();
+            $where .="sm.CODESYMPTOME= :code" . $i;
+            $i++;
+            if ($i != $taille) {
+                $where .= " or ";
+            }
+        }
+        $where.=")";
+
+        $sql = "SELECT m.* FROM MALADIES m ,SYMPTOMES_MALADIES sm where m.idMaladie = sm.idMALADIE and " . $where;
+        //echo $sql;
+        $statement = $this->bdd->prepare($sql);
+        $statement->execute($sym);
+        $statement->setFetchMode(PDO::FETCH_OBJ);
+        $result = array();
+        foreach ($statement as $d) {
+            array_push($result, new MaladieEntity($d->idmaladie,
+                            $d->codearborescence, $d->idpere, $d->libelle));
+        }
+        return $result;
+    }
+    
+     public function insertIntoConsultationMaladie($idConsult, $idMaladie) {
+        $statement = $this->bdd->prepare('INSERT INTO CONSULTATION_MALADIE (idconsultation,
+            IDMALADIE) values (:idconsult, :idMaladie)');
+        $statement->execute(array(
+            'idconsult' =>$idConsult,
+            'idMaladie' => $idMaladie));
+    }
+
 }
 
 ?>

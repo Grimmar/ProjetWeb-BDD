@@ -1,0 +1,10 @@
+.patient{
+    float: left;
+}
+th{
+    text-align: left;
+}
+
+.entete{
+    display:none;
+}

@@ -58,14 +58,13 @@ class ConsultationDao extends AbstractDao {
 
     public function insert($entity) {
         $statement = $this->bdd->prepare('INSERT INTO Consultations (
-             matriculeMedecin, matriculePatient, dateConsultation) VALUES(:id,
-             :medecin, :patient, to_date(:dateConsultation, \'DD/MM/YYYY\'))');
-
-        $statement->execute(array(
-            'id' => $entity->getIdentifiant(),
+             matriculeMedecin, matriculePatient, dateConsultation) VALUES(
+             :medecin, :patient, :dateConsultation)');
+       $statement->execute(array(
             'medecin' => $entity->getMatriculeMedecin(),
             'patient' => $entity->getMatriculePatient(),
             'dateConsultation' => $entity->getDateConsultation()));
+        return $this->count();        
     }
 
     public function update($entity) {

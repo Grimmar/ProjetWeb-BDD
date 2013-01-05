@@ -1,29 +1,39 @@
 {% extends "connected.html.twig" %}
 
 {% block title %}
-    Gestionnaire de traitement
+Gestionnaire de traitement
 {% endblock %}
 
 {% block sectionTitle %}
-    Gestionnaire de traitement
+Gestionnaire de traitement
 {% endblock %}
 
 {% block menu %}
-    <aside class="menu">
-        <nav>
-            <ul id="accordion">
-                <li>
-                    <a href="#">Gestion des patients</a>
-                    <ul>
-                        <li>
-                            <a href="{{WEBROOT}}patient">Consulter les patients</a>
-                        </li>
-                        <li>
-                            <a href="{{WEBROOT}}patient/add">Ajouter un patient</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </aside>
+<aside class="menu">
+    <nav>
+        <ul id="accordion">
+            <li>
+                <a href="#">Gestion des patients</a>
+                <ul>
+                    <li>
+                        <a href="{{WEBROOT}}patient">Consulter les patients</a>
+                    </li>
+                    <li>
+                        <a href="{{WEBROOT}}patient/add">Ajouter un patient</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <ul id="accordion">
+            <li>
+                <a href="#">Consultation</a>
+                <ul>
+                    <li>
+                        <a href="{{WEBROOT}}consultation">Consultation</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
 {% endblock %}

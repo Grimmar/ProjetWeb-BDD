@@ -1,0 +1,47 @@
+{% extends "user.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block contentTitle %}Consultation{% endblock %}    
+
+{% block content %}
+    <h4>Selection de la maladie</h4>
+    {%if maladies != NULL %}
+        <div class="holder"></div>
+        <table class="zebra">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="itemContainer">
+            {% for m in maladies %}
+            <tr>
+                <td>{{m.libelle}}</td>
+                <td>
+                    <a href="{{WEBROOT}}consultation/traitement/{{m.idmaladie}}">Selection</a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            
+        </table>
+    {% else %}
+        Il n'y a aucune maladie pour les symptones.
+    {% endif %}
+{% endblock %}

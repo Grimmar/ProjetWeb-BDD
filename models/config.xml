@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dbConf>
-    <dbname>localhost</dbname>
+    <dbname>127.0.0.1</dbname>
     <dbport>1521</dbport>
     <user>
         <name>appweb</name>
