@@ -10,7 +10,7 @@ require_once(ROOT . 'models\DAO\DaoManager.php');
 
 class consultation extends UserController {
 
-    protected $models = array("consultation", "patient", "symptome", "maladie", "medicament","procedure");
+    protected $models = array("consultation", "patient", "symptome", "maladie", "medicament", "procedure");
     private $symp;
 
     function __construct() {
@@ -21,7 +21,6 @@ class consultation extends UserController {
     function index() {
         $patients = $this->patient->find(array("order by" => "matricule"));
         $this->set(array("patients" => $patients));
-        //var_dump($_SESSION);
         $_SESSION['patient'] = NULL;
         $_SESSION['symptomes'] = NULL;
         $_SESSION['maladie'] = NULL;
@@ -30,7 +29,6 @@ class consultation extends UserController {
 
     function filter() {
         $patients = $this->patient->find(array("nom=" => $_POST['nom']));
-        //var_dump($patients);
         $this->set(array("patients" => $patients));
         $this->render("index");
     }
@@ -58,7 +56,7 @@ class consultation extends UserController {
         $s = $this->symptome->get($matricule);
         if (!in_array(serialize($s), $_SESSION['symptomes']))
             array_push($_SESSION['symptomes'], serialize($s));
-        
+
         $symp = $this->symptome->find("");
         $this->set(array("symptome" => $symp, "symptomepatient" => $this->unserializableArray($_SESSION['symptomes'])));
         $this->render("symptome");
@@ -82,11 +80,11 @@ class consultation extends UserController {
         $this->render("maladie");
     }
 
-    function traitement($matricule) {
-        $_SESSION['maladie'] = $matricule;
-        $med = $this->procedure->getMedicamentsFromMaladie($matricule);
-        $medicaments =array();
-        foreach($med["CODECIS"] as $d){
+    function traitement($maladie) {
+        $_SESSION['maladie'] = $maladie;
+        $med = $this->procedure->getMedicamentsFromMaladie($maladie);
+        $medicaments = array();
+        foreach ($med["CODECIS"] as $d) {
             array_push($medicaments, $this->medicament->get($d));
         }
         //$medicaments= $this->medicament->getMedicamentWithMaladie($matricule);
@@ -94,9 +92,9 @@ class consultation extends UserController {
         $clean_html = fgets($file);
         fclose($file);
         $this->set(array("medicaments" => $medicaments, "medecin" => unserialize($_SESSION['user']),
-        "medecin" => unserialize($_SESSION['user']),
-        "patient" => unserialize($_SESSION['patient']),
-        "entete" => $clean_html));
+            "medecin" => unserialize($_SESSION['user']),
+            "patient" => unserialize($_SESSION['patient']),
+            "entete" => $clean_html));
         $this->enregistrementConsultation();
         $this->render("traitement");
     }

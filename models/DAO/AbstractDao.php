@@ -33,7 +33,11 @@ abstract class AbstractDao implements Dao {
                     $where .= " where ";
                     $first_key = FALSE;
                 }
-                $where .= $key . "'" . $value . "'";
+                if (is_numeric($value)) {
+                    $where .= $key . $value;
+                } else {
+                    $where .= $key . "'" . $value . "'";
+                }
                 if ($last_key != $key) {
                     $where .= " and ";
                 }
@@ -42,6 +46,7 @@ abstract class AbstractDao implements Dao {
         $where .= $finReq;
         return $where;
     }
+
 }
 
 ?>

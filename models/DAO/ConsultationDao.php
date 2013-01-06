@@ -39,7 +39,7 @@ class ConsultationDao extends AbstractDao {
         foreach ($statement as $s) {
             array_push($result, new ConsultationEntity($s->identifiant,
                             $s->matriculemedecin, $s->matriculepatient,
-                            $s->dateconsutation));
+                            $s->dateconsultation));
         }
         return $result;
     }
@@ -53,7 +53,7 @@ class ConsultationDao extends AbstractDao {
             return null;
         }
         return new ConsultationEntity($d[0]->identifiant,
-                        $d[0]->matriculemedecin, $d[0]->matriculepatient, $d[0]->dateconsutation);
+                        $d[0]->matriculemedecin, $d[0]->matriculepatient, $d[0]->dateconsultation);
     }
 
     public function insert($entity) {

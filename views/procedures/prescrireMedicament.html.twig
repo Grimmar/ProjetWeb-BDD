@@ -1,5 +1,4 @@
 {% extends "admin.html.twig" %}
-
 {% block stylesheets %}
 {{parent()}}
 <link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
@@ -15,10 +14,10 @@
     });
     </script>
 {% endblock %}
-{% block contentTitle %}Intéractions avec le nouveau traitement{% endblock %}    
+{% block contentTitle %}Prescrire un médicament{% endblock %}    
 
 {% block content %}
-    {% if patients != NULL%}
+{%if patients != NULL %}
     <div class="holder"></div>
     <table class="zebra">
         <thead>
@@ -35,17 +34,21 @@
                     <td>{{m.nom}}</td>
                     <td>{{m.prenom}}</td>
                     <td>
-                        <a href="{{WEBROOT}}procedures/interactionTraitement/{{m.matricule}}">
-                            <img width="32px" src="{{WEBROOT}}templates/img/screen.png" alt="Sélection du patient"/>
+                        <a href="{{WEBROOT}}procedures/prescrireMedicament/{{m.matricule}}">
+                            <img width="32px" src="{{WEBROOT}}templates/img/screen.png" alt="Choisir un patient"/>
                         </a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-    {% elseif medicaments != NULL %}
-        <div class="holder"></div>
-        <form method="POST" action="{{WEBROOT}}procedures/interactionTraitementProcess/{{m.matricule}}">
+
+    {% elseif patient != null and consult != NULL and medicaments != NULL %}
+
+        <form method="POST" action="{{WEBROOT}}procedures/prescrireMedicamentProcess/{{m.matricule}}">
+            <label>Durée du traitement</label>
+            <input type="text" name="duration" value="{{duration}}" required autofocus/>
+            <div class="holder"></div>
             <table class="zebra">
                 <thead>
                     <tr>
@@ -67,13 +70,12 @@
                     </tbody>
 
                 </table>
-                    <input type="submit" name="btnInt" value="Vérifiez les intéractions"/>
-                </form>
+                <input type="hidden" name="consult" value="{{consult}}"/>
+                <input type="submit" name="btnInt" value="Prescrire les médicaments"/>
+            </form>
+     {% elseif success != null %}
+            Les médicaments ont bien été ajoutés.
     {% else %}
-         {% if intExists > 0 %}
-                Le traitement sélectionné risque d'intéragir avec un actuel traitement du patient.
-         {% else %}
-                        Le traitement sélectionné ne risque pas d'intéragir avec un actuel traitement du patient.
-         {% endif %}
-    {% endif %}
+            Le patient choisi n'a pas de consultation enregistrée.
+    {% endif%}
 {% endblock %}

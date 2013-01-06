@@ -20,11 +20,13 @@ class ProcedureDao {
     //AFFECTER_MALADIE_PATIENT
     public function affecterMaladiePatient($matPatient, $matMedecin, $idMaladie) {
         $params = array();
+        $val = null;
         $params['idPatient'] = $matPatient;
         $params['idMedecin'] = $matMedecin;
         $params['idMaladie'] = $idMaladie;
-        $sql = 'BEGIN AFFECTER_MALADIE_PATIENT(:idPatient, :idMedecin, :idMaladie); END;';
-        $d = $this->executeProcedure($sql, $params);
+        $params['return'] = $val;
+        $sql = 'BEGIN :return := AFFECTER_MALADIE_PATIENT(:idPatient, :idMedecin, :idMaladie); END;';
+        $d = $this->callFunction($sql, $params);
         return $d;
     }
 
@@ -40,22 +42,26 @@ class ProcedureDao {
     //PRESCRIRE_MEDICAMENT
     public function prescrireMedicament($consultation, $duration, $cis) {
         $params = array();
+        $val = null;
         $params['consult'] = $consultation;
         $params['duration'] = $duration;
         $params['cis'] = $cis;
-        $sql = 'BEGIN PRESCRIRE_MEDICAMENT(:consult, :duration, :cis); END;';
-        $d = $this->executeProcedure($sql, $params);
+        $params['return'] = $val;
+        $sql = 'BEGIN :return := PRESCRIRE_MEDICAMENT(:consult, :duration, :cis); END;';
+        $d = $this->callFunction($sql, $params);
         return $d;
     }
 
     //PRESCRIRE_RECOMMENDATION
     public function prescrireRecommendation($consultation, $duration, $rec) {
         $params = array();
+        $val = null;
         $params['consult'] = $consultation;
         $params['duration'] = $duration;
         $params['rec'] = $rec;
-        $sql = 'BEGIN PRESCRIRE_RECOMMENDATION(:consult, :duration, :rec); END;';
-        $d = $this->executeProcedure($sql, $params);
+        $params['return'] = $val;
+        $sql = 'BEGIN :return := PRESCRIRE_RECOMMENDATION(:consult, :duration, :rec); END;';
+        $d = $this->callFunction($sql, $params);
         return $d;
     }
 
@@ -95,8 +101,8 @@ class ProcedureDao {
     public function isInteractionsTraitement($mat, $meds = array()) {
         $params = array();
         $params['mat'] = $mat;
-        $sql = 'BEGIN IS_TRAITEMENT_INTERACTION(:mat, :array); END;';
-        $d = $this->fetchArray($sql, $params, $meds);
+        $sql = 'SELECT IS_TRAITEMENT_INTERACTION(:mat, :array) "val" FROM DUAL';
+        $d = $this->fetchFunctionWithArray($sql, $params, $meds);
         return $d;
     }
 
@@ -115,24 +121,22 @@ class ProcedureDao {
         $params = array();
         $params['med'] = $medicament;
         $params['effet'] = $effet;
-        $sql = 'BEGIN :cursor := PROPOSER_TRAITEMENTS(:med, :effet); END;';
+        $sql = 'BEGIN :cursor := INSERER_NOUVEL_EI(:med, :effet); END;';
         $d = $this->fetchCursor($sql, $params);
         return $d;
     }
 
-    public function executeProcedure($sql, $bind = array()) {
-        $data = array();
+    public function callFunction($sql, $bind = array()) {
         $statement = oci_parse($this->bdd, $sql);
         foreach ($bind as $key => &$val) {
             oci_bind_by_name($statement, $key, $val, -1, OCI_ASSOC);
         }
         oci_execute($statement);
         if (($e = oci_error($statement)) != NULL) {
-            throw new Exception($e, -1234);
+            throw new Exception("" . $e, -1234);
         }
-        oci_fetch_all($statement, $data);
+
         oci_free_statement($statement);
-        return $data;
     }
 
     public function fetchCursor($sql, $bind = array()) {
@@ -170,12 +174,34 @@ class ProcedureDao {
         oci_execute($statement);
 
         if (($e = oci_error($statement)) != NULL) {
-            throw new Exception($e, -1234, NULL);
+            throw new Exception("" . $e, -1234, NULL);
         }
-
+        $tab = array();
+        for ($i = 0; $i < $array->size(); $i++) {
+            array_push($tab, $array->getElem($i));
+        }
         oci_free_statement($statement);
 
-        return $array;
+        return $tab;
+    }
+
+    public function fetchFunctionWithArray($sql, $bind = array(), $array = array()) {
+        $array = oci_new_collection($this->bdd, 'MEDICAMENTS_TRAIT');
+        $statement = oci_parse($this->bdd, $sql);
+        oci_bind_by_name($statement, ':array', $array, -1, SQLT_NTY);
+        foreach ($bind as $key => &$val) {
+            oci_bind_by_name($statement, $key, $val, -1, OCI_ASSOC);
+        }
+        oci_execute($statement);
+
+        if (($e = oci_error($statement)) != NULL) {
+            throw new Exception("" . $e, -1234, NULL);
+        }
+        $tab = array();
+        oci_fetch_all($statement, $tab);
+        oci_free_statement($statement);
+
+        return $tab;
     }
 
 }

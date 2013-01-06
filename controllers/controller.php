@@ -73,11 +73,26 @@ class Controller {
         header('Location: ' . WEBROOT . $url);
     }
 
+    function securite_bdd($string) {
+        // On regarde si le type de string est un nombre entier (int)
+        if (ctype_digit($string)) {
+            $string = intval($string);
+        }
+        // Pour tous les autres types
+        else {
+            $string = mysql_real_escape_string($string);
+            $string = addcslashes($string, '%_');
+        }
+
+        return $string;
+    }
+
     //Se protéger contre les injections html
     protected function html($string) {
         return htmlentities($string);
     }
 
+    
 }
 
 ?>

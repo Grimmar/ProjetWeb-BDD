@@ -1,70 +1,102 @@
 {% extends "admin.html.twig" %}
-
+{% block stylesheets %}
+{{parent()}}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
+{% endblock %}
 {% block contentTitle %}Affecter une maladie à un patient{% endblock %}    
 
 {% block content %}
 
-    {%if patients != NULL %}
-<div class="holder"></div>
-<table class="zebra">
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Prenom</th>
-            <th>Téléphone</th>
-            <th>Date de naissance</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="itemContainer">
-            {% for m in patients %}
-            <tr>
-                <td>{{m.nom}}</td>
-                <td>{{m.prenom}}</td>
-                <td>{{m.telephone}}</td>
-                <td>{{m.dateNaissance}}</td>
-                <td>
-                    <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">
-                        <img width="32px" src="{{WEBROOT}}templates/img/edit.png" alt="Modifier"/>
-                    </a>
-                </td>
-                <td>
-                    <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">
-                        <img width="32px" src="{{WEBROOT}}templates/img/delete.png" alt="Supprimer"/>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-
-    </table>
-    {% elseif patient != null and maladies != NULL %}
+{%if patients != NULL %}
     <div class="holder"></div>
     <table class="zebra">
         <thead>
             <tr>
-                <th>Identifiant</th>
-                <th>Libellé de la maladie</th>
-                <th></th>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Prenom</th>
             </tr>
         </thead>
         <tbody id="itemContainer">
-            {% for m in maladies %}
+            {% for m in patients %}
                 <tr>
-                    <td>{{m.idMaladie}}</td>
-                    <td>{{m.libelle}}</td>
+                    <td>{{m.matricule}}</td>
+                    <td>{{m.nom}}</td>
+                    <td>{{m.prenom}}</td>
                     <td>
-                        <a href="{{WEBROOT}}procedures/medicamentsFromMaladie/{{matricule}}/{{m.idMaladie}}">
-                            Affecter la maladie
+                        <a href="{{WEBROOT}}procedures/maladieToPatient/{{m.matricule}}">
+                            <img width="32px" src="{{WEBROOT}}templates/img/screen.png" alt="Choisir un patient"/>
                         </a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
-
         </table>
+
+    {% elseif patient == null and maladies != NULL %}
+        <div class="holder"></div>
+        <table class="zebra">
+            <thead>
+                <tr>
+                    <th>Identifiant</th>
+                    <th>Libellé de la maladie</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="itemContainer">
+            {% for m in maladies %}
+                    <tr>
+                        <td>{{m.idMaladie}}</td>
+                        <td>{{m.libelle}}</td>
+                        <td>
+                            <a href="{{WEBROOT}}procedures/maladieToPatient/{{matricule}}/{{m.idMaladie}}">
+                                Affecter la maladie
+                            </a>
+                        </td>
+                    </tr>
+            {% endfor %}
+                </tbody>
+
+            </table>
+     {% elseif medecins != null %}
+            <div class="holder"></div>
+            <table class="zebra">
+                <thead>
+                    <tr>
+                        <th>Matricule</th>
+                        <th>Nom</th>
+                        <th>Prenom</th>
+                    </tr>
+                </thead>
+                <tbody id="itemContainer">
+            {% for m in medecins %}
+                        <tr>
+                            <td>{{m.matricule}}</td>
+                            <td>{{m.nom}}</td>
+                            <td>{{m.prenom}}</td>
+                            <td>
+                                <a href="{{WEBROOT}}procedures/maladieToPatient/{{matricule}}/{{maladie}}/{{m.matricule}}">
+                                    <img width="32px" src="{{WEBROOT}}templates/img/screen.png" alt="Surveiller le médecin"/>
+                                </a>
+                            </td>
+                        </tr>
+            {% endfor %}
+                    </tbody>
+                </table>
+    {% elseif maladie != null%}
+            La maladie ayant le code {{maladie}} a été affecter au patient.
     {% else %}
-        Il n'y a aucun patient enregistr&eacute;
+            Il n'y a aucun patient enregistr&eacute;.
     {% endif %}
 {% endblock %}

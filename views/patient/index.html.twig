@@ -40,12 +40,12 @@
                     <td>{{m.telephone}}</td>
                     <td>{{m.dateNaissance|date("m/d/Y")}}</td>
                     <td>
-                        <a href="{{WEBROOT}}medecin/update/{{m.matricule}}">
+                        <a href="{{WEBROOT}}patient/update/{{m.matricule}}">
                             <img width="32px" src="{{WEBROOT}}templates/img/edit.png" alt="Modifier"/>
                         </a>
                     </td>
                     <td>
-                        <a href="{{WEBROOT}}medecin/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">
+                        <a href="{{WEBROOT}}patient/delete/{{m.matricule}}" onclick="return confirm('Voulez-vous vraiment supprimer ce medecin?');">
                             <img width="32px" src="{{WEBROOT}}templates/img/delete.png" alt="Supprimer"/>
                         </a>
                     </td>

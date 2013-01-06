@@ -6,7 +6,7 @@
  * @author bissoqu1
  */
 require_once(ROOT . "models/Entite/AdresseTypeEntity.php");
-require_once(ROOT . 'controllers\administrationController.php');
+require_once(ROOT . 'controllers/administrationController.php');
 
 class Medecin extends AdministrationController {
 
@@ -66,37 +66,41 @@ class Medecin extends AdministrationController {
     }
 
     function addProccess() {
+        echo 'avant';
         if (isset($this->data) && $this->filter() && !empty($_POST)) {
-            $adresse = new AdresseTypeEntity($this->data['numero'],
-                            $this->data['adresse'], $this->data['ville'],
-                            $this->data['codePostal']);
-            $medecin = new MedecinEntity($this->data['login'],
-                            $this->data['md5'], "MEDECIN", null,
-                            $this->data['nom'], $this->data['prenom'],
-                            $this->data['telephone'], $this->data['secu'],
-                            $this->data['dtns'], $adresse);
+            $adresse = new AdresseTypeEntity($this->html($this->data['numero']),
+                            $this->html($this->data['adresse']), $this->html($this->data['ville']),
+                            $this->html($this->data['codePostal']));
+            $medecin = new MedecinEntity($this->html($this->data['login']),
+                            $this->html($this->data['md5']), "MEDECIN", null,
+                            $this->html($this->data['nom']), $this->html($this->data['prenom']),
+                            $this->html($this->data['telephone']), $this->html($this->data['secu']),
+                            $this->html($this->data['dtns']), $adresse);
             $this->medecin->insert($medecin);
+            echo 'forward';
             $this->forward("medecin/index");
+        } else {
+            $this->set($this->data);
+            $this->render("add");
         }
-        $this->set($this->data);
-        $this->render("add");
     }
 
     function updateProccess($matricule) {
         if (isset($this->data) && $this->filter() && !empty($_POST)) {
-            $adresse = new AdresseTypeEntity($this->data['numero'],
-                            $this->data['adresse'], $this->data['ville'],
-                            $this->data['codePostal']);
-            $medecin = new MedecinEntity($this->data['login'],
-                            $this->data['md5'], $this->role,
-                            $matricule, $this->data['nom'], $this->data['prenom'],
-                            $this->data['telephone'], $this->data['secu'],
-                            $this->data['dtns'], $adresse);
+            $adresse = new AdresseTypeEntity($this->html($this->data['numero']),
+                            $this->html($this->data['adresse']), $this->html($this->data['ville']),
+                            $this->html($this->data['codePostal']));
+            $medecin = new MedecinEntity($this->html($this->data['login']),
+                            $this->html($this->data['md5']), $this->role, $matricule,
+                            $this->html($this->data['nom']), $this->html($this->data['prenom']),
+                            $this->html($this->data['telephone']), $this->html($this->data['secu']),
+                            $this->html($this->data['dtns']), $adresse);
             $this->medecin->update($medecin);
             $this->forward("medecin/index");
+        } else {
+            $this->set($this->data);
+            $this->update($matricule);
         }
-        $this->set($this->data);
-        $this->update($matricule);
     }
 
     function filter() {

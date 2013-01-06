@@ -41,9 +41,11 @@
                 </tr>
             {% endfor %}
             </tbody>
-        </table>
     {% elseif patients == NULL and surveillance != null %}
-        ""rgerg
+        Le médecin a prescrit {{surveillance['nombreMedicamentDeveloppe']}} qu'il (elle) a développé.
+        Le médecin a prescrit {{surveillance['nombreLabTravaille']}} que son laboratiore a développé.
+        Le médecin a prescrit {{surveillance['nombreMedicamentPrescrit']}} autres médicaments.
+        Son rapport est de {{surveillance['rapport']}};
     {% else %}
             Le médecin que vous tentez de surveiller n'existe pas ou n'a encore effectué aucune consultation.<br />
             Il ne peut être surveillé.

@@ -20,7 +20,7 @@
 
 {% block content %}
     <div style="float:left;">
-        <h4>Selection des symtpomes</h4>
+        <h4>Sélection des symptomes</h4>
 
 {%if symptome != NULL %}
         <div class="holder"></div>
@@ -36,7 +36,7 @@
                     <tr>
                         <td>{{m.libelle}}</td>
                         <td>
-                            <a href="{{WEBROOT}}consultation/selectSymptome/{{m.code}}">Selection</a>
+                            <a href="{{WEBROOT}}consultation/selectSymptome/{{m.code}}">Sélection</a>
                         </td>
                     </tr>
             {% endfor %}
@@ -82,10 +82,10 @@
                     <legend>Ajout d'un symptome</legend>
                     <form action="{{WEBROOT}}consultation/addSymptome" method="post" name="ajout_symptome">
                         <label>Libelle du symptome</label><input type="text" name="lib_symptome"/>
-                        <input type="submit" value="Enrergistrer"/>   
+                        <input type="submit" value="Enregistrer"/>   
                     </form>
                 </fieldset>
                     
-                    <a href="{{WEBROOT}}consultation/maladie"><h3>Determination de la maladie</h3></a>
+                    <a href="{{WEBROOT}}consultation/maladie"><h3>Détermination de la maladie</h3></a>
             </div>
 {% endblock %}

@@ -1,6 +1,79 @@
 {% extends "admin.html.twig" %}
 
+{% block stylesheets %}
+{{parent()}}
+<link rel="stylesheet" href="{{WEBROOT}}templates/js/jPages/css/jPages.css">
+<script type="text/javascript" src="{{WEBROOT}}templates/js/jPages/js/jPages.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("div.holder").jPages({
+            containerID : "itemContainer",
+            previous: "précédent",
+            next: "suivant",
+            perPage: 10
+        });
+    });
+    </script>
+{% endblock %}
+
 {% block contentTitle %}Ajouter un nouvel effet indésirable{% endblock %}    
 
 {% block content %}
+{%if medicaments != NULL %}
+    <div class="holder"></div>
+    <table class="zebra">
+        <thead>
+            <tr>
+                <th>Code cis</th>
+                <th>Libellé du médicament</th>
+            </tr>
+        </thead>
+        <tbody id="itemContainer">
+            {% for m in medicaments %}
+                <tr>
+                    <td>{{m.codeCis}}</td>
+                    <td>{{m.libelle}}</td>
+                    <td>
+                        <a href="{{WEBROOT}}procedures/nouvelEffet/{{m.codeCis}}">
+                            <img width="32px" src="{{WEBROOT}}templates/img/screen.png" alt="Choisir un patient"/>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    {% elseif medicament != NULL %}
+        <form action="{{WEBROOT}}/procedures/nouvelEffetProcess/{{medicament}}" method="POST">
+            <label>Nouvel effet</label>
+            <input type="text" name="effet" value="{{effet}}"/>
+            <br />
+            <input type="hidden" name="medicament" value="{{medicament}}"/>
+            <input type="submit" name="btnInt" value="Ajouter le nouvel effet"/>
+        </form>
+    {% elseif patients != NULL %}
+        <div class="holder"></div>
+        <table class="zebra">
+            <thead>
+                <tr>
+                    <th>Matricule</th>
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>Numéro de téléphone</th>
+                </tr>
+            </thead>
+            <tbody id="itemContainer">
+            {% for m in patients %}
+                    <tr>
+                        <td>{{m.matricule}}</td>
+                        <td>{{m.nom}}</td>
+                        <td>{{m.prenom}}</td>
+                        <td>{{m.telephone}}</td>
+                    </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+    {% else %}
+            Aucun médicament n'est répertorié.
+    {% endif %}
 {% endblock %}

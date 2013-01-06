@@ -12,6 +12,7 @@ DROP SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_PH;
 DROP SEQUENCE SEQUENCE_SURVEILLANCE;
 DROP SEQUENCE SEQUENCE_EI_FR;
 DROP SEQUENCE SEQUENCE_EI_OMS;
+DROP SEQUENCE SEQUENCE_SYMPTOME;
 
 DROP TABLE Surveillance;
 DROP TABLE Laboratoires_Medicaments;
@@ -123,6 +124,11 @@ CREATE SEQUENCE SEQUENCE_SUBS_ACT_CLASSE_PH
 	MAXVALUE 99999;
 
 CREATE SEQUENCE SEQUENCE_SURVEILLANCE
+	START WITH 1
+	INCREMENT BY 1
+	MAXVALUE 99999;
+
+CREATE SEQUENCE SEQUENCE_SYMPTOME
 	START WITH 1
 	INCREMENT BY 1
 	MAXVALUE 99999;
@@ -549,29 +555,30 @@ END;
 --------------------------------------------------------
 --  DDL for Function AFFECTER_MALADIE_PATIENT
 --------------------------------------------------------
-CREATE OR REPLACE FUNCTION AFFECTER_MALADIE_PATIENT(idPatient Consultations.matriculePatient%TYPE,
-  idMedecin Consultations.matriculeMedecin%TYPE,
-  idMaladie Maladies.idMaladie%TYPE) RETURN BOOLEAN IS
+CREATE OR REPLACE FUNCTION AFFECTER_MALADIE_PATIENT(pat Patients.matricule%TYPE,
+  med Medecins.matricule%TYPE,
+  idMaladie Maladies.idMaladie%TYPE) RETURN INTEGER IS
 
   idConsult  NUMBER(9);
 BEGIN
   SELECT identifiant INTO idConsult FROM Consultations 
-  WHERE matriculePatient = idPatient 
-    AND matriculeMedecin = idMedecin
+  WHERE matriculePatient = pat 
+    AND matriculeMedecin = med
     AND dateConsultation = SYSDATE;
-  
-  IF idConsult = NULL THEN 
-    INSERT INTO Consultations VALUES (SEQUENCE_CONSULTATION.NEXTVAL, idMedecin,
-    idPatient, SYSDATE);
-    idConsult := SEQUENCE_CONSULTATION.CURRVAL;
-  END IF;
-  
+
   INSERT INTO Consultation_Maladie VALUES (idConsult, idMaladie);
-  RETURN TRUE;
+  RETURN 1;
 
 EXCEPTION
+  WHEN no_data_found then
+    INSERT INTO Consultations VALUES (SEQUENCE_CONSULTATION.NEXTVAL, med,
+    pat, SYSDATE);
+    idConsult := SEQUENCE_CONSULTATION.CURRVAL;
+
+    INSERT INTO Consultation_Maladie VALUES (idConsult, idMaladie);
+    RETURN 0;
   WHEN Others then
-    RETURN FALSE;
+    RETURN 0;
 END;
 /
 --------------------------------------------------------
@@ -594,7 +601,7 @@ END MEDICAMENTS_FROM_MALADIE;
 --------------------------------------------------------
 CREATE OR REPLACE FUNCTION PRESCRIRE_MEDICAMENT (
   idConsult traitements.idconsultation%TYPE, duration NUMBER,
-  cis medicaments.codecis%TYPE) RETURN BOOLEAN IS
+  cis medicaments.codecis%TYPE) RETURN INTEGER IS
   
   idTrait  NUMBER(9);
 BEGIN
@@ -603,16 +610,16 @@ BEGIN
   WHERE idConsultation = idConsult;
 
   INSERT INTO traitement_medicaments(idTraitement, codeCIS) VALUES (idTrait, cis);
-  RETURN TRUE;  
+  RETURN 1;  
     
 EXCEPTION
   WHEN no_data_found THEN
     INSERT INTO Traitements (idConsultation, duree) VALUES(idConsult, duration);
     idTrait := SEQUENCE_TRAITEMENT.CURRVAL;
     INSERT INTO traitement_medicaments(idTraitement, codeCIS) VALUES (idTrait, cis);
-      
+    RETURN 1; 
   WHEN Others then
-    RETURN FALSE;
+    RETURN 0;
 END;
 /
 
@@ -621,7 +628,7 @@ END;
 --------------------------------------------------------
 CREATE OR REPLACE FUNCTION PRESCRIRE_RECOMMENDATION (
   idConsult traitements.idconsultation%TYPE, duration NUMBER,
-  rec Traitement_Recommendations.recommendation%TYPE) RETURN BOOLEAN IS
+  rec Traitement_Recommendations.recommendation%TYPE) RETURN Integer IS
   
   idTrait  NUMBER(9);
 BEGIN
@@ -630,7 +637,7 @@ BEGIN
   WHERE idConsultation = idConsult;
 
   INSERT INTO Traitement_Recommendations(idTraitement, recommendation) VALUES (idTrait, rec);
-  RETURN TRUE;
+  RETURN 1;
   
 EXCEPTION
   WHEN no_data_found THEN
@@ -638,10 +645,10 @@ EXCEPTION
     idTrait := SEQUENCE_TRAITEMENT.CURRVAL;
     INSERT INTO Traitement_Recommendations(idTraitement, recommendation) VALUES (
         idTrait, rec);
-    RETURN TRUE;
+    RETURN 1;
     
   WHEN Others then
-    RETURN FALSE;
+    RETURN 0;
 END;
 /
 
@@ -655,14 +662,14 @@ BEGIN
     OPEN curseur FOR
     SELECT identifiant, libelle FROM Effets_Indesirables_OMS
     WHERE identifiant IN (
-        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_OMS e
-        JOIN Substances_Actives_OMS s ON e.idSubstance = s.identifiant
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
+        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
         JOIN SubsActClasseChimique cl ON s.identifiant = cl.substance
         JOIN Classes_Chimiques cc ON cc.identifiant = cl.classe
         CONNECT BY PRIOR cc.identifiant = cc.idPere
     )  OR identifiant IN (
-        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_OMS e
-        JOIN Substances_Actives_OMS s ON e.idSubstance = s.identifiant
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
+        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
         JOIN SubsActClassePharmaco cl ON s.identifiant = cl.substance
         JOIN Classes_Pharmacologiques cc ON cc.identifiant = cl.classe
         CONNECT BY cc.idPere = PRIOR cc.identifiant
@@ -848,9 +855,13 @@ CREATE OR REPLACE TRIGGER INSERT_ON_SURVEILLANCE
 BEFORE INSERT OR UPDATE ON SURVEILLANCE 
 FOR EACH ROW 
 BEGIN
+  IF :new.nombreMedicamentDeveloppe + :new.nombreLabTravaille = 0 THEN
+    SELECT 0 INTO :new.rapport FROM DUAL;
+   ELSE 
   SELECT (:new.nombreMedicamentPrescrit + :new.nombreMedicamentDeveloppe 
     + :new.nombreLabTravaille) / :new.nombreMedicamentDeveloppe 
     + :new.nombreLabTravaille INTO :new.rapport FROM DUAL;
+    END IF;
 END;
 /
 
@@ -946,6 +957,7 @@ substancesMed2 SYS_REFCURSOR;
 subMed1 Substances_Actives_OMS.identifiant%TYPE;
 subMed2 Substances_Actives_OMS.identifiant%TYPE;
 BEGIN
+    interactions := 0;
     substancesMed1 := GET_SUBSTANCES_MEDICAMENT(med1);
     LOOP
         EXIT WHEN substancesMed1%NOTFOUND;
@@ -975,8 +987,9 @@ CURSOR cur IS
     SELECT codeCis FROM Traitement_Medicaments
     WHERE idTraitement = trait;
 cis Medicaments.codeCis%TYPE;
-interactions NUMBER(3);
+interactions NUMBER(5);
 BEGIN
+    interactions := 0;
     OPEN cur;
     LOOP
         EXIT WHEN cur%NOTFOUND;
@@ -1015,6 +1028,7 @@ traitements SYS_REFCURSOR;
 interactions NUMBER(9);
 i NUMBER(3);
 BEGIN
+    interactions := 0;
     traitements := GET_TRAITEMENTS_EN_COURS(mat);
     LOOP
     EXIT WHEN traitements%NOTFOUND;
@@ -1112,18 +1126,17 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE INSERER_NOUVEL_EI(med Medicaments.codeCis%TYPE, 
-    effet Effets_Indesirables_OMS.libelle%TYPE) IS 
+CREATE OR REPLACE FUNCTION INSERER_NOUVEL_EI(med Medicaments.codeCis%TYPE, 
+    effet Effets_Indesirables_OMS.libelle%TYPE) RETURN SYS_REFCURSOR IS
     patients SYS_REFCURSOR;
-
     val INTEGER;
     BEGIN
-    
+    patients := NULL;
     val := IS_EFFET_CONNU(med, effet);
-    IF val == 0 THEN 
+    IF val = 0 THEN 
         INSERT INTO EFFETS_INDESIRABLES_FR VALUES(SEQUENCE_EI_FR.NEXTVAL, effet, NULL);
-        RETURN GET_PATIENTS_FROM_MED(med);
+       patients := GET_PATIENTS_FROM_MED(med);
     END IF;
-    RETURN NULL;
+    RETURN patients;
 END;
 /

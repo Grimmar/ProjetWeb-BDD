@@ -1,6 +1,6 @@
 <?php
 
-require_once(ROOT . 'controllers\userController.php');
+require_once(ROOT . 'controllers/userController.php');
 
 class Patient extends UserController {
 
@@ -57,33 +57,35 @@ class Patient extends UserController {
 
     function addProccess() {
         if (isset($this->data) && $this->filter() && !empty($_POST)) {
-            $adresse = new AdresseTypeEntity($this->data['numero'],
-                            $this->data['adresse'], $this->data['ville'],
-                            $this->data['codePostal']);
+            $adresse = new AdresseTypeEntity($this->html($this->data['numero']),
+                            $this->html($this->data['adresse']), $this->html($this->data['ville']),
+                            $this->html($this->data['codePostal']));
             $patient = new PatientEntity(null, $this->data['nom'],
-                            $this->data['prenom'], $this->data['telephone'],
-                            $this->data['secu'], $this->data['dtns'], $adresse);
+                            $this->html($this->data['prenom']), $this->html($this->data['telephone']),
+                            $this->html($this->data['secu']), $this->html($this->data['dtns']), $adresse);
             $this->patient->insert($patient);
             $this->forward('patient/index');
+        } else {
+            $this->set($this->data);
+            $this->render(add);
         }
-        $this->set($this->data);
-        $this->render('update');
     }
 
     function updateProccess($matricule) {
         if (isset($this->data) && $this->filter() && !empty($_POST)) {
-            $adresse = new AdresseTypeEntity($this->data['numero'],
-                            $this->data['adresse'], $this->data['ville'],
-                            $this->data['codePostal']);
+            $adresse = new AdresseTypeEntity($this->html($this->data['numero']),
+                            $this->html($this->data['adresse']), $this->html($this->data['ville']),
+                            $this->html($this->data['codePostal']));
 
-            $patient = new PatientEntity($matricule, $this->data['nom'],
-                            $this->data['prenom'], $this->data['telephone'],
-                            $this->data['secu'], $_POST['dtns'], $adresse);
+            $patient = new PatientEntity($this->html($matricule), $this->html($this->data['nom']),
+                            $this->html($this->data['prenom']), $this->html($this->data['telephone']),
+                            $this->html($this->data['secu']), $this->html($_POST['dtns']), $adresse);
             $this->patient->update($patient);
             $this->forward('patient/index');
+        } else {
+            $this->set($this->data);
+            $this->update($matricule);
         }
-        $this->set($this->data);
-        $this->render('update');
     }
 
     function filter() {

@@ -44,7 +44,7 @@
                 <td>{{m.nom}}</td>
                 <td>{{m.prenom}}</td>
                 <td>{{m.telephone}}</td>
-                <td>{{m.dateNaissance}}</td>
+                <td>{{m.dateNaissance|date("m/d/Y")}}</td>
                 <td>
                     <a href="{{WEBROOT}}consultation/symptomeProccess/{{m.matricule}}">Selection</a>
                 </td>
