@@ -29,7 +29,7 @@ DROP TABLE Interactions_Substances;
 DROP TABLE Correspondance_EI_OMS_FR;
 DROP TABLE Effet_Indesirable_Classe_Chim;
 DROP TABLE Effet_Indesirable_Classe_Phar;
-DROP TABLE Effet_Indesirable_Substance_FR;
+DROP TABLE Effet_Indesirable_Subs_OMS;
 DROP TABLE Medecins_Laboratoires;
 DROP TABLE Patients_Caracteristiques;
 DROP TABLE Patients_MaladieChronique;
@@ -259,12 +259,12 @@ CREATE TABLE Effet_Indesirable_Classe_Phar (
     FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_OMS(identifiant)
 );
 
-CREATE TABLE Effet_Indesirable_Substance_FR (
+CREATE TABLE Effet_Indesirable_Subs_OMS (
     identifiant        NUMBER(6) PRIMARY KEY,
     idSubstance        VARCHAR2(5),
-    idEffetIndesirable VARCHAR2(4),
-    FOREIGN KEY (idSubstance) REFERENCES Substances_Actives_FR(identifiant),
-    FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_FR(identifiant)
+    idEffetIndesirable NUMBER(4),
+    FOREIGN KEY (idSubstance) REFERENCES Substances_Actives_OMS(identifiant),
+    FOREIGN KEY (idEffetIndesirable) REFERENCES Effets_Indesirables_OMS(identifiant)
 );
 
 CREATE TYPE CodeLibelle AS OBJECT (
@@ -662,14 +662,14 @@ BEGIN
     OPEN curseur FOR
     SELECT identifiant, libelle FROM Effets_Indesirables_OMS
     WHERE identifiant IN (
-        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
-        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Subs_OMS e
+        JOIN Substances_Actives_OMS s ON e.idSubstance = s.identifiant
         JOIN SubsActClasseChimique cl ON s.identifiant = cl.substance
         JOIN Classes_Chimiques cc ON cc.identifiant = cl.classe
         CONNECT BY PRIOR cc.identifiant = cc.idPere
     )  OR identifiant IN (
-        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Substance_FR e
-        JOIN Substances_Actives_FR s ON e.idSubstance = s.identifiant
+        SELECT e.idEffetIndesirable FROM Effet_Indesirable_Subs_OMS e
+        JOIN Substances_Actives_OMS s ON e.idSubstance = s.identifiant
         JOIN SubsActClassePharmaco cl ON s.identifiant = cl.substance
         JOIN Classes_Pharmacologiques cc ON cc.identifiant = cl.classe
         CONNECT BY cc.idPere = PRIOR cc.identifiant
@@ -1134,7 +1134,7 @@ CREATE OR REPLACE FUNCTION INSERER_NOUVEL_EI(med Medicaments.codeCis%TYPE,
     patients := NULL;
     val := IS_EFFET_CONNU(med, effet);
     IF val = 0 THEN 
-        INSERT INTO EFFETS_INDESIRABLES_FR VALUES(SEQUENCE_EI_FR.NEXTVAL, effet, NULL);
+        INSERT INTO EFFETS_INDESIRABLES_OMS VALUES(SEQUENCE_EI_OMS.NEXTVAL, effet, NULL);
        patients := GET_PATIENTS_FROM_MED(med);
     END IF;
     RETURN patients;
